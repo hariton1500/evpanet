@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.evpanet.evpanet">
+    package="com.evpanet.app">
    <application
         android:label="evpanet"
         android:icon="@mipmap/ic_launcher">
