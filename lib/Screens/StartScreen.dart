@@ -98,14 +98,16 @@ class _StartScreenState extends State<StartScreen> {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     isAuthorised = preferences.getBool('authorised') ?? false;
     if (!isAuthorised) {
+      print('befor login screen');
       Timer(
         Duration(seconds: 2),
-        await Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => AuthorizationScreen()))
+        () => Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => AuthorizationScreen()))
       );
+      print('after login screen');
     } else {
       Timer(
         Duration(seconds: 2),
-        await Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => MainScreen()))
+        () => Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => MainScreen()))
       );
     }
   }
