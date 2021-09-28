@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-
 import 'Screens/StartScreen.dart';
 //import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
@@ -56,7 +55,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: StartScreen(),//MyHomePage(title: 'Flutter Demo Home Page'),
+      home: StartScreen(), //MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }

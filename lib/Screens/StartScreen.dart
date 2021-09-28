@@ -1,18 +1,17 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'AuthorizationScreen.dart';
+import 'AuthorizationScreen/AuthorizationScreen.dart';
 import 'MainScreen/MainScreen.dart';
 
 class StartScreen extends StatefulWidget {
-  const StartScreen({ Key? key }) : super(key: key);
+  const StartScreen({Key? key}) : super(key: key);
 
   @override
   _StartScreenState createState() => _StartScreenState();
 }
 
 class _StartScreenState extends State<StartScreen> {
-
   late bool isAuthorised;
 
   @override
@@ -30,12 +29,10 @@ class _StartScreenState extends State<StartScreen> {
         children: [
           Container(
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [Color(0xff11273c), Color(0xff3c5d7c)]
-              )
-            ),
+                gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [Color(0xff11273c), Color(0xff3c5d7c)])),
           ),
           Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -63,11 +60,7 @@ class _StartScreenState extends State<StartScreen> {
                   children: [
                     Padding(
                       padding: EdgeInsets.only(
-                        top: 20.0,
-                        left: 24.0,
-                        right: 24.0,
-                        bottom: 16.0
-                      ),
+                          top: 20.0, left: 24.0, right: 24.0, bottom: 16.0),
                       child: LinearProgressIndicator(
                         value: 1,
                         backgroundColor: Color(0xff3c5d7c),
@@ -79,10 +72,9 @@ class _StartScreenState extends State<StartScreen> {
                       softWrap: true,
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16.0,
-                        color: Colors.white
-                      ),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16.0,
+                          color: Colors.white),
                     ),
                   ],
                 ),
@@ -99,16 +91,16 @@ class _StartScreenState extends State<StartScreen> {
     isAuthorised = preferences.getBool('authorised') ?? false;
     if (!isAuthorised) {
       print('befor login screen');
-      Timer(
-        Duration(seconds: 2),
-        () => Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => AuthorizationScreen()))
-      );
+      Timer(Duration(seconds: 2), () {
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+            builder: (BuildContext context) => AuthorizationScreen()));
+      });
       print('after login screen');
     } else {
       Timer(
-        Duration(seconds: 2),
-        () => Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => MainScreen()))
-      );
+          Duration(seconds: 2),
+          () => Navigator.of(context).pushReplacement(MaterialPageRoute(
+              builder: (BuildContext context) => MainScreen())));
     }
   }
 }
