@@ -27,9 +27,9 @@ class AuthorizationScreen extends StatelessWidget {
                   left: 10.0, right: 10.0, top: 20.0, bottom: 0),
               child: Column(
                 children: [
-                  logoTop(),
+                  //logoTop(),
                   Inputs(),
-                  ProgressIndicatorWidget(),
+                  //ProgressIndicatorWidget(),
                   connectRequest(context)
                 ],
               ),

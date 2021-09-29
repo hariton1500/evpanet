@@ -22,6 +22,8 @@ class _InputsState extends State<Inputs> {
   late String device;
   String inputPhone = '', inputId = '';
   bool enterButtonEnable = false;
+  double logoScale = 1.0;
+  double logoWidth = 100.0;
 
   @override
   void initState() {
@@ -29,103 +31,135 @@ class _InputsState extends State<Inputs> {
     super.initState();
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget logoTop() {
     return Center(
-      child: Container(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20.0),
-          child: Form(
-              child: Column(
-            children: [
-              TextFormField(
-                //onChanged: (textPhone) => editPhone = textPhone,
-                keyboardType: TextInputType.phone,
-                style: TextStyle(color: Color(0xffd3edff), fontSize: 18.0),
-                textCapitalization: TextCapitalization.characters,
-                decoration: InputDecoration(
-                    labelText: 'Номер телефона',
-                    labelStyle: TextStyle(
-                      color: Color(0xffd3edff),
-                      letterSpacing: 1,
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Color(0xffd3edff))),
-                    enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Color(0xffd3edff)))),
-                inputFormatters: [phone],
-                onChanged: (text) {
-                  inputPhone = text;
-                  checkInputs();
-                },
-              ),
-              TextFormField(
-                //onChanged: (textID) => editID = int.parse(textID),
-                keyboardType: TextInputType.phone,
-                style: TextStyle(color: Color(0xffd3edff), fontSize: 18.0),
-                textCapitalization: TextCapitalization.characters,
-                decoration: InputDecoration(
-                    labelText: 'Ваш ИД (ID)',
-                    labelStyle: TextStyle(
-                      color: Color(0xffd3edff),
-                      letterSpacing: 1,
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Color(0xffd3edff))),
-                    enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Color(0xffd3edff)))),
-                inputFormatters: [id],
-                onChanged: (text) {
-                  inputId = text;
-                  checkInputs();
-                },
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 20.0),
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                          side: BorderSide(color: Color(0xff95abbf))),
-                      elevation: 0.0,
-                      primary: Color(0x858eaac2)),
-                  //shape: RoundedRectangleBorder(side: BorderSide(color: Color(0xff95abbf))),
-                  //elevation: 0.0,
-                  //color: Color(0x858eaac2),
-                  onPressed: enterButtonEnable ? authorizationButtonPressed : null,
-                  child: Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          textRepresentationOfMode,
-                          style: TextStyle(color: Colors.white, fontSize: 20.0),
-                        ),
-                        Icon(
-                          Icons.arrow_forward,
-                          color: Colors.white,
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-              )
-            ],
-          )),
+      child: Padding(
+        padding: EdgeInsets.all(20.0),
+        child: Image.asset(
+          'assets/images/splash_logo.png',
+          color: Color(0xffd3edff),
+          scale: logoScale,
+          //height: logoHeight,
         ),
       ),
     );
   }
 
+  @override
+  Widget build(BuildContext context) {
+    logoWidth = MediaQuery.of(context).size.width;
+    return Column(
+      children: [
+        logoTop(),
+        Center(
+          child: Container(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20.0),
+              child: Form(
+                  child: Column(
+                children: [
+                  TextFormField(
+                    //onChanged: (textPhone) => editPhone = textPhone,
+                    keyboardType: TextInputType.phone,
+                    style: TextStyle(color: Color(0xffd3edff), fontSize: 18.0),
+                    textCapitalization: TextCapitalization.characters,
+                    decoration: InputDecoration(
+                        labelText: 'Номер телефона',
+                        labelStyle: TextStyle(
+                          color: Color(0xffd3edff),
+                          letterSpacing: 1,
+                        ),
+                        focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Color(0xffd3edff))),
+                        enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Color(0xffd3edff)))),
+                    inputFormatters: [phone],
+                    onChanged: (text) {
+                      setState(() {
+                        logoScale = 0.1;
+                        //logoHeight = 20.0;
+                      });
+                      inputPhone = text;
+                      checkInputs();
+                    },
+                    onTap: () => setState(() {
+                      logoScale = 0.5;
+                    }),
+                  ),
+                  TextFormField(
+                    //onChanged: (textID) => editID = int.parse(textID),
+                    keyboardType: TextInputType.phone,
+                    style: TextStyle(color: Color(0xffd3edff), fontSize: 18.0),
+                    textCapitalization: TextCapitalization.characters,
+                    decoration: InputDecoration(
+                        labelText: 'Ваш ИД (ID)',
+                        labelStyle: TextStyle(
+                          color: Color(0xffd3edff),
+                          letterSpacing: 1,
+                        ),
+                        focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Color(0xffd3edff))),
+                        enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Color(0xffd3edff)))),
+                    inputFormatters: [id],
+                    onChanged: (text) {
+                      inputId = text;
+                      checkInputs();
+                    },
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 20.0),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                              side: BorderSide(color: Color(0xff95abbf))),
+                          elevation: 0.0,
+                          primary: Color(0x858eaac2)),
+                      //shape: RoundedRectangleBorder(side: BorderSide(color: Color(0xff95abbf))),
+                      //elevation: 0.0,
+                      //color: Color(0x858eaac2),
+                      onPressed:
+                          enterButtonEnable ? authorizationButtonPressed : null,
+                      child: Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              textRepresentationOfMode,
+                              style: TextStyle(
+                                  color: Colors.white, fontSize: 20.0),
+                            ),
+                            Icon(
+                              Icons.arrow_forward,
+                              color: Colors.white,
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              )),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   void checkInputs() {
     print('[$inputPhone][$inputId]');
-    if (inputId != '' && inputPhone.length == 18) setState(() {
-      enterButtonEnable = true;
-    }); else setState(() {
-      enterButtonEnable = false;
-    });
+    if (inputId != '' && inputPhone.length == 18)
+      setState(() {
+        enterButtonEnable = true;
+      });
+    else
+      setState(() {
+        enterButtonEnable = false;
+      });
   }
-  
+
   Future<void> loadShareds() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     device = preferences.getString('deviceId') ?? '';
@@ -142,19 +176,20 @@ class _InputsState extends State<Inputs> {
     print(abonent.lastApiErrorStatus);
     if (abonent.lastApiErrorStatus) {
       Fluttertoast.showToast(
-        msg: abonent.lastApiMessage,
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        timeInSecForIosWeb: 1,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-        fontSize: 16.0
-      );
+          msg: abonent.lastApiMessage,
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
     }
     if (abonent.guids.length > 0) {
       //можно уходить на главный экран
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (BuildContext context) => MainScreen(abonent: abonent,)));
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (BuildContext context) => MainScreen(
+                abonent: abonent,
+              )));
     }
   }
 }

@@ -15,35 +15,36 @@ class Abonent {
     Map _body = {'number': '$number', 'uid': '$uid'};
     String _url = 'https://evpanet.com/api/apk/login/user';
     try {
-      _response = await http.post(Uri.parse(_url), headers: _headers, body: _body);
-      print(_response.statusCode);
+      _response =
+          await http.post(Uri.parse(_url), headers: _headers, body: _body);
       if (_response.statusCode == 201) {
         var answer = jsonDecode(_response.body);
-        print(answer);
-        if (answer.runtimeType.toString().startsWith('_InternalLinkedHashMap')) {
+        if (answer.runtimeType
+            .toString()
+            .startsWith('_InternalLinkedHashMap')) {
           if (Map.from(answer).containsKey('message')) {
             lastApiMessage = Map.from(answer)['message']['guids'].toString();
             guids = List.from(Map.from(answer)['message']['guids']);
-            print('lastApiMessage: $lastApiMessage');
-            lastApiErrorStatus = Map.from(answer)['error'];
           }
+          if (Map.from(answer).containsKey('error'))
+            lastApiErrorStatus = Map.from(answer)['error'];
         }
       } else {
-        var answer = jsonDecode(_response.body);
-        print(answer);
-        print(answer.runtimeType);
-        if (answer.runtimeType.toString().startsWith('_InternalLinkedHashMap')) {
-          if (Map.from(answer).containsKey('message')) {
-            lastApiMessage = Map.from(answer)['message'];
-            lastApiErrorStatus = Map.from(answer)['error'];
-          }
-        }
         guids = [];
+        var answer = jsonDecode(_response.body);
+        if (answer.runtimeType
+            .toString()
+            .startsWith('_InternalLinkedHashMap')) {
+          if (Map.from(answer).containsKey('message'))
+            lastApiMessage = Map.from(answer)['message'];
+          if (Map.from(answer).containsKey('error'))
+            lastApiErrorStatus = Map.from(answer)['error'];
+        }
       }
-      print(_response.body);
     } on SocketException catch (error) {
-      print('error: $error');
       guids = [];
+      lastApiErrorStatus = true;
+      lastApiMessage = error.toString();
     }
   }
 
