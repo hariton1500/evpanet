@@ -33,6 +33,8 @@ dependencies:
   mask_text_input_formatter: ^2.0.0
   webview_flutter: ^2.1.1
   http: ^0.13.3
+  fluttertoast: ^8.0.8
+  intl: ^0.17.0
 
 dev_dependencies:
   flutter_test:

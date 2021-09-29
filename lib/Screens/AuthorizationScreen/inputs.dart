@@ -3,6 +3,7 @@ import 'package:evpanet/Screens/MainScreen/MainScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class Inputs extends StatefulWidget {
   @override
@@ -19,6 +20,8 @@ class _InputsState extends State<Inputs> {
   String textRepresentationOfMode = 'Вход   ';
   Abonent abonent = Abonent();
   late String device;
+  String inputPhone = '', inputId = '';
+  bool enterButtonEnable = false;
 
   @override
   void initState() {
@@ -51,6 +54,10 @@ class _InputsState extends State<Inputs> {
                     enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: Color(0xffd3edff)))),
                 inputFormatters: [phone],
+                onChanged: (text) {
+                  inputPhone = text;
+                  checkInputs();
+                },
               ),
               TextFormField(
                 //onChanged: (textID) => editID = int.parse(textID),
@@ -68,6 +75,10 @@ class _InputsState extends State<Inputs> {
                     enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: Color(0xffd3edff)))),
                 inputFormatters: [id],
+                onChanged: (text) {
+                  inputId = text;
+                  checkInputs();
+                },
               ),
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 20.0),
@@ -80,7 +91,7 @@ class _InputsState extends State<Inputs> {
                   //shape: RoundedRectangleBorder(side: BorderSide(color: Color(0xff95abbf))),
                   //elevation: 0.0,
                   //color: Color(0x858eaac2),
-                  onPressed: authorizationButtonPressed,
+                  onPressed: enterButtonEnable ? authorizationButtonPressed : null,
                   child: Padding(
                     padding: EdgeInsets.all(16.0),
                     child: Row(
@@ -106,6 +117,15 @@ class _InputsState extends State<Inputs> {
     );
   }
 
+  void checkInputs() {
+    print('[$inputPhone][$inputId]');
+    if (inputId != '' && inputPhone.length == 18) setState(() {
+      enterButtonEnable = true;
+    }); else setState(() {
+      enterButtonEnable = false;
+    });
+  }
+  
   Future<void> loadShareds() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     device = preferences.getString('deviceId') ?? '';
@@ -115,13 +135,26 @@ class _InputsState extends State<Inputs> {
     //print('$editPhone:$editID');
     print('${phone.getUnmaskedText()}:${id.getUnmaskedText()}');
     await abonent.authorize(
-        number: phone.getUnmaskedText(),
+        number: '+${phone.getUnmaskedText()}',
         uid: int.tryParse(id.getUnmaskedText()) ?? 0,
         token: device);
+    print(abonent.lastApiMessage);
+    print(abonent.lastApiErrorStatus);
+    if (abonent.lastApiErrorStatus) {
+      Fluttertoast.showToast(
+        msg: abonent.lastApiMessage,
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0
+      );
+    }
     if (abonent.guids.length > 0) {
       //можно уходить на главный экран
       Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (BuildContext context) => MainScreen()));
+          MaterialPageRoute(builder: (BuildContext context) => MainScreen(abonent: abonent,)));
     }
   }
 }

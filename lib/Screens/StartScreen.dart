@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:evpanet/Helpers/maindata.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'AuthorizationScreen/AuthorizationScreen.dart';
@@ -97,10 +98,11 @@ class _StartScreenState extends State<StartScreen> {
       });
       print('after login screen');
     } else {
-      Timer(
-          Duration(seconds: 2),
-          () => Navigator.of(context).pushReplacement(MaterialPageRoute(
-              builder: (BuildContext context) => MainScreen())));
+      Timer(Duration(seconds: 2), () async {
+        Abonent abonent = Abonent();
+        await abonent.loadSavedData();
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+            builder: (BuildContext context) => MainScreen(abonent: abonent,)));});
     }
   }
 }
