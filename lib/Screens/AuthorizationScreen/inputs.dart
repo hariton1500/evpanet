@@ -21,9 +21,7 @@ class _InputsState extends State<Inputs> {
   Abonent abonent = Abonent();
   late String device;
   String inputPhone = '', inputId = '';
-  bool enterButtonEnable = false;
-  double logoScale = 1.0;
-  double logoWidth = 100.0;
+  bool enterButtonEnable = false, isSmall = false;
 
   @override
   void initState() {
@@ -35,11 +33,14 @@ class _InputsState extends State<Inputs> {
     return Center(
       child: Padding(
         padding: EdgeInsets.all(20.0),
-        child: Image.asset(
-          'assets/images/splash_logo.png',
-          color: Color(0xffd3edff),
-          scale: logoScale,
-          //height: logoHeight,
+        child: AnimatedContainer(
+          duration: Duration(seconds: 1),
+          width: isSmall ? MediaQuery.of(context).size.width / 4 : MediaQuery.of(context).size.width,
+          child: Image.asset(
+            'assets/images/splash_logo.png',
+            color: Color(0xffd3edff),
+            //height: logoHeight,
+          ),
         ),
       ),
     );
@@ -47,7 +48,6 @@ class _InputsState extends State<Inputs> {
 
   @override
   Widget build(BuildContext context) {
-    logoWidth = MediaQuery.of(context).size.width;
     return Column(
       children: [
         logoTop(),
@@ -59,7 +59,6 @@ class _InputsState extends State<Inputs> {
                   child: Column(
                 children: [
                   TextFormField(
-                    //onChanged: (textPhone) => editPhone = textPhone,
                     keyboardType: TextInputType.phone,
                     style: TextStyle(color: Color(0xffd3edff), fontSize: 18.0),
                     textCapitalization: TextCapitalization.characters,
@@ -75,19 +74,17 @@ class _InputsState extends State<Inputs> {
                             borderSide: BorderSide(color: Color(0xffd3edff)))),
                     inputFormatters: [phone],
                     onChanged: (text) {
-                      setState(() {
-                        logoScale = 0.1;
-                        //logoHeight = 20.0;
-                      });
                       inputPhone = text;
                       checkInputs();
                     },
                     onTap: () => setState(() {
-                      logoScale = 0.5;
+                      isSmall = true;
+                    }),
+                    onFieldSubmitted: (s) => setState(() {
+                      isSmall = false;
                     }),
                   ),
                   TextFormField(
-                    //onChanged: (textID) => editID = int.parse(textID),
                     keyboardType: TextInputType.phone,
                     style: TextStyle(color: Color(0xffd3edff), fontSize: 18.0),
                     textCapitalization: TextCapitalization.characters,
@@ -106,6 +103,12 @@ class _InputsState extends State<Inputs> {
                       inputId = text;
                       checkInputs();
                     },
+                    onTap: () => setState(() {
+                      isSmall = true;
+                    }),
+                    onFieldSubmitted: (s) => setState(() {
+                      isSmall = false;
+                    }),
                   ),
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 20.0),
@@ -167,13 +170,16 @@ class _InputsState extends State<Inputs> {
 
   void authorizationButtonPressed() async {
     //print('$editPhone:$editID');
-    print('${phone.getUnmaskedText()}:${id.getUnmaskedText()}');
+    //print('${phone.getUnmaskedText()}:${id.getUnmaskedText()}');
+    setState(() {
+      isSmall = false;
+    });
     await abonent.authorize(
         number: '+${phone.getUnmaskedText()}',
         uid: int.tryParse(id.getUnmaskedText()) ?? 0,
         token: device);
-    print(abonent.lastApiMessage);
-    print(abonent.lastApiErrorStatus);
+    //print(abonent.lastApiMessage);
+    //print(abonent.lastApiErrorStatus);
     if (abonent.lastApiErrorStatus) {
       Fluttertoast.showToast(
           msg: abonent.lastApiMessage,
