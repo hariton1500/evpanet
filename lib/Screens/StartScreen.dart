@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:evpanet/Helpers/maindata.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'AuthorizationScreen/AuthorizationScreen.dart';
 import 'MainScreen/MainScreen.dart';
 
@@ -88,21 +87,20 @@ class _StartScreenState extends State<StartScreen> {
   }
 
   Future<void> loadShared() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    isAuthorised = preferences.getBool('authorised') ?? false;
+    Abonent abonent = Abonent();
+    await abonent.loadSavedData();
+    isAuthorised = abonent.guids.isNotEmpty;
     if (!isAuthorised) {
-      print('befor login screen');
       Timer(Duration(seconds: 2), () {
         Navigator.of(context).pushReplacement(MaterialPageRoute(
             builder: (BuildContext context) => AuthorizationScreen()));
       });
-      print('after login screen');
     } else {
       Timer(Duration(seconds: 2), () async {
-        Abonent abonent = Abonent();
-        await abonent.loadSavedData();
+        //Abonent abonent = Abonent();
+        //await abonent.loadSavedData();
         Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (BuildContext context) => MainScreen(abonent: abonent,)));});
+            builder: (BuildContext context) => MainScreen()));});
     }
   }
 }

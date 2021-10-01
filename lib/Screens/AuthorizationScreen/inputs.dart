@@ -118,9 +118,6 @@ class _InputsState extends State<Inputs> {
                               side: BorderSide(color: Color(0xff95abbf))),
                           elevation: 0.0,
                           primary: Color(0x858eaac2)),
-                      //shape: RoundedRectangleBorder(side: BorderSide(color: Color(0xff95abbf))),
-                      //elevation: 0.0,
-                      //color: Color(0x858eaac2),
                       onPressed:
                           enterButtonEnable ? authorizationButtonPressed : null,
                       child: Padding(
@@ -169,8 +166,6 @@ class _InputsState extends State<Inputs> {
   }
 
   void authorizationButtonPressed() async {
-    //print('$editPhone:$editID');
-    //print('${phone.getUnmaskedText()}:${id.getUnmaskedText()}');
     setState(() {
       isSmall = false;
     });
@@ -178,8 +173,6 @@ class _InputsState extends State<Inputs> {
         number: '+${phone.getUnmaskedText()}',
         uid: int.tryParse(id.getUnmaskedText()) ?? 0,
         token: device);
-    //print(abonent.lastApiMessage);
-    //print(abonent.lastApiErrorStatus);
     if (abonent.lastApiErrorStatus) {
       Fluttertoast.showToast(
           msg: abonent.lastApiMessage,
@@ -191,11 +184,10 @@ class _InputsState extends State<Inputs> {
           fontSize: 16.0);
     }
     if (abonent.guids.length > 0) {
+      abonent.saveData();
       //можно уходить на главный экран
       Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (BuildContext context) => MainScreen(
-                abonent: abonent,
-              )));
+          builder: (BuildContext context) => MainScreen()));
     }
   }
 }
