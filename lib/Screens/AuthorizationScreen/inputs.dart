@@ -35,7 +35,9 @@ class _InputsState extends State<Inputs> {
         padding: EdgeInsets.all(20.0),
         child: AnimatedContainer(
           duration: Duration(seconds: 1),
-          width: isSmall ? MediaQuery.of(context).size.width / 4 : MediaQuery.of(context).size.width,
+          width: isSmall
+              ? MediaQuery.of(context).size.width / 4
+              : MediaQuery.of(context).size.width,
           child: Image.asset(
             'assets/images/splash_logo.png',
             color: Color(0xffd3edff),
@@ -149,7 +151,6 @@ class _InputsState extends State<Inputs> {
   }
 
   void checkInputs() {
-    print('[$inputPhone][$inputId]');
     if (inputId != '' && inputPhone.length == 18)
       setState(() {
         enterButtonEnable = true;
@@ -169,14 +170,17 @@ class _InputsState extends State<Inputs> {
     setState(() {
       isSmall = false;
     });
+    print('[authorizationButtonPressed]');
     await abonent.authorize(
         number: '+${phone.getUnmaskedText()}',
         uid: int.tryParse(id.getUnmaskedText()) ?? 0,
         token: device);
+    print(
+        '[abonent] (${abonent.lastApiErrorStatus}) ${abonent.lastApiMessage}');
     if (abonent.lastApiErrorStatus) {
       Fluttertoast.showToast(
           msg: abonent.lastApiMessage,
-          toastLength: Toast.LENGTH_SHORT,
+          toastLength: Toast.LENGTH_LONG,
           gravity: ToastGravity.CENTER,
           timeInSecForIosWeb: 1,
           backgroundColor: Colors.red,
@@ -186,8 +190,8 @@ class _InputsState extends State<Inputs> {
     if (abonent.guids.length > 0) {
       abonent.saveData();
       //можно уходить на главный экран
-      Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (BuildContext context) => MainScreen()));
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (BuildContext context) => MainScreen()));
     }
   }
 }

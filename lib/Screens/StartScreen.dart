@@ -90,6 +90,7 @@ class _StartScreenState extends State<StartScreen> {
     Abonent abonent = Abonent();
     await abonent.loadSavedData();
     isAuthorised = abonent.guids.isNotEmpty;
+    //isAuthorised = false;
     if (!isAuthorised) {
       Timer(Duration(seconds: 2), () {
         Navigator.of(context).pushReplacement(MaterialPageRoute(
@@ -99,8 +100,9 @@ class _StartScreenState extends State<StartScreen> {
       Timer(Duration(seconds: 2), () async {
         //Abonent abonent = Abonent();
         //await abonent.loadSavedData();
-        Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (BuildContext context) => MainScreen()));});
+        Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (BuildContext context) => MainScreen()));
+      });
     }
   }
 }
