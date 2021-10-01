@@ -45,6 +45,10 @@ class Abonent {
       guids = [];
       lastApiErrorStatus = true;
       lastApiMessage = error.toString();
+    } on HandshakeException {
+      guids = [];
+      lastApiErrorStatus = true;
+      lastApiMessage = 'Ошибка на стороне сервера. Повторите попытку позже.';
     }
   }
 
