@@ -42,6 +42,7 @@ class Abonent {
     _user.login = user['login'];
     _user.password = user['clear_pass'];
     _user.daysRemain = (int.parse(user['packet_secs']) / 60 / 60 / 24).round();
+    _user.endDate = user['endDate'] ?? '00.00.0000 00:00';
     users.add(_user);
     print('[getDataForGuidsFromServer] Loaded ${users.length} users');
   }

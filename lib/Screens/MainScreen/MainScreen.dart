@@ -153,7 +153,7 @@ class _MainScreenState extends State<MainScreen> {
                 ])),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -194,20 +194,25 @@ class _MainScreenState extends State<MainScreen> {
                               color: Colors.white,
                             ),
                             label: Text(
-                              'Пополнить счет',
+                              'Пополнить онлайн',
                               style: TextStyle(color: Colors.white),
                             )))
                   ],
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.only(left: 18, right: 18),
                   child: Column(
+                    //mainAxisAlignment: MainAxisAlignment.end,
+                    //crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Text(
-                        'Баланс',
-                        style: TextStyle(
-                            color: Color.fromRGBO(144, 198, 124, 1),
-                            fontSize: 20),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 20),
+                        child: Text(
+                          'Баланс',
+                          style: TextStyle(
+                              color: Color.fromRGBO(144, 198, 124, 1),
+                              fontSize: 20),
+                        ),
                       ),
                       Text(
                         NumberFormat('#,##0.00##', 'ru_RU')
@@ -231,6 +236,72 @@ class _MainScreenState extends State<MainScreen> {
                   ),
                 )
               ],
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 10),
+              child: Text(
+                abonent.users[index].name,
+                textAlign: TextAlign.right,
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Color.fromRGBO(166, 187, 204, 1),
+                  shadows: [
+                    const Shadow(
+                      blurRadius: 1.0,
+                      color: Colors.black,
+                      offset: Offset(1.0, 1.0)
+                    )
+                  ]
+                ),
+              ),
+            ),
+            Container(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      const Text(
+                        'Окончание действия пакета',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.white,
+                          shadows: [
+                            const Shadow(
+                              blurRadius: 1.0,
+                              color: Colors.black,
+                              offset: Offset(1.0, 1.0)
+                            )
+                          ]
+                        ),
+                      ),
+                      Text(
+                        '${abonent.users[index].endDate} (${abonent.users[index].daysRemain} дн.)',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blue,
+                          shadows: [
+                            const Shadow(
+                            blurRadius: 1.0,
+                            color: Colors.black,
+                            offset: const Offset(1.0, 1.0)
+                            )
+                          ]
+                        ),
+                      )
+                    ],
+                  ),
+                  const Icon(
+                    Icons.settings_suggest_outlined,
+                    color: Colors.white,
+                    size: 35.0,
+                  )
+                ],
+              ),
             )
           ],
         ),
