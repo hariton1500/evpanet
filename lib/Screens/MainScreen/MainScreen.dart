@@ -3,6 +3,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:evpanet/Helpers/maindata.dart';
 import 'package:evpanet/Screens/webscreen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 //import 'package:flutter_icons/flutter_icons.dart';
 
@@ -17,6 +18,7 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   Abonent abonent = Abonent();
+  int currentUserIndex = 0;
 
   @override
   void initState() {
@@ -119,8 +121,133 @@ class _MainScreenState extends State<MainScreen> {
                         enableInfiniteScroll: true,
                         aspectRatio: 16 / 10,
                         viewportFraction: 0.85,
+                        onPageChanged: (index, reason) {
+                          setState(() {
+                            currentUserIndex = index;
+                            //print('[onPageChanged] $index');
+                          });
+                        }
                       )),
-            )
+            ),
+            //точки........
+            Container(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: points(),
+              ),
+            ),
+            // секция с картами деталей учетной записи
+            abonent.users.length > 0 ?
+              ListView(
+                shrinkWrap: true,
+                physics: const ScrollPhysics(
+                  parent: BouncingScrollPhysics()
+                ),
+                padding: const EdgeInsets.only(left: 30.0, right: 30.0),
+                children: [
+                  // виджет отображения долга
+                  Container(
+                    child: Column(
+                      children: [
+                        abonent.users[currentUserIndex].debt > 0 ? Card(
+                          color: Colors.red,
+                          child: ListTile(
+                            title: Text(
+                              'За вашей учетной записью числится задолженность ${abonent.users[currentUserIndex].debt} р.',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                                color: Colors.white
+                              ),
+                            ),
+                          ),
+                        ) : Container()
+                      ],
+                    ),
+                  ),
+                  // текст - Детали учетной записи
+                  Container(
+                    padding: const EdgeInsets.only(
+                      left: 40.0,
+                      top: 10.0,
+                      bottom: 10.0
+                    ),
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      'Детали учетной записи',
+                      style: const TextStyle(
+                        fontSize: 20,
+                        color: Color.fromRGBO(72, 95, 113, 1.0),
+                        fontWeight: FontWeight.bold
+                      ),
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.only(top: 5.0),
+                    child: Card(
+                      child: Container(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            ListTile(
+                              leading: const Icon(
+                                Icons.album,
+                                size: 40,
+                              ),
+                              title: const Text('Тарифный план'),
+                              subtitle: Text('${abonent.users[currentUserIndex].tarifName} (${abonent.users[currentUserIndex].tarifSum} р.)'),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.only(top: 5.0),
+                    child: Card(
+                      child: Container(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            ListTile(
+                              leading: const Icon(
+                                Icons.album,
+                                size: 40,
+                              ),
+                              title: Text('IP адрес'),
+                              subtitle: Text(abonent.users[currentUserIndex].ip),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.only(top: 5.0),
+                    child: Card(
+                      child: Container(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            ListTile(
+                              leading: const Icon(
+                                Icons.album,
+                                size: 40,
+                              ),
+                              title: Text('Адрес подключения'),
+                              subtitle: Text(
+                                '${abonent.users[currentUserIndex].street}, д. ${abonent.users[currentUserIndex].house}, кв. ${abonent.users[currentUserIndex].flat}'
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ]
+              ) : Center(
+                child: RefreshProgressIndicator(),
+              )
           ],
         ));
   }
@@ -171,7 +298,7 @@ class _MainScreenState extends State<MainScreen> {
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
                               shadows: [
-                                Shadow(
+                                const Shadow(
                                     blurRadius: 1.0,
                                     color: Colors.black,
                                     offset: Offset(1.0, 1.0))
@@ -189,13 +316,13 @@ class _MainScreenState extends State<MainScreen> {
                             style: ButtonStyle(
                                 backgroundColor:
                                     MaterialStateProperty.all(Colors.green)),
-                            icon: Icon(
+                            icon: const Icon(
                               Icons.payments_outlined,
                               color: Colors.white,
                             ),
                             label: Text(
                               'Пополнить онлайн',
-                              style: TextStyle(color: Colors.white),
+                              style: const TextStyle(color: Colors.white),
                             )))
                   ],
                 ),
@@ -209,7 +336,7 @@ class _MainScreenState extends State<MainScreen> {
                         padding: const EdgeInsets.only(bottom: 20),
                         child: Text(
                           'Баланс',
-                          style: TextStyle(
+                          style: const TextStyle(
                               color: Color.fromRGBO(144, 198, 124, 1),
                               fontSize: 20),
                         ),
@@ -225,7 +352,7 @@ class _MainScreenState extends State<MainScreen> {
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
                             shadows: [
-                              Shadow(
+                              const Shadow(
                                 blurRadius: 1.0,
                                 color: Colors.black,
                                 offset: Offset(1.0, 1.0),
@@ -299,7 +426,18 @@ class _MainScreenState extends State<MainScreen> {
                     Icons.settings_suggest_outlined,
                     color: Colors.white,
                     size: 35.0,
-                  )
+                  ),
+                  IconButton(
+                    icon: Icon(
+                      Icons.refresh_outlined,
+                      color: Colors.white,
+                      size: 35.0
+                    ),
+                    onPressed: (){
+                      abonent.getDataForGuidsFromServer();
+                      setState(() {});
+                    },
+                  ),
                 ],
               ),
             )
@@ -309,72 +447,22 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
-  Widget carouselUser2(int index) {
-    return GestureDetector(
-      child: Container(
-        padding: EdgeInsets.only(left: 15, right: 15, top: 10, bottom: 10),
-        decoration: BoxDecoration(
-            border:
-                Border.all(width: 1.0, color: Color.fromRGBO(52, 79, 100, 1.0)),
-            borderRadius: BorderRadius.circular(18.0),
-            boxShadow: [
-              BoxShadow(
-                  color: Color.fromRGBO(184, 202, 220, 1.0),
-                  blurRadius: 5.0,
-                  spreadRadius: 1.0,
-                  offset: Offset(1.0, 2.0))
-            ],
-            gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                stops: [
-                  0.2,
-                  1.0
-                ],
-                colors: [
-                  Color.fromRGBO(68, 98, 124, 1),
-                  Color.fromRGBO(10, 33, 51, 1)
-                ])),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Expanded(
-                flex: 3,
-                child: Row(
-                  children: [
-                    Expanded(
-                      flex: 2,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                              padding: EdgeInsets.all(5.0),
-                              child: Text(
-                                'ID: ${abonent.users[index].id}',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.bold,
-                                    shadows: [
-                                      Shadow(
-                                          blurRadius: 1.0,
-                                          color: Colors.black,
-                                          offset: Offset(1.0, 1.0))
-                                    ]),
-                              ))
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      flex: 3,
-                      child: Column(),
-                    )
-                  ],
-                ))
-          ],
-        ),
-      ),
-    );
+  List<Widget> points() {
+    List<Widget> _points = [];
+    for (var i = 0; i < abonent.guids.length; i++) {
+      _points.add(
+        Container(
+          width: 8.0,
+          height: 8.0,
+          margin: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: currentUserIndex == i ? Color.fromRGBO(116, 162, 177, 1.0) : Color.fromRGBO(198, 209, 216, 1.0)
+          ),
+        )
+      );
+    }
+    return _points;
   }
+
 }

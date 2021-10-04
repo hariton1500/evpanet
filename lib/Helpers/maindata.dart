@@ -11,9 +11,15 @@ class User {
   late int daysRemain;
   late String login;
   late String password;
+  late double debt;
+  late String tarifName;
+  late int tarifSum;
+  late String ip;
+  late String street, house, flat;
 }
 
 class Abonent {
+  
   List<String> guids = [];
   String lastApiMessage = '';
   bool lastApiErrorStatus = false;
@@ -23,6 +29,7 @@ class Abonent {
   Future<void> loadSavedData() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     guids = preferences.getStringList('guids') ?? [];
+    users = List.filled(guids.length, User());
     device = preferences.getString('deviceId') ?? '';
     print('[loadSavedData] guids: $guids');
   }
@@ -33,7 +40,7 @@ class Abonent {
     print('[saveData] guids: $guids');
   }
 
-  void fillAbonentWith(Map user) {
+  void fillAbonentWith(Map user, String guid) {
     print('[fillAbonentWith] $user');
     User _user = User();
     _user.id = int.parse(user['id']);
@@ -43,8 +50,16 @@ class Abonent {
     _user.password = user['clear_pass'];
     _user.daysRemain = (int.parse(user['packet_secs']) / 60 / 60 / 24).round();
     _user.endDate = user['endDate'] ?? '00.00.0000 00:00';
-    users.add(_user);
-    print('[getDataForGuidsFromServer] Loaded ${users.length} users');
+    _user.debt = double.parse(user['debt']);
+    _user.tarifName = user['tarif_name'];
+    _user.tarifSum = int.parse(user['tarif_sum'].toString());
+    _user.ip = user['real_ip'];
+    _user.street = user['street'];
+    _user.house = user['house'];
+    _user.flat = user['flat'];
+    int index = guids.indexOf(guid);
+    users[index] = _user;
+    print('[getDataForGuidsFromServer] Loaded ${index + 1} of ${users.length} users');
   }
 
   Future<void> authorize(
@@ -115,7 +130,8 @@ class Abonent {
             if (Map.from(answer).containsKey('message')) {
               lastApiMessage =
                   Map.from(answer)['message']['userinfo'].toString();
-              fillAbonentWith(Map.from(answer)['message']['userinfo']);
+              //users.clear();
+              fillAbonentWith(Map.from(answer)['message']['userinfo'], guid);
             }
             if (Map.from(answer).containsKey('error'))
               lastApiErrorStatus = Map.from(answer)['error'];
