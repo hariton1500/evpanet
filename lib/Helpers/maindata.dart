@@ -11,11 +11,30 @@ class User {
   late int daysRemain;
   late String login;
   late String password;
-  late double debt;
-  late String tarifName;
-  late int tarifSum;
+  double debt = 0.0;
+  String tarifName = '';
+  int tarifSum = 0;
   late String ip;
   late String street, house, flat;
+
+  void load(Map user) {
+    id = int.parse(user['id']);
+    name = user['name'];
+    balance = double.parse(user['extra_account']);
+    login = user['login'];
+    password = user['clear_pass'];
+    daysRemain = (int.parse(user['packet_secs']) / 60 / 60 / 24).round();
+    endDate = user['endDate'] ?? '00.00.0000 00:00';
+    print(user['debt']);
+    debt = double.parse(user['debt'] ?? 0.0);
+    tarifName = user['tarif_name'];
+    tarifSum = int.parse(user['tarif_sum'].toString());
+    ip = user['real_ip'];
+    street = user['street'];
+    house = user['house'];
+    flat = user['flat'];
+
+  }
 }
 
 class Abonent {
@@ -29,7 +48,7 @@ class Abonent {
   Future<void> loadSavedData() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     guids = preferences.getStringList('guids') ?? [];
-    users = List.filled(guids.length, User());
+    //users = List.filled(guids.length, User());
     device = preferences.getString('deviceId') ?? '';
     print('[loadSavedData] guids: $guids');
   }
@@ -37,29 +56,17 @@ class Abonent {
   Future<void> saveData() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     preferences.setStringList('guids', guids);
+    preferences.setString('users', jsonEncode(users));
     print('[saveData] guids: $guids');
+    print('[saveData] users: ${jsonEncode(users.first)}');
   }
 
   void fillAbonentWith(Map user, String guid) {
     print('[fillAbonentWith] $user');
     User _user = User();
-    _user.id = int.parse(user['id']);
-    _user.name = user['name'];
-    _user.balance = double.parse(user['extra_account']);
-    _user.login = user['login'];
-    _user.password = user['clear_pass'];
-    _user.daysRemain = (int.parse(user['packet_secs']) / 60 / 60 / 24).round();
-    _user.endDate = user['endDate'] ?? '00.00.0000 00:00';
-    _user.debt = double.parse(user['debt']);
-    _user.tarifName = user['tarif_name'];
-    _user.tarifSum = int.parse(user['tarif_sum'].toString());
-    _user.ip = user['real_ip'];
-    _user.street = user['street'];
-    _user.house = user['house'];
-    _user.flat = user['flat'];
-    int index = guids.indexOf(guid);
-    users[index] = _user;
-    print('[getDataForGuidsFromServer] Loaded ${index + 1} of ${users.length} users');
+    _user.load(user);
+    users.add(_user);
+    print('[getDataForGuidsFromServer] Loaded ${users.indexOf(_user) + 1} of ${users.length} users');
   }
 
   Future<void> authorize(

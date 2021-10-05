@@ -35,7 +35,10 @@ class _MainScreenState extends State<MainScreen> {
     Timer.periodic(Duration(seconds: 1), (timer) {
       setState(() {});
       print('[start] (${timer.tick}) refreshing...');
-      if (abonent.users.length == abonent.guids.length) timer.cancel();
+      if (abonent.users.length == abonent.guids.length) {
+        timer.cancel();
+        abonent.saveData();
+      }
     });
   }
 
