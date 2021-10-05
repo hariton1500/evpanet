@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:evpanet/Helpers/maindata.dart';
+import 'package:evpanet/Screens/StartScreen.dart';
 import 'package:evpanet/Screens/webscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -119,18 +120,17 @@ class _MainScreenState extends State<MainScreen> {
                               int pageViewIndex) =>
                           carouselUser(itemIndex),
                       options: CarouselOptions(
-                        autoPlay: false,
-                        enlargeCenterPage: true,
-                        enableInfiniteScroll: true,
-                        aspectRatio: 16 / 10,
-                        viewportFraction: 0.85,
-                        onPageChanged: (index, reason) {
-                          setState(() {
-                            currentUserIndex = index;
-                            //print('[onPageChanged] $index');
-                          });
-                        }
-                      )),
+                          autoPlay: false,
+                          enlargeCenterPage: true,
+                          enableInfiniteScroll: true,
+                          aspectRatio: 16 / 10,
+                          viewportFraction: 0.85,
+                          onPageChanged: (index, reason) {
+                            setState(() {
+                              currentUserIndex = index;
+                              //print('[onPageChanged] $index');
+                            });
+                          })),
             ),
             //точки........
             Container(
@@ -140,117 +140,114 @@ class _MainScreenState extends State<MainScreen> {
               ),
             ),
             // секция с картами деталей учетной записи
-            abonent.users.length > 0 ?
-              ListView(
-                shrinkWrap: true,
-                physics: const ScrollPhysics(
-                  parent: BouncingScrollPhysics()
-                ),
-                padding: const EdgeInsets.only(left: 30.0, right: 30.0),
-                children: [
-                  // виджет отображения долга
-                  Container(
-                    child: Column(
-                      children: [
-                        abonent.users[currentUserIndex].debt > 0 ? Card(
-                          color: Colors.red,
-                          child: ListTile(
-                            title: Text(
-                              'За вашей учетной записью числится задолженность ${abonent.users[currentUserIndex].debt} р.',
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                                color: Colors.white
+            abonent.users.length > 0
+                ? ListView(
+                    shrinkWrap: true,
+                    physics:
+                        const ScrollPhysics(parent: BouncingScrollPhysics()),
+                    padding: const EdgeInsets.only(left: 30.0, right: 30.0),
+                    children: [
+                        // виджет отображения долга
+                        Container(
+                          child: Column(
+                            children: [
+                              abonent.users[currentUserIndex].debt > 0
+                                  ? Card(
+                                      color: Colors.red,
+                                      child: ListTile(
+                                        title: Text(
+                                          'За вашей учетной записью числится задолженность ${abonent.users[currentUserIndex].debt} р.',
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16,
+                                              color: Colors.white),
+                                        ),
+                                      ),
+                                    )
+                                  : Container()
+                            ],
+                          ),
+                        ),
+                        // текст - Детали учетной записи
+                        Container(
+                          padding: const EdgeInsets.only(
+                              left: 40.0, top: 10.0, bottom: 10.0),
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'Детали учетной записи',
+                            style: const TextStyle(
+                                fontSize: 20,
+                                color: Color.fromRGBO(72, 95, 113, 1.0),
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.only(top: 5.0),
+                          child: Card(
+                            child: Container(
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  ListTile(
+                                    leading: const Icon(
+                                      Icons.album,
+                                      size: 40,
+                                    ),
+                                    title: const Text('Тарифный план'),
+                                    subtitle: Text(
+                                        '${abonent.users[currentUserIndex].tarifName} (${abonent.users[currentUserIndex].tarifSum} р.)'),
+                                  )
+                                ],
                               ),
                             ),
                           ),
-                        ) : Container()
-                      ],
-                    ),
-                  ),
-                  // текст - Детали учетной записи
-                  Container(
-                    padding: const EdgeInsets.only(
-                      left: 40.0,
-                      top: 10.0,
-                      bottom: 10.0
-                    ),
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'Детали учетной записи',
-                      style: const TextStyle(
-                        fontSize: 20,
-                        color: Color.fromRGBO(72, 95, 113, 1.0),
-                        fontWeight: FontWeight.bold
-                      ),
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.only(top: 5.0),
-                    child: Card(
-                      child: Container(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            ListTile(
-                              leading: const Icon(
-                                Icons.album,
-                                size: 40,
-                              ),
-                              title: const Text('Тарифный план'),
-                              subtitle: Text('${abonent.users[currentUserIndex].tarifName} (${abonent.users[currentUserIndex].tarifSum} р.)'),
-                            )
-                          ],
                         ),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.only(top: 5.0),
-                    child: Card(
-                      child: Container(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            ListTile(
-                              leading: const Icon(
-                                Icons.album,
-                                size: 40,
+                        Container(
+                          padding: const EdgeInsets.only(top: 5.0),
+                          child: Card(
+                            child: Container(
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  ListTile(
+                                    leading: const Icon(
+                                      Icons.album,
+                                      size: 40,
+                                    ),
+                                    title: Text('IP адрес'),
+                                    subtitle: Text(
+                                        abonent.users[currentUserIndex].ip),
+                                  )
+                                ],
                               ),
-                              title: Text('IP адрес'),
-                              subtitle: Text(abonent.users[currentUserIndex].ip),
-                            )
-                          ],
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.only(top: 5.0),
-                    child: Card(
-                      child: Container(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            ListTile(
-                              leading: const Icon(
-                                Icons.album,
-                                size: 40,
+                        Container(
+                          padding: const EdgeInsets.only(top: 5.0),
+                          child: Card(
+                            child: Container(
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  ListTile(
+                                    leading: const Icon(
+                                      Icons.album,
+                                      size: 40,
+                                    ),
+                                    title: Text('Адрес подключения'),
+                                    subtitle: Text(
+                                        '${abonent.users[currentUserIndex].street}, д. ${abonent.users[currentUserIndex].house}, кв. ${abonent.users[currentUserIndex].flat}'),
+                                  )
+                                ],
                               ),
-                              title: Text('Адрес подключения'),
-                              subtitle: Text(
-                                '${abonent.users[currentUserIndex].street}, д. ${abonent.users[currentUserIndex].house}, кв. ${abonent.users[currentUserIndex].flat}'
-                              ),
-                            )
-                          ],
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                  ),
-                ]
-              ) : Center(
-                child: RefreshProgressIndicator(),
-              )
+                      ])
+                : Center(
+                    child: RefreshProgressIndicator(),
+                  )
           ],
         ));
   }
@@ -373,17 +370,15 @@ class _MainScreenState extends State<MainScreen> {
                 abonent.users[index].name,
                 textAlign: TextAlign.right,
                 style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Color.fromRGBO(166, 187, 204, 1),
-                  shadows: [
-                    const Shadow(
-                      blurRadius: 1.0,
-                      color: Colors.black,
-                      offset: Offset(1.0, 1.0)
-                    )
-                  ]
-                ),
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromRGBO(166, 187, 204, 1),
+                    shadows: [
+                      const Shadow(
+                          blurRadius: 1.0,
+                          color: Colors.black,
+                          offset: Offset(1.0, 1.0))
+                    ]),
               ),
             ),
             Container(
@@ -397,47 +392,46 @@ class _MainScreenState extends State<MainScreen> {
                       const Text(
                         'Окончание действия пакета',
                         style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.white,
-                          shadows: [
-                            const Shadow(
-                              blurRadius: 1.0,
-                              color: Colors.black,
-                              offset: Offset(1.0, 1.0)
-                            )
-                          ]
-                        ),
+                            fontSize: 12,
+                            color: Colors.white,
+                            shadows: [
+                              const Shadow(
+                                  blurRadius: 1.0,
+                                  color: Colors.black,
+                                  offset: Offset(1.0, 1.0))
+                            ]),
                       ),
                       Text(
                         '${abonent.users[index].endDate} (${abonent.users[index].daysRemain} дн.)',
                         style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.blue,
-                          shadows: [
-                            const Shadow(
-                            blurRadius: 1.0,
-                            color: Colors.black,
-                            offset: const Offset(1.0, 1.0)
-                            )
-                          ]
-                        ),
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blue,
+                            shadows: [
+                              const Shadow(
+                                  blurRadius: 1.0,
+                                  color: Colors.black,
+                                  offset: const Offset(1.0, 1.0))
+                            ]),
                       )
                     ],
                   ),
-                  const Icon(
-                    Icons.settings_suggest_outlined,
-                    color: Colors.white,
-                    size: 35.0,
-                  ),
                   IconButton(
-                    icon: Icon(
-                      Icons.refresh_outlined,
-                      color: Colors.white,
-                      size: 35.0
-                    ),
-                    onPressed: (){
-                      abonent.getDataForGuidsFromServer();
+                      onPressed: () async {
+                        await abonent.clearAuthorize();
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(
+                            builder: (BuildContext context) => StartScreen()));
+                      },
+                      icon: const Icon(
+                        Icons.settings_suggest_outlined,
+                        color: Colors.white,
+                        size: 35.0,
+                      )),
+                  IconButton(
+                    icon: const Icon(Icons.refresh_outlined,
+                        color: Colors.white, size: 35.0),
+                    onPressed: () async {
+                      await abonent.getDataForGuidsFromServer();
                       setState(() {});
                     },
                   ),
@@ -453,19 +447,17 @@ class _MainScreenState extends State<MainScreen> {
   List<Widget> points() {
     List<Widget> _points = [];
     for (var i = 0; i < abonent.guids.length; i++) {
-      _points.add(
-        Container(
-          width: 8.0,
-          height: 8.0,
-          margin: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
-          decoration: BoxDecoration(
+      _points.add(Container(
+        width: 8.0,
+        height: 8.0,
+        margin: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
+        decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: currentUserIndex == i ? Color.fromRGBO(116, 162, 177, 1.0) : Color.fromRGBO(198, 209, 216, 1.0)
-          ),
-        )
-      );
+            color: currentUserIndex == i
+                ? Color.fromRGBO(116, 162, 177, 1.0)
+                : Color.fromRGBO(198, 209, 216, 1.0)),
+      ));
     }
     return _points;
   }
-
 }

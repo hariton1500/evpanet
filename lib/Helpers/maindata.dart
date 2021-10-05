@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class User {
+  late String guid;
   late int id;
   late String name;
   late double balance;
@@ -17,7 +18,8 @@ class User {
   late String ip;
   late String street, house, flat;
 
-  void load(Map user) {
+  void load(Map user, String _guid) {
+    guid = _guid;
     id = int.parse(user['id']);
     name = user['name'];
     balance = double.parse(user['extra_account']);
@@ -33,40 +35,60 @@ class User {
     street = user['street'];
     house = user['house'];
     flat = user['flat'];
-
   }
 }
 
 class Abonent {
-  
   List<String> guids = [];
   String lastApiMessage = '';
   bool lastApiErrorStatus = false;
   String device = '';
   List<User> users = [];
 
+  Future<void> clearAuthorize() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    preferences.setStringList('guids', []);
+  }
+
   Future<void> loadSavedData() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     guids = preferences.getStringList('guids') ?? [];
-    //users = List.filled(guids.length, User());
     device = preferences.getString('deviceId') ?? '';
     print('[loadSavedData] guids: $guids');
+    guids.forEach((guid) {
+      if (preferences.containsKey(guid))
+        fillAbonentWith(jsonDecode(preferences.getString(guid) ?? ''), guid);
+    });
   }
 
   Future<void> saveData() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     preferences.setStringList('guids', guids);
-    preferences.setString('users', jsonEncode(users));
+    //preferences.setString('users', jsonEncode(users));
     print('[saveData] guids: $guids');
-    print('[saveData] users: ${jsonEncode(users.first)}');
+    //print('[saveData] users: ${jsonEncode(users.first)}');
+  }
+
+  Future<void> saveUser(Map user, String guid) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    preferences.setString(guid, jsonEncode(user));
   }
 
   void fillAbonentWith(Map user, String guid) {
     print('[fillAbonentWith] $user');
     User _user = User();
-    _user.load(user);
-    users.add(_user);
-    print('[getDataForGuidsFromServer] Loaded ${users.indexOf(_user) + 1} of ${users.length} users');
+    _user.load(user, guid);
+    if (users.any((user) => user.guid == guid)) {
+      print('[fillAbonentWith] users contains guid: $guid');
+      int index = users.indexWhere((user) => user.guid == guid);
+      users[index] = _user;
+      print('[fillAbonentWith] users[$index] = ${_user.guid}');
+    } else {
+      print('[fillAbonentWith] users.add guid: $guid');
+      users.add(_user);
+    }
+    print(
+        '[getDataForGuidsFromServer] Loaded ${users.indexOf(_user) + 1} of ${users.length} users');
   }
 
   Future<void> authorize(
@@ -139,6 +161,7 @@ class Abonent {
                   Map.from(answer)['message']['userinfo'].toString();
               //users.clear();
               fillAbonentWith(Map.from(answer)['message']['userinfo'], guid);
+              saveUser(Map.from(answer)['message']['userinfo'], guid);
             }
             if (Map.from(answer).containsKey('error'))
               lastApiErrorStatus = Map.from(answer)['error'];
