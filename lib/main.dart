@@ -22,7 +22,9 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  print('[main] Firebase initialized');
   FirebaseMessaging.instance.getToken().then((token) async {
+    print('[getToken] token = $token');
     SharedPreferences preferences = await SharedPreferences.getInstance();
     preferences.setString('deviceId', token!);
   });
