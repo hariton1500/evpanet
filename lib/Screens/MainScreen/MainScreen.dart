@@ -21,7 +21,7 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   Abonent abonent = Abonent();
   int currentUserIndex = 0;
-  bool isStarting = true;
+  bool isStarting = true, isShowSetup = false;
 
   @override
   void initState() {
@@ -116,357 +116,367 @@ class _MainScreenState extends State<MainScreen> {
             ],
           ),
         ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              Container(
-                child: isStarting //abonent.users.length == 0
-                    ? Center(
+        body: RefreshIndicator(
+          onRefresh: () async {
+            start();
+          },
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Container(
+                  child: isStarting //abonent.users.length == 0
+                      ? Center(
+                          child: RefreshProgressIndicator(),
+                        )
+                      : CarouselSlider.builder(
+                          itemCount: abonent.users.length,
+                          itemBuilder: (BuildContext context, int itemIndex,
+                                  int pageViewIndex) =>
+                              carouselUser(itemIndex),
+                          options: CarouselOptions(
+                              initialPage: currentUserIndex,
+                              autoPlay: false,
+                              enlargeCenterPage: true,
+                              enableInfiniteScroll: true,
+                              aspectRatio: 16 / 10,
+                              viewportFraction: 0.85,
+                              onPageChanged: (index, reason) {
+                                setState(() {
+                                  currentUserIndex = index;
+                                  //print('[onPageChanged] $index');
+                                });
+                              })),
+                ),
+                isShowSetup ? setup() : Container(),
+                //точки........
+                Container(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: points(),
+                  ),
+                ),
+                // секция с картами деталей учетной записи
+                abonent.users.length > 0
+                    ? ListView(
+                        shrinkWrap: true,
+                        physics: const ScrollPhysics(
+                            parent: BouncingScrollPhysics()),
+                        padding: const EdgeInsets.only(left: 30.0, right: 30.0),
+                        children: [
+                            // виджет отображения долга
+                            Container(
+                              child: Column(
+                                children: [
+                                  abonent.users[currentUserIndex].debt > 0
+                                      ? Card(
+                                          color: Colors.red,
+                                          child: ListTile(
+                                            title: Text(
+                                              'За вашей учетной записью числится задолженность ${abonent.users[currentUserIndex].debt} р.',
+                                              style: const TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 16,
+                                                  color: Colors.white),
+                                            ),
+                                          ),
+                                        )
+                                      : Container()
+                                ],
+                              ),
+                            ),
+                            // текст - Детали учетной записи
+                            Container(
+                              padding: const EdgeInsets.only(
+                                  left: 40.0, top: 10.0, bottom: 10.0),
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                'Детали учетной записи',
+                                style: const TextStyle(
+                                    fontSize: 20,
+                                    color: Color.fromRGBO(72, 95, 113, 1.0),
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.only(top: 5.0),
+                              child: Card(
+                                child: Container(
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      ListTile(
+                                        leading: const Icon(
+                                          Icons.album,
+                                          size: 40,
+                                        ),
+                                        title: const Text('Тарифный план'),
+                                        subtitle: Text(
+                                            '${abonent.users[currentUserIndex].tarifName} (${abonent.users[currentUserIndex].tarifSum} р.)'),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.only(top: 5.0),
+                              child: Card(
+                                child: Container(
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      ListTile(
+                                        leading: const Icon(
+                                          Icons.album,
+                                          size: 40,
+                                        ),
+                                        title: Text('IP адрес'),
+                                        subtitle: Text(
+                                            abonent.users[currentUserIndex].ip),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.only(top: 5.0),
+                              child: Card(
+                                child: Container(
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      ListTile(
+                                        leading: const Icon(
+                                          Icons.album,
+                                          size: 40,
+                                        ),
+                                        title: Text('Адрес подключения'),
+                                        subtitle: Text(
+                                            '${abonent.users[currentUserIndex].street}, д. ${abonent.users[currentUserIndex].house}, кв. ${abonent.users[currentUserIndex].flat}'),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ])
+                    : Center(
                         child: RefreshProgressIndicator(),
                       )
-                    : CarouselSlider.builder(
-                        itemCount: abonent.users.length,
-                        itemBuilder: (BuildContext context, int itemIndex,
-                                int pageViewIndex) =>
-                            carouselUser(itemIndex),
-                        options: CarouselOptions(
-                            initialPage: currentUserIndex,
-                            autoPlay: false,
-                            enlargeCenterPage: true,
-                            enableInfiniteScroll: true,
-                            aspectRatio: 16 / 10,
-                            viewportFraction: 0.85,
-                            onPageChanged: (index, reason) {
-                              setState(() {
-                                currentUserIndex = index;
-                                //print('[onPageChanged] $index');
-                              });
-                            })),
-              ),
-              //точки........
-              Container(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: points(),
-                ),
-              ),
-              // секция с картами деталей учетной записи
-              abonent.users.length > 0
-                  ? ListView(
-                      shrinkWrap: true,
-                      physics:
-                          const ScrollPhysics(parent: BouncingScrollPhysics()),
-                      padding: const EdgeInsets.only(left: 30.0, right: 30.0),
-                      children: [
-                          // виджет отображения долга
-                          Container(
-                            child: Column(
-                              children: [
-                                abonent.users[currentUserIndex].debt > 0
-                                    ? Card(
-                                        color: Colors.red,
-                                        child: ListTile(
-                                          title: Text(
-                                            'За вашей учетной записью числится задолженность ${abonent.users[currentUserIndex].debt} р.',
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 16,
-                                                color: Colors.white),
-                                          ),
-                                        ),
-                                      )
-                                    : Container()
-                              ],
-                            ),
-                          ),
-                          // текст - Детали учетной записи
-                          Container(
-                            padding: const EdgeInsets.only(
-                                left: 40.0, top: 10.0, bottom: 10.0),
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              'Детали учетной записи',
-                              style: const TextStyle(
-                                  fontSize: 20,
-                                  color: Color.fromRGBO(72, 95, 113, 1.0),
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.only(top: 5.0),
-                            child: Card(
-                              child: Container(
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    ListTile(
-                                      leading: const Icon(
-                                        Icons.album,
-                                        size: 40,
-                                      ),
-                                      title: const Text('Тарифный план'),
-                                      subtitle: Text(
-                                          '${abonent.users[currentUserIndex].tarifName} (${abonent.users[currentUserIndex].tarifSum} р.)'),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.only(top: 5.0),
-                            child: Card(
-                              child: Container(
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    ListTile(
-                                      leading: const Icon(
-                                        Icons.album,
-                                        size: 40,
-                                      ),
-                                      title: Text('IP адрес'),
-                                      subtitle: Text(
-                                          abonent.users[currentUserIndex].ip),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.only(top: 5.0),
-                            child: Card(
-                              child: Container(
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    ListTile(
-                                      leading: const Icon(
-                                        Icons.album,
-                                        size: 40,
-                                      ),
-                                      title: Text('Адрес подключения'),
-                                      subtitle: Text(
-                                          '${abonent.users[currentUserIndex].street}, д. ${abonent.users[currentUserIndex].house}, кв. ${abonent.users[currentUserIndex].flat}'),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ])
-                  : Center(
-                      child: RefreshProgressIndicator(),
-                    )
-            ],
+              ],
+            ),
           ),
         ));
   }
 
   Widget carouselUser(int index) {
-    return GestureDetector(
-      child: Container(
-        padding: EdgeInsets.only(left: 15, right: 15, top: 10, bottom: 10),
-        decoration: BoxDecoration(
-            border:
-                Border.all(width: 1.0, color: Color.fromRGBO(52, 79, 100, 1.0)),
-            borderRadius: BorderRadius.circular(18.0),
-            boxShadow: [
-              BoxShadow(
-                  color: Color.fromRGBO(184, 202, 220, 1.0),
-                  blurRadius: 5.0,
-                  spreadRadius: 1.0,
-                  offset: Offset(1.0, 2.0))
-            ],
-            gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                stops: [
-                  0.2,
-                  1.0
-                ],
-                colors: [
-                  Color.fromRGBO(68, 98, 124, 1),
-                  Color.fromRGBO(10, 33, 51, 1)
-                ])),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                        padding: EdgeInsets.all(5.0),
-                        child: Text(
-                          'ID: ${abonent.users[index].id}',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              shadows: [
-                                const Shadow(
-                                    blurRadius: 1.0,
-                                    color: Colors.black,
-                                    offset: Offset(1.0, 1.0))
-                              ]),
-                        )),
-                    Container(
-                        child: TextButton.icon(
-                            onPressed: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) => WebScreen(
-                                        url:
-                                            'https://my.evpanet.com/?login=${abonent.users[index].login}&password=${abonent.users[index].password}',
-                                      )));
-                            },
-                            style: ButtonStyle(
-                                backgroundColor:
-                                    MaterialStateProperty.all<Color>(
-                                        Colors.green),
-                                elevation: MaterialStateProperty.all(1.0),
-                                textStyle: MaterialStateProperty.all(
-                                    TextStyle(fontSize: 12))),
-                            icon: const Icon(
-                              Icons.payments_outlined,
-                              color: Colors.white,
-                            ),
-                            label: Column(
-                              children: [
-                                Text(
-                                  'Пополнить',
-                                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                                ),
-                                Text(
-                                  'счет',
-                                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            )))
-                  ],
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 18, right: 18),
-                  child: Column(
-                    //mainAxisAlignment: MainAxisAlignment.end,
-                    //crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 20),
-                        child: Text(
-                          'Баланс',
-                          style: const TextStyle(
-                              color: Color.fromRGBO(144, 198, 124, 1),
-                              fontSize: 18),
-                        ),
-                      ),
-                      Text(
-                        NumberFormat('#,##0.00##', 'ru_RU')
-                                .format(abonent.users[index].balance) +
-                            ' р.',
-                        style: TextStyle(
-                            color: abonent.users[index].balance < 0
-                                ? Color.fromRGBO(255, 81, 105, 1)
-                                : Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            shadows: [
-                              const Shadow(
-                                blurRadius: 1.0,
-                                color: Colors.black,
-                                offset: Offset(1.0, 1.0),
-                              )
-                            ]),
-                      )
-                    ],
-                  ),
-                )
+    return Container(
+      padding: EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
+      decoration: BoxDecoration(
+          border:
+              Border.all(width: 1.0, color: Color.fromRGBO(52, 79, 100, 1.0)),
+          borderRadius: BorderRadius.circular(18.0),
+          boxShadow: [
+            BoxShadow(
+                color: Color.fromRGBO(184, 202, 220, 1.0),
+                blurRadius: 5.0,
+                spreadRadius: 1.0,
+                offset: Offset(1.0, 2.0))
+          ],
+          gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              stops: [
+                0.2,
+                1.0
               ],
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 10),
-              child: Text(
-                abonent.users[index].name,
-                textAlign: TextAlign.right,
-                style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Color.fromRGBO(166, 187, 204, 1),
-                    shadows: [
-                      const Shadow(
-                          blurRadius: 1.0,
-                          color: Colors.black,
-                          offset: Offset(1.0, 1.0))
-                    ]),
-              ),
-            ),
-            Container(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              colors: [
+                Color.fromRGBO(68, 98, 124, 1),
+                Color.fromRGBO(10, 33, 51, 1)
+              ])),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      const Text(
-                        'Окончание действия пакета',
+                  Container(
+                      padding: EdgeInsets.all(5.0),
+                      child: Text(
+                        'ID: ${abonent.users[index].id}',
                         style: TextStyle(
-                            fontSize: 12,
                             color: Colors.white,
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
                             shadows: [
                               const Shadow(
                                   blurRadius: 1.0,
                                   color: Colors.black,
                                   offset: Offset(1.0, 1.0))
                             ]),
-                      ),
-                      Text(
-                        '${abonent.users[index].endDate} (${abonent.users[index].daysRemain} дн.)',
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.blue,
-                            shadows: [
-                              const Shadow(
-                                  blurRadius: 1.0,
-                                  color: Colors.black,
-                                  offset: const Offset(1.0, 1.0))
-                            ]),
-                      )
-                    ],
-                  ),
-                  /*
-                  IconButton(
-                      onPressed: () async {
-                        await abonent.clearAuthorize();
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(
-                            builder: (BuildContext context) => StartScreen()));
-                      },
-                      icon: const Icon(
-                        Icons.settings_suggest_outlined,
-                        color: Colors.white,
-                        size: 35.0,
                       )),
-                  */
-                  IconButton(
-                    icon: const Icon(Icons.refresh_outlined,
-                        color: Colors.white, size: 35.0),
-                    onPressed: () async {
-                      start();
-                      //await abonent.getDataForGuidsFromServer();
-                      //setState(() {});
-                    },
-                  ),
+                  Container(
+                      child: TextButton.icon(
+                          onPressed: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (BuildContext context) => WebScreen(
+                                      url:
+                                          'https://my.evpanet.com/?login=${abonent.users[index].login}&password=${abonent.users[index].password}',
+                                    )));
+                          },
+                          style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                  Colors.green),
+                              elevation: MaterialStateProperty.all(1.0),
+                              textStyle: MaterialStateProperty.all(
+                                  TextStyle(fontSize: 12))),
+                          icon: const Icon(
+                            Icons.payments_outlined,
+                            color: Colors.white,
+                          ),
+                          label: Column(
+                            children: [
+                              Text(
+                                'Пополнить',
+                                style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              Text(
+                                'счет',
+                                style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          )))
                 ],
               ),
-            )
-          ],
-        ),
+              Padding(
+                padding: const EdgeInsets.only(left: 18, right: 18),
+                child: Column(
+                  //mainAxisAlignment: MainAxisAlignment.end,
+                  //crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 20),
+                      child: Text(
+                        'Баланс',
+                        style: const TextStyle(
+                            color: Color.fromRGBO(144, 198, 124, 1),
+                            fontSize: 18),
+                      ),
+                    ),
+                    Text(
+                      NumberFormat('#,##0.00##', 'ru_RU')
+                              .format(abonent.users[index].balance) +
+                          ' р.',
+                      style: TextStyle(
+                          color: abonent.users[index].balance < 0
+                              ? Color.fromRGBO(255, 81, 105, 1)
+                              : Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          shadows: [
+                            const Shadow(
+                              blurRadius: 1.0,
+                              color: Colors.black,
+                              offset: Offset(1.0, 1.0),
+                            )
+                          ]),
+                    )
+                  ],
+                ),
+              )
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 10),
+            child: Text(
+              abonent.users[index].name,
+              textAlign: TextAlign.right,
+              style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Color.fromRGBO(166, 187, 204, 1),
+                  shadows: [
+                    const Shadow(
+                        blurRadius: 1.0,
+                        color: Colors.black,
+                        offset: Offset(1.0, 1.0))
+                  ]),
+            ),
+          ),
+          Container(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    const Text(
+                      'Окончание действия пакета',
+                      style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.white,
+                          shadows: [
+                            const Shadow(
+                                blurRadius: 1.0,
+                                color: Colors.black,
+                                offset: Offset(1.0, 1.0))
+                          ]),
+                    ),
+                    Text(
+                      '${abonent.users[index].endDate} (${abonent.users[index].daysRemain} дн.)',
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blue,
+                          shadows: [
+                            const Shadow(
+                                blurRadius: 1.0,
+                                color: Colors.black,
+                                offset: const Offset(1.0, 1.0))
+                          ]),
+                    )
+                  ],
+                ),
+                /*
+                IconButton(
+                    onPressed: () async {
+                      await abonent.clearAuthorize();
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(
+                          builder: (BuildContext context) => StartScreen()));
+                    },
+                    icon: const Icon(
+                      Icons.settings_suggest_outlined,
+                      color: Colors.white,
+                      size: 35.0,
+                    )),
+                */
+                IconButton(
+                  icon: const Icon(Icons.settings_outlined,
+                      color: Colors.white, size: 35.0),
+                  onPressed: () async {
+                    setState(() {
+                      isShowSetup = true;
+                    });
+                    //start();
+                    //await abonent.getDataForGuidsFromServer();
+                    //setState(() {});
+                  },
+                ),
+              ],
+            ),
+          )
+        ],
       ),
     );
   }
@@ -521,5 +531,7 @@ class _MainScreenState extends State<MainScreen> {
         });
   }
 
-
+  Widget setup() {
+    return Container();
+  }
 }
