@@ -5,6 +5,8 @@ import 'package:evpanet/Screens/webscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
+
+import 'helpers.dart';
 //import 'package:flutter_icons/flutter_icons.dart';
 
 class MainScreen extends StatefulWidget {
@@ -87,13 +89,14 @@ class _MainScreenState extends State<MainScreen> {
                   padding: const EdgeInsets.only(
                       top: 10.0, bottom: 10.0, right: 10.0),
                   child: const Icon(
-                    Icons.support_agent_outlined,
+                    //Icons.support_agent_outlined,
+                    Icons.call_rounded,
                     color: const Color.fromRGBO(72, 95, 113, 1.0),
                     size: 24.0,
                   ),
                 ),
                 onTap: () {
-                  //showModalCallToSupport();
+                  showModalCallToSupport();
                 },
               ),
               GestureDetector(
@@ -107,7 +110,7 @@ class _MainScreenState extends State<MainScreen> {
                   ),
                 ),
                 onTap: () {
-                  //showModalWriteToSupport();
+                  showModalWriteToSupport();
                 },
               )
             ],
@@ -333,9 +336,17 @@ class _MainScreenState extends State<MainScreen> {
                               Icons.payments_outlined,
                               color: Colors.white,
                             ),
-                            label: Text(
-                              'Пополнить',
-                              style: const TextStyle(color: Colors.white),
+                            label: Column(
+                              children: [
+                                Text(
+                                  'Пополнить',
+                                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                  'счет',
+                                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                                ),
+                              ],
                             )))
                   ],
                 ),
@@ -476,4 +487,39 @@ class _MainScreenState extends State<MainScreen> {
     }
     return _points;
   }
+
+  //  Вызов модального окна для совершения звонка
+  showModalCallToSupport() async {
+    return showGeneralDialog(
+        context: context,
+        barrierDismissible: true,
+        barrierLabel:
+            MaterialLocalizations.of(context).modalBarrierDismissLabel,
+        barrierColor: Color(0xff2c4860),
+        transitionDuration: const Duration(milliseconds: 200),
+        pageBuilder: (BuildContext buildContext, Animation animation,
+            Animation secondaryAnimation) {
+          return Dialog(
+              backgroundColor: Colors.transparent, child: CallWindowModal());
+        });
+  }
+
+  // Вызов модального окна с сообщением в ремонты
+  showModalWriteToSupport() async {
+    return showGeneralDialog(
+        context: context,
+        barrierDismissible: true,
+        barrierLabel:
+            MaterialLocalizations.of(context).modalBarrierDismissLabel,
+        barrierColor: Color(0xff2c4860),
+        transitionDuration: const Duration(milliseconds: 200),
+        pageBuilder: (BuildContext buildContext, Animation animation,
+            Animation secondaryAnimation) {
+          return Dialog(
+              backgroundColor: Colors.transparent,
+              child: SupportMessageModal());
+        });
+  }
+
+
 }
