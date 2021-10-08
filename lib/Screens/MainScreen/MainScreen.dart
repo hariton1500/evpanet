@@ -7,6 +7,7 @@ import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 
 import 'helpers.dart';
+import 'setup.dart';
 //import 'package:flutter_icons/flutter_icons.dart';
 
 class MainScreen extends StatefulWidget {
@@ -143,11 +144,17 @@ class _MainScreenState extends State<MainScreen> {
                               onPageChanged: (index, reason) {
                                 setState(() {
                                   currentUserIndex = index;
+                                  isShowSetup = false;
                                   //print('[onPageChanged] $index');
                                 });
                               })),
                 ),
-                isShowSetup ? setup() : Container(),
+                isShowSetup
+                    ? Setup(
+                        user: abonent.users[currentUserIndex],
+                        index: currentUserIndex,
+                      )
+                    : Container(),
                 //точки........
                 Container(
                   child: Row(
@@ -464,9 +471,9 @@ class _MainScreenState extends State<MainScreen> {
                 IconButton(
                   icon: const Icon(Icons.settings_outlined,
                       color: Colors.white, size: 35.0),
-                  onPressed: () async {
+                  onPressed: () {
                     setState(() {
-                      isShowSetup = true;
+                      isShowSetup = !isShowSetup;
                     });
                     //start();
                     //await abonent.getDataForGuidsFromServer();
@@ -529,9 +536,5 @@ class _MainScreenState extends State<MainScreen> {
               backgroundColor: Colors.transparent,
               child: SupportMessageModal());
         });
-  }
-
-  Widget setup() {
-    return Container();
   }
 }

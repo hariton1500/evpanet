@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -17,6 +19,7 @@ class User {
   int tarifSum = 0;
   late String ip;
   late String street, house, flat;
+  late bool auto, parentControl;
 
   void load(Map user, String _guid) {
     guid = _guid;
@@ -35,6 +38,8 @@ class User {
     street = user['street'];
     house = user['house'];
     flat = user['flat'];
+    auto = user['auto_activation'] == '1';
+    parentControl = user['flag_parent_control'] == '1';
   }
 }
 
@@ -91,6 +96,7 @@ class Abonent {
         '[getDataForGuidsFromServer] Loaded ${users.indexOf(_user) + 1} of ${users.length} users');
   }
 
+  //Network API methods
   Future<void> authorize(
       {required String number, required int uid, required String token}) async {
     http.Response _response;
@@ -186,5 +192,64 @@ class Abonent {
         lastApiMessage = 'Ошибка на стороне сервера. Повторите попытку позже.';
       }
     });
+  }
+
+  Future<void> changeSwitchParameters(
+      {required String type, required String guid}) async {
+    http.Response _response;
+    Map<String, String> _headers = {'token': device};
+    Map _body = {'guid': guid};
+    String url = type == 'auto'
+        ? 'https://evpanet.com/api/apk/user/auto_activation/'
+        : 'https://evpanet.com/api/apk/user/parent_control/';
+    print(
+        '[changeSwitchParameters] Start change $type parameter on server for uid: []');
+    try {
+      print('[put] ${Uri.parse(url)}, headers: $_headers, body: $_body');
+      _response = await http
+          .put(Uri.parse(url), headers: _headers, body: _body)
+          .timeout(Duration(seconds: 3));
+      if (_response.statusCode == 201) {
+        var answer = jsonDecode(_response.body);
+        print(answer);
+        if (answer.runtimeType
+            .toString()
+            .startsWith('_InternalLinkedHashMap')) {
+          if (Map.from(answer).containsKey('message')) {
+            lastApiMessage = Map.from(answer)['message']['value'].toString();
+            if (type == 'auto')
+              this.users.firstWhere((user) => user.guid == guid).auto =
+                  !this.users.firstWhere((user) => user.guid == guid).auto;
+            if (type == 'parent')
+              this.users.firstWhere((user) => user.guid == guid).parentControl =
+                  !this
+                      .users
+                      .firstWhere((user) => user.guid == guid)
+                      .parentControl;
+            //saveUser(Map.from(answer)['message']['userinfo'], guid);
+          }
+          if (Map.from(answer).containsKey('error'))
+            lastApiErrorStatus = Map.from(answer)['error'];
+        }
+      } else {
+        var answer = jsonDecode(_response.body);
+        if (answer.runtimeType
+            .toString()
+            .startsWith('_InternalLinkedHashMap')) {
+          if (Map.from(answer).containsKey('message'))
+            lastApiMessage = Map.from(answer)['message'];
+          if (Map.from(answer).containsKey('error'))
+            lastApiErrorStatus = Map.from(answer)['error'];
+        }
+      }
+    } on SocketException catch (error) {
+      lastApiErrorStatus = true;
+      lastApiMessage = error.toString();
+    } on HandshakeException {
+      lastApiErrorStatus = true;
+      lastApiMessage = 'Ошибка на стороне сервера. Повторите попытку позже.';
+    } on TimeoutException catch (error) {
+      Fluttertoast.showToast(msg: 'Отсутствует связь с сервером');
+    }
   }
 }
