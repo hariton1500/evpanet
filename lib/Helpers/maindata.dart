@@ -20,6 +20,7 @@ class User {
   late String ip;
   late String street, house, flat;
   late bool auto, parentControl;
+  late List<dynamic> tarifs = [];
 
   void load(Map user, String _guid) {
     guid = _guid;
@@ -29,7 +30,7 @@ class User {
     login = user['login'];
     password = user['clear_pass'];
     daysRemain = (int.parse(user['packet_secs']) / 60 / 60 / 24).round();
-    endDate = user['endDate'] ?? '00.00.0000 00:00';
+    endDate = user['packet_end'] ?? '00.00.0000 00:00';
     print(user['debt']);
     debt = double.parse(user['debt'] ?? 0.0);
     tarifName = user['tarif_name'];
@@ -40,6 +41,8 @@ class User {
     flat = user['flat'];
     auto = user['auto_activation'] == '1';
     parentControl = user['flag_parent_control'] == '1';
+    //print(user['allowed_tarifs']);
+    tarifs.addAll(user['allowed_tarifs']);
   }
 }
 
@@ -248,7 +251,7 @@ class Abonent {
     } on HandshakeException {
       lastApiErrorStatus = true;
       lastApiMessage = 'Ошибка на стороне сервера. Повторите попытку позже.';
-    } on TimeoutException catch (error) {
+    } on TimeoutException catch (_) {
       Fluttertoast.showToast(msg: 'Отсутствует связь с сервером');
     }
   }
