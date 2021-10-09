@@ -21,6 +21,7 @@ class User {
   late String street, house, flat;
   late bool auto, parentControl;
   late List<dynamic> tarifs = [];
+  late int dayPrice;
 
   void load(Map user, String _guid) {
     guid = _guid;
@@ -43,6 +44,7 @@ class User {
     parentControl = user['flag_parent_control'] == '1';
     //print(user['allowed_tarifs']);
     tarifs.addAll(user['allowed_tarifs']);
+    dayPrice = user['days_price'];
   }
 }
 
@@ -267,6 +269,51 @@ class Abonent {
       print('[patch] ${Uri.parse(url)}, headers: $_headers, body: $_body');
       _response = await http
           .patch(Uri.parse(url), headers: _headers, body: _body)
+          .timeout(Duration(seconds: 3));
+      if (_response.statusCode == 201) {
+        var answer = jsonDecode(_response.body);
+        print(answer);
+        if (answer.runtimeType
+            .toString()
+            .startsWith('_InternalLinkedHashMap')) {
+          if (Map.from(answer).containsKey('message')) {
+            lastApiMessage = Map.from(answer)['message']['tarif_id'].toString();
+          }
+          if (Map.from(answer).containsKey('error'))
+            lastApiErrorStatus = Map.from(answer)['error'];
+        }
+      } else {
+        var answer = jsonDecode(_response.body);
+        if (answer.runtimeType
+            .toString()
+            .startsWith('_InternalLinkedHashMap')) {
+          if (Map.from(answer).containsKey('message'))
+            lastApiMessage = Map.from(answer)['message'];
+          if (Map.from(answer).containsKey('error'))
+            lastApiErrorStatus = Map.from(answer)['error'];
+        }
+      }
+    } on SocketException catch (error) {
+      lastApiErrorStatus = true;
+      lastApiMessage = error.toString();
+    } on HandshakeException {
+      lastApiErrorStatus = true;
+      lastApiMessage = 'Ошибка на стороне сервера. Повторите попытку позже.';
+    } on TimeoutException catch (_) {
+      Fluttertoast.showToast(msg: 'Отсутствует связь с сервером');
+    }
+  }
+
+  Future<void> addDays({required int days, required String guid}) async {
+    http.Response _response;
+    Map<String, String> _headers = {'token': device};
+    Map _body = {'days': days.toString(), 'guid': guid};
+    String url = 'https://evpanet.com/api/apk/user/days/';
+    print('[addDays] Start to add days ($days) to ($guid) on server');
+    try {
+      print('[put] ${Uri.parse(url)}, headers: $_headers, body: $_body');
+      _response = await http
+          .put(Uri.parse(url), headers: _headers, body: _body)
           .timeout(Duration(seconds: 3));
       if (_response.statusCode == 201) {
         var answer = jsonDecode(_response.body);

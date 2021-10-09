@@ -20,6 +20,7 @@ class Setup extends StatefulWidget {
 class _SetupState extends State<Setup> {
   Abonent abonent = Abonent();
   User _user = User();
+  double daysToAdd = 1;
   //late int currentUserIndex;
 
   @override
@@ -83,6 +84,112 @@ class _SetupState extends State<Setup> {
                   fontWeight: FontWeight.bold),
             )),
         tarifsChange(),
+        const Divider(
+          indent: 20.0,
+          endIndent: 20.0,
+          color: const Color(0xff3e6282),
+        ),
+        Container(
+          padding: const EdgeInsets.only(top: 10, left: 16, right: 16),
+          child: Column(
+            children: [
+              Text(
+                'Добавление дней к текущему пакету',
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                    fontSize: 16,
+                    color: const Color.fromRGBO(72, 95, 113, 1.0),
+                    fontWeight: FontWeight.bold),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 16),
+                child: Text(
+                  'Стоимость одного дня - ${_user.dayPrice} руб.',
+                  style: TextStyle(fontSize: 16),
+                ),
+              ),
+              Text(
+                'Текущее количество дней: ${_user.daysRemain}',
+                style: TextStyle(fontSize: 16),
+              ),
+              _user.balance >= _user.dayPrice
+                  ? Column(
+                      children: [
+                        Slider(
+                          value: daysToAdd,
+                          onChanged: (days) => setState(() {
+                            daysToAdd = days.roundToDouble();
+                          }),
+                          min: 1,
+                          max: (_user.balance / _user.dayPrice).floorToDouble(),
+                          divisions: (_user.balance / _user.dayPrice).floor(),
+                          label: daysToAdd.toString(),
+                          activeColor: const Color(0xff3e6282),
+                          inactiveColor: const Color(0xff939faa),
+                        ),
+                        ElevatedButton(
+                            onPressed: () => showDialog(
+                                context: context,
+                                builder: (bc) => AlertDialog(
+                                      content: Text(
+                                          'Добавить ${daysToAdd.toInt()} дн?'),
+                                      actions: [
+                                        TextButton(
+                                            onPressed: () async {
+                                              //print(id);
+                                              await abonent.addDays(
+                                                  days: daysToAdd.round(),
+                                                  guid: _user.guid);
+                                              widget.onSetupChanged();
+                                              Navigator.pop(context);
+                                              setState(() {});
+                                            },
+                                            child: Text('Да')),
+                                        TextButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: Text('Нет'))
+                                      ],
+                                    )),
+                            style: ElevatedButton.styleFrom(
+                                onPrimary: Colors.white,
+                                padding: const EdgeInsets.all(0.0)),
+                            child: Container(
+                              decoration: const BoxDecoration(
+                                  gradient: LinearGradient(colors: [
+                                Color.fromRGBO(68, 98, 124, 1),
+                                Color.fromRGBO(10, 33, 51, 1)
+                              ])),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 64, vertical: 16),
+                              child: Text(
+                                'Добавить ${daysToAdd.round()} дн.',
+                                style: const TextStyle(fontSize: 18),
+                              ),
+                            ))
+                      ],
+                    )
+                  : Card(
+                      color: Colors.cyan,
+                      margin:
+                          EdgeInsets.symmetric(vertical: 10, horizontal: 25),
+                      child: ListTile(
+                        leading: Icon(
+                          Icons.info_outline,
+                          color: Colors.white,
+                        ),
+                        title: Text(
+                          'Недостаточно средств для добавления дней.',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                          ),
+                        ),
+                      ))
+            ],
+          ),
+        )
       ],
     );
   }
