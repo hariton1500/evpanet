@@ -3,10 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class Setup extends StatefulWidget {
-  const Setup({Key? key, required this.user, required this.index})
+  const Setup(
+      {Key? key,
+      required this.user,
+      required this.index,
+      required this.onSetupChanged})
       : super(key: key);
   final User user;
   final int index;
+  final VoidCallback onSetupChanged;
 
   @override
   _SetupState createState() => _SetupState();
@@ -78,31 +83,6 @@ class _SetupState extends State<Setup> {
                   fontWeight: FontWeight.bold),
             )),
         tarifsChange(),
-        /*
-        _user.auto ? Card(
-          color: Colors.cyan,
-          margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-          child: const ListTile(
-            leading: const Icon(
-              Icons.info_outline,
-              color: Colors.white,
-            ),
-            title: const Text(
-              'Чтобы изменить тарифный план, необходимо отключить автоактивацию.',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 18
-              ),
-            ),
-          ),
-        ) :
-        Container(
-          padding: const EdgeInsets.only(top: 10.0, right: 16.0, left: 16.0),
-          child: Column(
-            children: [],
-          ),
-        )
-        */
       ],
     );
   }
@@ -113,57 +93,96 @@ class _SetupState extends State<Setup> {
       print(int.parse(element['sum'].toString()));
       print(_user.balance);
       return int.parse(element['sum'].toString()) < _user.balance;
-      }
-    );
+    });
     print(isCanChangeTarif);
-    if (_user.auto) return Card(
-          color: Colors.cyan,
-          margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-          child: const ListTile(
-            leading: const Icon(
-              Icons.info_outline,
-              color: Colors.white,
-            ),
-            title: const Text(
-              'Чтобы изменить тарифный план, необходимо отключить автоактивацию.',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 18
-              ),
-            ),
+    if (_user.auto)
+      return Card(
+        color: Colors.cyan,
+        margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+        child: const ListTile(
+          leading: const Icon(
+            Icons.info_outline,
+            color: Colors.white,
           ),
-        ); else if (!isCanChangeTarif) return Card(
-          color: Colors.cyan,
-          margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-          child: const ListTile(
-            leading: const Icon(
-              Icons.info_outline,
-              color: Colors.white,
-            ),
-            title: const Text(
-              'На Вашем счету недостаточно средств для активации тарифного плана.',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 18
-              ),
-            ),
+          title: const Text(
+            'Чтобы изменить тарифный план, необходимо отключить автоактивацию.',
+            style: TextStyle(color: Colors.white, fontSize: 18),
           ),
-        ); else return Column(
-          children: List.generate(_user.tarifs.length, (index) {return Padding(
+        ),
+      );
+    else if (!isCanChangeTarif)
+      return Card(
+        color: Colors.cyan,
+        margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+        child: const ListTile(
+          leading: const Icon(
+            Icons.info_outline,
+            color: Colors.white,
+          ),
+          title: const Text(
+            'На Вашем счету недостаточно средств для активации тарифного плана.',
+            style: TextStyle(color: Colors.white, fontSize: 18),
+          ),
+        ),
+      );
+    else
+      return Column(
+        children: List.generate(_user.tarifs.length, (index) {
+          return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 50),
             child: RadioListTile<String>(
-              activeColor: Colors.green,
-              dense: true,
-              title: Text(_user.tarifs[index]['name']),
-              subtitle: _user.tarifSum == _user.tarifs[index]['sum'] ? Text('(текущий тариф)') : null,
-              value: _user.tarifs[index]['id'],
-              groupValue: '',
-              onChanged: _user.tarifs[index]['sum'] <= _user.balance ? (index){} : null
-              ),
-          );}),
-        );
+                activeColor: Colors.green,
+                dense: true,
+                title: Text(_user.tarifs[index]['name']),
+                subtitle: _user.tarifSum == _user.tarifs[index]['sum']
+                    ? Text('(текущий тариф)')
+                    : null,
+                value: _user.tarifs[index]['id'],
+                groupValue: _user.tarifs.firstWhere(
+                    (tarif) => tarif['sum'] == _user.tarifSum)['id'],
+                onChanged: _user.tarifs[index]['sum'] <= _user.balance
+                    ? (id) {
+                        showDialog(
+                            context: context,
+                            builder: (bc) => AlertDialog(
+                                  content: Text('Изменить тариф?'),
+                                  actions: [
+                                    TextButton(
+                                        onPressed: () async {
+                                          print(id);
+                                          await abonent.changeTarif(
+                                              tarifId: id!, guid: _user.guid);
+                                          widget.onSetupChanged();
+                                          Navigator.pop(context);
+                                          setState(() {
+                                            _user.tarifName = _user.tarifs
+                                                    .firstWhere((element) =>
+                                                        element['id'] ==
+                                                        abonent.lastApiMessage)[
+                                                'name'];
+                                            _user.tarifSum = _user.tarifs
+                                                .firstWhere((element) =>
+                                                    element['id'] ==
+                                                    abonent
+                                                        .lastApiMessage)['sum'];
+                                          });
+                                        },
+                                        child: Text('Да')),
+                                    TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: Text('Нет'))
+                                  ],
+                                ));
+                      }
+                    : null),
+          );
+        }),
+      );
   }
 
+  askToChangeTarifDialog() {}
 
   void onChangeAutoactivation(bool value) async {
     //print('abonent.users[].auto before: ${abonent.users[widget.index].auto}');

@@ -153,6 +153,7 @@ class _MainScreenState extends State<MainScreen> {
                     ? Setup(
                         user: abonent.users[currentUserIndex],
                         index: currentUserIndex,
+                        onSetupChanged: () => start(),
                       )
                     : Container(),
                 //точки........
