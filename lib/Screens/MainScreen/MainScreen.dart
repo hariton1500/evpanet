@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'helpers.dart';
 import 'setup.dart';
@@ -40,7 +41,7 @@ class _MainScreenState extends State<MainScreen> {
     isStarting = true;
     setState(() {});
     if (abonent.device.length > 10) await abonent.getDataForGuidsFromServer();
-    Timer.periodic(Duration(seconds: 1), (timer) {
+    Timer.periodic(Duration(seconds: 1), (timer) async {
       setState(() {});
       print('[start] (${timer.tick}) refreshing...');
       if (abonent.users.length == abonent.guids.length) {
@@ -48,6 +49,10 @@ class _MainScreenState extends State<MainScreen> {
         abonent.saveData();
         isStarting = false;
         setState(() {});
+        SharedPreferences preferences = await SharedPreferences.getInstance();
+        preferences.reload();
+        print('[messages]');
+        print(preferences.getStringList('messages'));
       }
     });
   }
@@ -544,9 +549,7 @@ class _MainScreenState extends State<MainScreen> {
 
   sending(text) async {
     await abonent.postMessageToProvider(
-      message: text,
-      guid: abonent.users[currentUserIndex].guid);
+        message: text, guid: abonent.users[currentUserIndex].guid);
     Fluttertoast.showToast(msg: abonent.lastApiMessage);
   }
-
 }

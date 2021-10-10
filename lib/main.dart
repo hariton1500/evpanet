@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -9,8 +11,13 @@ import 'Screens/StartScreen.dart';
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // If you're going to use other Firebase services in the background, such as Firestore,
   // make sure you call `initializeApp` before using other Firebase services.
-  await Firebase.initializeApp();
-  print('Handling a background message ${message.messageId}');
+  //await Firebase.initializeApp();
+  print('Handling a background message ${message.data}');
+  SharedPreferences preferences = await SharedPreferences.getInstance();
+  List<String> messagesJSON = [];
+  messagesJSON.addAll(preferences.getStringList('messages')!.toList());
+  messagesJSON.add(jsonEncode(message.data));
+  preferences.setStringList('messages', messagesJSON);
 }
 
 /// Create a [AndroidNotificationChannel] for heads up notifications
@@ -29,6 +36,17 @@ Future<void> main() async {
     preferences.setString('deviceId', token!);
   });
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  RemoteMessage message = RemoteMessage();
+  Stream onMessage = FirebaseMessaging.onMessage;
+  onMessage.listen((event) {
+    print('onMessage: $event');
+    message = event;
+    print(message.data);
+  });
+  Stream onMessageOpenedApp = FirebaseMessaging.onMessageOpenedApp;
+  onMessageOpenedApp.listen((event) {
+    print('onMessageOpenedApp: $event');
+  });
   if (!kIsWeb) {
     /*
     channel = const AndroidNotificationChannel(

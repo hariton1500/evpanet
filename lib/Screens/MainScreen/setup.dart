@@ -142,7 +142,11 @@ class _SetupState extends State<Setup> {
                                                   guid: _user.guid);
                                               widget.onSetupChanged();
                                               Navigator.pop(context);
-                                              setState(() {if (!abonent.lastApiErrorStatus) _user.daysRemain += daysToAdd.round();});
+                                              setState(() {
+                                                if (!abonent.lastApiErrorStatus)
+                                                  _user.daysRemain +=
+                                                      daysToAdd.round();
+                                              });
                                             },
                                             child: Text('Да')),
                                         TextButton(
@@ -292,9 +296,7 @@ class _SetupState extends State<Setup> {
   askToChangeTarifDialog() {}
 
   void onChangeAutoactivation(bool value) async {
-    //print('abonent.users[].auto before: ${abonent.users[widget.index].auto}');
     await abonent.changeSwitchParameters(type: 'auto', guid: widget.user.guid);
-    //print('abonent.users[].auto after: ${abonent.users[widget.index].auto}');
     setState(() {
       if (!abonent.lastApiErrorStatus)
         _user.auto = abonent.lastApiMessage == '1';
