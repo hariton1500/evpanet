@@ -9,6 +9,9 @@ class WebScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Сайт EvpaNet'),
+      ),
       body: WebView(
         initialUrl:
             url, //'https://evpanet.com/internet/leave-a-statement.html',

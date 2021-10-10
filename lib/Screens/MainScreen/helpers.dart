@@ -1,43 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-//import 'package:myevpanet/main.dart';
-//import 'package:responsive_flutter/responsive_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
-//import 'package:myevpanet/api/api.dart';
-//import 'package:myevpanet/helpers/data.dart';
-
-/*
-class CircleButton extends StatelessWidget {
-  final GestureTapCallback onTap;
-  final IconData iconData;
-  final double size;
-
-  const CircleButton({Key key, this.onTap, this.iconData, this.size})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    //double size = 35.0;
-
-    return new InkResponse(
-      onTap: onTap,
-      child: new Container(
-        //padding: EdgeInsets.only(top: size - 25.0),
-        width: size,
-        height: size,
-        decoration: new BoxDecoration(
-          color: Colors.red,
-          shape: BoxShape.circle,
-        ),
-        child: new Icon(
-          iconData,
-          color: Colors.white,
-        ),
-      ),
-    );
-  }
-}
-*/
 
 class CallWindowModal extends StatefulWidget {
   @override
@@ -174,11 +137,15 @@ class CallButtonWidget extends State {
 }
 
 class SupportMessageModal extends StatefulWidget {
+  final Function onMessageSended;
+
+  const SupportMessageModal({Key? key, required this.onMessageSended}) : super(key: key);
+  
   @override
-  SupportMessageModalWidget createState() => SupportMessageModalWidget();
+  _SupportMessageModalState createState() => _SupportMessageModalState();
 }
 
-class SupportMessageModalWidget extends State {
+class _SupportMessageModalState extends State<SupportMessageModal> {
   String text = '';
 
   @override
@@ -274,7 +241,9 @@ class SupportMessageModalWidget extends State {
                     ),
                   ),
                   onTap: () {
-                    _sendMessagePressed();
+                    widget.onMessageSended(text);
+                    Navigator.pop(context);
+                    //_sendMessagePressed();
                   },
                 )
               ],
@@ -302,6 +271,7 @@ class SupportMessageModalWidget extends State {
   }
 
   void _sendMessagePressed() async {
+     
     /*
     String answer =
         await RestAPI().remontAddPOST(text, guids[currentGuidIndex], devKey);

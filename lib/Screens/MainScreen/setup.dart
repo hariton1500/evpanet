@@ -142,7 +142,7 @@ class _SetupState extends State<Setup> {
                                                   guid: _user.guid);
                                               widget.onSetupChanged();
                                               Navigator.pop(context);
-                                              setState(() {});
+                                              setState(() {if (!abonent.lastApiErrorStatus) _user.daysRemain += daysToAdd.round();});
                                             },
                                             child: Text('Да')),
                                         TextButton(

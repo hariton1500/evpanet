@@ -4,6 +4,7 @@ import 'package:evpanet/Helpers/maindata.dart';
 import 'package:evpanet/Screens/webscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 
 import 'helpers.dart';
@@ -23,6 +24,8 @@ class _MainScreenState extends State<MainScreen> {
   Abonent abonent = Abonent();
   int currentUserIndex = 0;
   bool isStarting = true, isShowSetup = false;
+
+  String text = '';
 
   @override
   void initState() {
@@ -535,7 +538,15 @@ class _MainScreenState extends State<MainScreen> {
             Animation secondaryAnimation) {
           return Dialog(
               backgroundColor: Colors.transparent,
-              child: SupportMessageModal());
+              child: SupportMessageModal(onMessageSended: sending));
         });
   }
+
+  sending(text) async {
+    await abonent.postMessageToProvider(
+      message: text,
+      guid: abonent.users[currentUserIndex].guid);
+    Fluttertoast.showToast(msg: abonent.lastApiMessage);
+  }
+
 }

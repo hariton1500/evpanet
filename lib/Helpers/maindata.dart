@@ -254,6 +254,7 @@ class Abonent {
       lastApiErrorStatus = true;
       lastApiMessage = 'Ошибка на стороне сервера. Повторите попытку позже.';
     } on TimeoutException catch (_) {
+      lastApiErrorStatus = true;
       Fluttertoast.showToast(msg: 'Отсутствует связь с сервером');
     }
   }
@@ -300,6 +301,7 @@ class Abonent {
       lastApiErrorStatus = true;
       lastApiMessage = 'Ошибка на стороне сервера. Повторите попытку позже.';
     } on TimeoutException catch (_) {
+      lastApiErrorStatus = true;
       Fluttertoast.showToast(msg: 'Отсутствует связь с сервером');
     }
   }
@@ -345,6 +347,53 @@ class Abonent {
       lastApiErrorStatus = true;
       lastApiMessage = 'Ошибка на стороне сервера. Повторите попытку позже.';
     } on TimeoutException catch (_) {
+      lastApiErrorStatus = true;
+      Fluttertoast.showToast(msg: 'Отсутствует связь с сервером');
+    }
+  }
+
+  Future<void> postMessageToProvider({required String message, required String guid}) async {
+    http.Response _response;
+    Map<String, String> _headers = {'token': device};
+    Map _body = {'message': message, 'guid': guid};
+    String url = 'https://evpanet.com/api/apk/support/request';
+    print('[postMessageToProvider] Start to send ($message) from ($guid) to server');
+    try {
+      print('[post] ${Uri.parse(url)}, headers: $_headers, body: $_body');
+      _response = await http
+          .post(Uri.parse(url), headers: _headers, body: _body)
+          .timeout(Duration(seconds: 5));
+      if (_response.statusCode == 201) {
+        var answer = jsonDecode(_response.body);
+        print(answer);
+        if (answer.runtimeType
+            .toString()
+            .startsWith('_InternalLinkedHashMap')) {
+          if (Map.from(answer).containsKey('message')) {
+            lastApiMessage = Map.from(answer)['message'];
+          }
+          if (Map.from(answer).containsKey('error'))
+            lastApiErrorStatus = Map.from(answer)['error'];
+        }
+      } else {
+        var answer = jsonDecode(_response.body);
+        if (answer.runtimeType
+            .toString()
+            .startsWith('_InternalLinkedHashMap')) {
+          if (Map.from(answer).containsKey('message'))
+            lastApiMessage = Map.from(answer)['message'];
+          if (Map.from(answer).containsKey('error'))
+            lastApiErrorStatus = Map.from(answer)['error'];
+        }
+      }
+    } on SocketException catch (error) {
+      lastApiErrorStatus = true;
+      lastApiMessage = error.toString();
+    } on HandshakeException {
+      lastApiErrorStatus = true;
+      lastApiMessage = 'Ошибка на стороне сервера. Повторите попытку позже.';
+    } on TimeoutException catch (_) {
+      lastApiErrorStatus = true;
       Fluttertoast.showToast(msg: 'Отсутствует связь с сервером');
     }
   }
