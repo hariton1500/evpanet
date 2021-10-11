@@ -107,8 +107,8 @@ class CallButtonWidget extends State {
                   ),
                   onTap: () {
                     //if (await canLaunch('tel://$phoneToCall'))
-                      launch('tel://$phoneToCall');
-                      Navigator.pop(context);
+                    launch('tel://$phoneToCall');
+                    Navigator.pop(context);
                   },
                 )
               ],
@@ -139,8 +139,9 @@ class CallButtonWidget extends State {
 class SupportMessageModal extends StatefulWidget {
   final Function onMessageSended;
 
-  const SupportMessageModal({Key? key, required this.onMessageSended}) : super(key: key);
-  
+  const SupportMessageModal({Key? key, required this.onMessageSended})
+      : super(key: key);
+
   @override
   _SupportMessageModalState createState() => _SupportMessageModalState();
 }
@@ -175,8 +176,8 @@ class _SupportMessageModalState extends State<SupportMessageModal> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 Container(
-                  padding:
-                      const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 20.0),
+                  padding: const EdgeInsets.only(
+                      left: 16.0, right: 16.0, bottom: 20.0),
                   alignment: Alignment.topCenter,
                   child: const Center(
                     child: Text(
@@ -242,8 +243,8 @@ class _SupportMessageModalState extends State<SupportMessageModal> {
                   ),
                   onTap: () {
                     widget.onMessageSended(text);
-                    Navigator.pop(context);
-                    //_sendMessagePressed();
+                    //Navigator.pop(context);
+                    _sendMessagePressed();
                   },
                 )
               ],
@@ -271,24 +272,6 @@ class _SupportMessageModalState extends State<SupportMessageModal> {
   }
 
   void _sendMessagePressed() async {
-     
-    /*
-    String answer =
-        await RestAPI().remontAddPOST(text, guids[currentGuidIndex], devKey);
-    dprintL(answer);
-    Pushes _pushes = Pushes();
-    _pushes.loadSavedPushes().then((value) {
-      OneNotification _push = OneNotification();
-      int id = int.parse(users[currentGuidIndex]['id']);
-      _push.id = id;
-      _push.title = '($id) Сообщение в службу поддержки';
-      _push.body = text;
-      _push.date = DateTime.now().toLocal().toString();
-      _push.seen = false;
-      _pushes.pushes.add(_push);
-      _pushes.savePushes();
-    });
-    */
     Fluttertoast.showToast(
         msg: 'answer. В случае ответа Вы получите уведомление.',
         toastLength: Toast.LENGTH_SHORT,
@@ -297,8 +280,7 @@ class _SupportMessageModalState extends State<SupportMessageModal> {
         webShowClose: true,
         backgroundColor: Colors.blue,
         textColor: Colors.white,
-        fontSize: 16.0
-    );
+        fontSize: 16.0);
     Navigator.pop(context);
   }
 }

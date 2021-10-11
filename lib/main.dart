@@ -6,7 +6,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'Screens/StartScreen.dart';
-//import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // If you're going to use other Firebase services in the background, such as Firestore,
@@ -15,16 +15,17 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print('Handling a background message ${message.data}');
   SharedPreferences preferences = await SharedPreferences.getInstance();
   List<String> messagesJSON = [];
-  messagesJSON.addAll(preferences.getStringList('messages')!.toList());
+  messagesJSON.addAll(preferences.getStringList('messages') ?? []);
   messagesJSON.add(jsonEncode(message.data));
   preferences.setStringList('messages', messagesJSON);
+  print(messagesJSON);
 }
 
 /// Create a [AndroidNotificationChannel] for heads up notifications
-//AndroidNotificationChannel? channel;
+AndroidNotificationChannel? channel;
 
 /// Initialize the [FlutterLocalNotificationsPlugin] package.
-//FlutterLocalNotificationsPlugin? flutterLocalNotificationsPlugin;
+FlutterLocalNotificationsPlugin? flutterLocalNotificationsPlugin;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,27 +38,27 @@ Future<void> main() async {
   });
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   RemoteMessage message = RemoteMessage();
-  Stream onMessage = FirebaseMessaging.onMessage;
-  onMessage.listen((event) {
+  FirebaseMessaging.onMessage.listen((event) {
     print('onMessage: $event');
     message = event;
     print(message.data);
   });
-  Stream onMessageOpenedApp = FirebaseMessaging.onMessageOpenedApp;
-  onMessageOpenedApp.listen((event) {
+  FirebaseMessaging.onMessageOpenedApp.listen((event) {
     print('onMessageOpenedApp: $event');
   });
   if (!kIsWeb) {
-    /*
     channel = const AndroidNotificationChannel(
       'high_importance_channel',
       'High Importance Notifications',
-      'This channel is used for important notifications.',
+      description: 'This channel is used for important notifications.',
       importance: Importance.high,
     );
-    */
-    //flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-    //await flutterLocalNotificationsPlugin!.resolvePlatformSpecificImplementation < AndroidFlutterLocalNotificationsPlugin>()?.createNotificationChannel(channel!);
+
+    flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+    await flutterLocalNotificationsPlugin!
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(channel!);
 
     /// Update the iOS foreground notification presentation options to allow
     /// heads up notifications.

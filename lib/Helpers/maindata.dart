@@ -101,6 +101,15 @@ class Abonent {
         '[getDataForGuidsFromServer] Loaded ${users.indexOf(_user) + 1} of ${users.length} users');
   }
 
+  //Messages methods
+  Future<void> saveMessage({required Map<String, dynamic> message}) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    List<String> messagesJSON = [];
+    messagesJSON.addAll(preferences.getStringList('messages') ?? []);
+    messagesJSON.add(jsonEncode(message));
+    preferences.setStringList('messages', messagesJSON);
+  }
+
   //Network API methods
   Future<void> authorize(
       {required String number, required int uid, required String token}) async {
@@ -352,12 +361,14 @@ class Abonent {
     }
   }
 
-  Future<void> postMessageToProvider({required String message, required String guid}) async {
+  Future<void> postMessageToProvider(
+      {required String message, required String guid}) async {
     http.Response _response;
     Map<String, String> _headers = {'token': device};
     Map _body = {'message': message, 'guid': guid};
     String url = 'https://evpanet.com/api/apk/support/request';
-    print('[postMessageToProvider] Start to send ($message) from ($guid) to server');
+    print(
+        '[postMessageToProvider] Start to send ($message) from ($guid) to server');
     try {
       print('[post] ${Uri.parse(url)}, headers: $_headers, body: $_body');
       _response = await http

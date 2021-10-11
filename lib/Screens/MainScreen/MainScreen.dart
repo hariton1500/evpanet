@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:evpanet/Helpers/maindata.dart';
+import 'package:evpanet/Screens/messages.dart';
 import 'package:evpanet/Screens/webscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -27,6 +29,7 @@ class _MainScreenState extends State<MainScreen> {
   bool isStarting = true, isShowSetup = false;
 
   String text = '';
+  List<String> messages = [];
 
   @override
   void initState() {
@@ -52,6 +55,7 @@ class _MainScreenState extends State<MainScreen> {
         SharedPreferences preferences = await SharedPreferences.getInstance();
         preferences.reload();
         print('[messages]');
+        messages.addAll(preferences.getStringList('messages') ?? []);
         print(preferences.getStringList('messages'));
       }
     });
@@ -120,6 +124,23 @@ class _MainScreenState extends State<MainScreen> {
                 ),
                 onTap: () {
                   showModalWriteToSupport();
+                },
+              ),
+              GestureDetector(
+                child: Container(
+                  padding: const EdgeInsets.only(
+                      top: 10.0, bottom: 10.0, right: 16.0),
+                  child: const Icon(
+                    Icons.message_outlined,
+                    color: const Color.fromRGBO(72, 95, 113, 1.0),
+                    size: 24.0,
+                  ),
+                ),
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (BuildContext context) => Messages(
+                            messagesStrings: messages.reversed.toList(),
+                          )));
                 },
               )
             ],
@@ -551,5 +572,15 @@ class _MainScreenState extends State<MainScreen> {
     await abonent.postMessageToProvider(
         message: text, guid: abonent.users[currentUserIndex].guid);
     Fluttertoast.showToast(msg: abonent.lastApiMessage);
+    if (!abonent.lastApiErrorStatus) {
+      Map<String, dynamic> _message = {
+        'title': 'Сообщение в службу поддержки',
+        'message': text,
+        'timestamp':
+            '${DateTime.now().day}.${DateTime.now().month}.${DateTime.now().year} ${DateTime.now().hour}:${DateTime.now().minute}:${DateTime.now().second}'
+      };
+      abonent.saveMessage(message: _message);
+      messages.add(jsonEncode(_message));
+    }
   }
 }
