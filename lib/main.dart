@@ -37,11 +37,13 @@ Future<void> main() async {
     preferences.setString('deviceId', token!);
   });
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  RemoteMessage message = RemoteMessage();
-  FirebaseMessaging.onMessage.listen((event) {
+  FirebaseMessaging.onMessage.listen((event) async {
     print('onMessage: $event');
-    message = event;
-    print(message.data);
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    List<String> messagesJSON = [];
+    messagesJSON.addAll(preferences.getStringList('messages') ?? []);
+    messagesJSON.add(jsonEncode(event.data));
+    preferences.setStringList('messages', messagesJSON);
   });
   FirebaseMessaging.onMessageOpenedApp.listen((event) {
     print('onMessageOpenedApp: $event');

@@ -39,8 +39,21 @@ class _MessagesState extends State<Messages> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text('Сообщения'),
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(50.0),
+          child: AppBar(
+            iconTheme: const IconThemeData(
+                color: const Color.fromRGBO(72, 95, 113, 1.0)),
+            titleSpacing: 0.0,
+            backgroundColor: const Color.fromRGBO(245, 246, 248, 1.0),
+            title: Text(
+              'Сообщения',
+              style: const TextStyle(
+                color: const Color.fromRGBO(72, 95, 113, 1.0),
+                fontSize: 24.0,
+              ),
+            ),
+          ),
         ),
         body: ListView.builder(
             itemCount: widget.messagesStrings.length,
@@ -52,39 +65,52 @@ class _MessagesState extends State<Messages> {
               String _date =
                   jsonDecode(widget.messagesStrings[index])['timestamp'];
               return ListTile(
-                contentPadding:
-                    EdgeInsets.symmetric(horizontal: 16, vertical: 5),
-                tileColor: index.isEven ? Colors.white : Colors.white,
-                leading: Text(_date),
-                title: Text(_title),
-                subtitle: Padding(
-                  padding: const EdgeInsets.only(top: 5.0),
-                  child: Text(
-                    _body,
-                    style: TextStyle(
-                        fontSize: 16,
-                        fontStyle: FontStyle.italic,
-                        color: Colors.blueGrey),
+                  key: Key(index.toString()),
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+                  tileColor: index.isEven ? Colors.white : Colors.white,
+                  trailing: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(_date.split(' ')[0]),
+                      Text(_date.split(' ')[1]),
+                    ],
                   ),
-                ),
-                onLongPress: () => showDialog(
-                    context: bc,
-                    builder: (bc) => AlertDialog(
-                          content: Text('Удалить сообщение из списка?'),
-                          actions: [
-                            TextButton(
-                                onPressed: () {
-                                  Navigator.pop(bc, true);
-                                },
-                                child: Text('Да')),
-                            TextButton(
-                                onPressed: () {
-                                  Navigator.pop(bc, false);
-                                },
-                                child: Text('Нет')),
-                          ],
-                        )),
-              );
+                  leading: Icon(_title.contains('Мой EvpaNet')
+                      ? Icons.question_answer_outlined
+                      : Icons.warning_outlined),
+                  title: Text(_title),
+                  subtitle: Padding(
+                    padding: const EdgeInsets.only(top: 5.0),
+                    child: Text(
+                      _body,
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontStyle: FontStyle.italic,
+                          color: Colors.blueGrey),
+                    ),
+                  ),
+                  onLongPress: () => showDialog<bool>(
+                          context: bc,
+                          builder: (bc) => AlertDialog(
+                                content: Text('Удалить сообщение из списка?'),
+                                actions: [
+                                  TextButton(
+                                      onPressed: () {
+                                        print(index);
+                                        Navigator.pop(bc, true);
+                                      },
+                                      child: Text('Да')),
+                                  TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(bc, false);
+                                      },
+                                      child: Text('Нет')),
+                                ],
+                              )).then((answer) {
+                        if (answer ?? false) print(answer);
+                      }));
             }));
   }
 }

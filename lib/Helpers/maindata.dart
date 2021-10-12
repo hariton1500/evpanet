@@ -32,7 +32,6 @@ class User {
     password = user['clear_pass'];
     daysRemain = (int.parse(user['packet_secs']) / 60 / 60 / 24).round();
     endDate = user['packet_end'] ?? '00.00.0000 00:00';
-    print(user['debt']);
     debt = double.parse(user['debt'] ?? 0.0);
     tarifName = user['tarif_name'];
     tarifSum = int.parse(user['tarif_sum'].toString());
@@ -85,7 +84,7 @@ class Abonent {
   }
 
   void fillAbonentWith(Map user, String guid) {
-    print('[fillAbonentWith] $user');
+    print('[fillAbonentWith]');
     User _user = User();
     _user.load(user, guid);
     if (users.any((user) => user.guid == guid)) {
@@ -98,7 +97,7 @@ class Abonent {
       users.add(_user);
     }
     print(
-        '[getDataForGuidsFromServer] Loaded ${users.indexOf(_user) + 1} of ${users.length} users');
+        '[fillAbonentWith] Loaded ${users.indexOf(_user) + 1} of ${users.length} users');
   }
 
   //Messages methods

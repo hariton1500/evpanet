@@ -63,6 +63,7 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print('{MainScreen}[build]');
     return Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: Color.fromRGBO(245, 246, 248, 1.0),
@@ -485,19 +486,6 @@ class _MainScreenState extends State<MainScreen> {
                     )
                   ],
                 ),
-                /*
-                IconButton(
-                    onPressed: () async {
-                      await abonent.clearAuthorize();
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(
-                          builder: (BuildContext context) => StartScreen()));
-                    },
-                    icon: const Icon(
-                      Icons.settings_suggest_outlined,
-                      color: Colors.white,
-                      size: 35.0,
-                    )),
-                */
                 IconButton(
                   icon: const Icon(Icons.settings_outlined,
                       color: Colors.white, size: 35.0),
@@ -505,9 +493,6 @@ class _MainScreenState extends State<MainScreen> {
                     setState(() {
                       isShowSetup = !isShowSetup;
                     });
-                    //start();
-                    //await abonent.getDataForGuidsFromServer();
-                    //setState(() {});
                   },
                 ),
               ],
@@ -574,7 +559,8 @@ class _MainScreenState extends State<MainScreen> {
     Fluttertoast.showToast(msg: abonent.lastApiMessage);
     if (!abonent.lastApiErrorStatus) {
       Map<String, dynamic> _message = {
-        'title': 'Сообщение в службу поддержки',
+        'title':
+            '(${abonent.users[currentUserIndex].id}) Сообщение в службу поддержки',
         'message': text,
         'timestamp':
             '${DateTime.now().day}.${DateTime.now().month}.${DateTime.now().year} ${DateTime.now().hour}:${DateTime.now().minute}:${DateTime.now().second}'

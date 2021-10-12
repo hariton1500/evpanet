@@ -16,6 +16,7 @@ class _StartScreenState extends State<StartScreen> {
 
   @override
   void initState() {
+    print('{StartScreen}[initState]');
     // проверка на флаг авторизованности
     loadShared();
     super.initState();
@@ -23,6 +24,7 @@ class _StartScreenState extends State<StartScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print('[{StartScreen}[build]');
     return Scaffold(
       body: Stack(
         fit: StackFit.expand,
