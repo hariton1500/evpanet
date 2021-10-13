@@ -141,6 +141,7 @@ class _MainScreenState extends State<MainScreen> {
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (BuildContext context) => Messages(
                             messagesStrings: messages.reversed.toList(),
+                            abonent: abonent,
                           )));
                 },
               )
