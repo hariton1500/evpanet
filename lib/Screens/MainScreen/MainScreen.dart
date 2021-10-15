@@ -67,6 +67,9 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: Color.fromRGBO(245, 246, 248, 1.0),
+        drawer: Drawer(
+          child: appDrawer(),
+        ),
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(70.0),
           child: AppBar(
@@ -307,6 +310,46 @@ class _MainScreenState extends State<MainScreen> {
             ),
           ),
         ));
+  }
+
+  Widget appDrawer() {
+    return Padding(
+      padding: EdgeInsets.all(5),
+      child: Column(
+        children: [
+          Expanded(
+            child: ListView(
+              children: List.generate(abonent.guids.length, (index) {
+                return ListTile(
+                  dense: true,
+                  leading: Column(
+                    children: [
+                      Text(abonent.users[index].id.toString()),
+                    ],
+                  ),
+                  title: Text(abonent.users[index].name),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                          '${abonent.users[index].street} д .${abonent.users[index].house} кв. ${abonent.users[index].flat}'),
+                      //Text('д .${abonent.users[index].house}'),
+                      //Text('кв. ${abonent.users[index].flat}'),
+                      Row(
+                        children: [
+                          IconButton(
+                              onPressed: null, icon: Icon(Icons.delete_outline))
+                        ],
+                      )
+                    ],
+                  ),
+                );
+              }),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget carouselUser(int index) {

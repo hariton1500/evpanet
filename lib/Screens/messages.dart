@@ -32,6 +32,7 @@ class _MessagesState extends State<Messages> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color.fromRGBO(245, 246, 248, 1.0),
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(50.0),
         child: AppBar(
@@ -47,6 +48,7 @@ class _MessagesState extends State<Messages> {
               ),
             ),
             actions: [
+              /*
               GestureDetector(
                 child: Container(
                   padding: const EdgeInsets.only(
@@ -64,6 +66,7 @@ class _MessagesState extends State<Messages> {
                   });
                 },
               ),
+              */
             ]),
       ),
       body: !isShowFilters
@@ -76,7 +79,7 @@ class _MessagesState extends State<Messages> {
                     jsonDecode(widget.messagesStrings[index])['message'];
                 String _date =
                     jsonDecode(widget.messagesStrings[index])['timestamp'];
-                bool isFiltered;
+                //bool isFiltered;
 
                 //filtersState!.forEach((state) { });
                 return ListTile(
@@ -149,11 +152,13 @@ class Filters extends StatefulWidget {
 }
 
 class _FiltersState extends State<Filters> {
-  Map<int, bool>? filterStates;
+  Map<int, bool> filterStates = {};
 
   @override
   void initState() {
-    filterStates = List.filled(widget.users.length, true).asMap();
+    for (var i = 0; i < widget.users.length; i++) {
+      filterStates[widget.users[i].id] = true;
+    }
     super.initState();
   }
 
@@ -165,16 +170,17 @@ class _FiltersState extends State<Filters> {
           return Row(
             children: [
               Checkbox(
-                  value: filterStates![index],
+                  value: filterStates[widget.users[index].id],
                   onChanged: (state) {
                     setState(() {
-                      filterStates![index] = state!;
+                      filterStates[widget.users[index].id] = state!;
                       widget.onFiltersDone(filterStates);
                     });
                   }),
               TextButton(
                   onPressed: () => setState(() {
-                        filterStates![index] = !filterStates[index];
+                        bool? temp = filterStates[widget.users[index].id];
+                        filterStates[widget.users[index].id] = !temp!;
                       }),
                   child: Text(widget.users[index].id.toString()))
             ],
