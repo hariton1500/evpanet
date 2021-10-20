@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.evpanet.evpanet">
+    package="com.evpanet.myevpanet">
 
    <uses-permission android:name="android.permission.INTERNET"/>
 
@@ -17,7 +17,7 @@
 
 
    <application
-        android:label="evpanet"
+        android:label="Мой EvpaNet"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
