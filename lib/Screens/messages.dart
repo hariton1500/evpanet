@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'dart:ui';
-
+import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:evpanet/Helpers/maindata.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Messages extends StatefulWidget {
   const Messages(
@@ -19,9 +20,6 @@ class Messages extends StatefulWidget {
 
 class _MessagesState extends State<Messages> {
   List<Map<String, dynamic>> messages = [];
-
-  bool isShowFilters = false;
-  List<bool>? filtersState;
 
   @override
   void initState() {
@@ -47,30 +45,9 @@ class _MessagesState extends State<Messages> {
                 fontSize: 24.0,
               ),
             ),
-            actions: [
-              /*
-              GestureDetector(
-                child: Container(
-                  padding: const EdgeInsets.only(
-                      top: 10.0, bottom: 10.0, right: 10.0),
-                  child: const Icon(
-                    //Icons.support_agent_outlined,
-                    Icons.filter_alt_outlined,
-                    color: const Color.fromRGBO(72, 95, 113, 1.0),
-                    size: 24.0,
-                  ),
-                ),
-                onTap: () {
-                  setState(() {
-                    isShowFilters = !isShowFilters;
-                  });
-                },
-              ),
-              */
-            ]),
+        ),
       ),
-      body: !isShowFilters
-          ? ListView.builder(
+      body: ListView.builder(
               itemCount: widget.messagesStrings.length,
               itemBuilder: (bc, index) {
                 String _title =
@@ -101,42 +78,29 @@ class _MessagesState extends State<Messages> {
                     title: Text(_title),
                     subtitle: Padding(
                       padding: const EdgeInsets.only(top: 5.0),
-                      child: Text(
-                        _body,
-                        style: TextStyle(
+                      child: Linkify(
+                        onOpen: (link) async {
+                          if (await canLaunch(link.url)) {
+                            await launch(link.url);
+                          } else {
+                            print('Could not launch $link');
+                          }
+                        },
+                        text: _body,
+                        linkStyle: TextStyle(
                             fontSize: 16,
                             fontStyle: FontStyle.italic,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.green),
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontStyle: FontStyle.normal,
                             color: Colors.blueGrey),
                       ),
-                    ),
-                    onLongPress: () => showDialog<bool>(
-                            context: bc,
-                            builder: (bc) => AlertDialog(
-                                  content: Text('Удалить сообщение из списка?'),
-                                  actions: [
-                                    TextButton(
-                                        onPressed: () {
-                                          //print(index);
-                                          Navigator.pop(bc, true);
-                                        },
-                                        child: Text('Да')),
-                                    TextButton(
-                                        onPressed: () {
-                                          Navigator.pop(bc, false);
-                                        },
-                                        child: Text('Нет')),
-                                  ],
-                                )).then((answer) {
-                          if (answer ?? false) print(answer);
-                        }));
+                    )
+                  );
               })
-          : Filters(
-              users: widget.abonent.users,
-              onFiltersDone: (List<bool> filters) {
-                filtersState = filters;
-              },
-            ),
-    );
+            );
   }
 }
 
