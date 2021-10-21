@@ -14,7 +14,7 @@ class WebScreen extends StatelessWidget {
       ),
       body: WebView(
         initialUrl:
-            url, //'https://evpanet.com/internet/leave-a-statement.html',
+            url,
         javascriptMode: JavascriptMode.unrestricted,
       ),
     );

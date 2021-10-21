@@ -3,12 +3,13 @@ import 'dart:convert';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:evpanet/Helpers/maindata.dart';
 import 'package:evpanet/Screens/messages.dart';
-import 'package:evpanet/Screens/webscreen.dart';
+//import 'package:evpanet/Screens/webscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'helpers.dart';
 import 'setup.dart';
@@ -406,11 +407,13 @@ class _MainScreenState extends State<MainScreen> {
                   Container(
                       child: TextButton.icon(
                           onPressed: () {
+                            launch('https://my.evpanet.com/?login=${abonent.users[index].login}&password=${abonent.users[index].password}');
+                            /*
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (BuildContext context) => WebScreen(
                                       url:
                                           'https://my.evpanet.com/?login=${abonent.users[index].login}&password=${abonent.users[index].password}',
-                                    )));
+                                    )));*/
                           },
                           style: ButtonStyle(
                               backgroundColor: MaterialStateProperty.all<Color>(
