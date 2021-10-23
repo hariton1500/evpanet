@@ -200,12 +200,12 @@ class _SetupState extends State<Setup> {
 
   Widget tarifsChange() {
     bool isCanChangeTarif = _user.tarifs.any((element) {
-      print('allowed_tarif:');
-      print(int.parse(element['sum'].toString()));
-      print(_user.balance);
+      //print('allowed_tarif:');
+      //print(int.parse(element['sum'].toString()));
+      //print(_user.balance);
       return int.parse(element['sum'].toString()) < _user.balance;
     });
-    print(isCanChangeTarif);
+    //print(isCanChangeTarif);
     if (_user.auto)
       return Card(
         color: Colors.cyan,

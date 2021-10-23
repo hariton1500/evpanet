@@ -79,11 +79,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Мой EvpaNet',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: StartScreen(), //MyHomePage(title: 'Flutter Demo Home Page'),
+      home: StartScreen(),
     );
   }
 }
