@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:evpanet/Helpers/maindata.dart';
+import 'package:evpanet/Screens/accounts.dart';
 import 'package:evpanet/Screens/messages.dart';
 //import 'package:evpanet/Screens/webscreen.dart';
 import 'package:flutter/material.dart';
@@ -379,6 +380,7 @@ class _MainScreenState extends State<MainScreen> {
               'https://my.evpanet.com/?login=${abonent.users[currentUserIndex].login}&password=${abonent.users[currentUserIndex].password}');
         },
       ),
+      Divider(),
       ListTile(
         leading: Icon(Icons.mail_outlined),
         title: Text('Оставить заявку на ремонт'),
@@ -387,6 +389,7 @@ class _MainScreenState extends State<MainScreen> {
           showModalWriteToSupport();
         },
       ),
+      Divider(),
       ListTile(
         leading: Icon(Icons.message_outlined),
         title: Text('Сообщения'),
@@ -398,6 +401,7 @@ class _MainScreenState extends State<MainScreen> {
                   )));
         },
       ),
+      Divider(),
       ListTile(
         leading: Icon(Icons.settings_outlined),
         title: Text('Настройки'),
@@ -407,7 +411,23 @@ class _MainScreenState extends State<MainScreen> {
             isShowSetup = !isShowSetup;
           });
         },
-      )
+      ),
+      Divider(),
+      ListTile(
+        leading: Icon(Icons.manage_accounts_outlined),
+        title: Text('Учетные записи'),
+        onTap: () {
+          Navigator.of(context).pop();
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (BuildContext context) => Accounts(
+                    abonent: abonent,
+                    callback: () {
+                      setState(() {});
+                    },
+                  )));
+        },
+      ),
+      Divider(),
     ]);
     //
 
