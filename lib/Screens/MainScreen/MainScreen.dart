@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:evpanet/Helpers/maindata.dart';
+import 'package:evpanet/Screens/accounts.dart';
 import 'package:evpanet/Screens/messages.dart';
 //import 'package:evpanet/Screens/webscreen.dart';
 import 'package:flutter/material.dart';
@@ -69,7 +70,10 @@ class _MainScreenState extends State<MainScreen> {
         resizeToAvoidBottomInset: false,
         backgroundColor: Color.fromRGBO(245, 246, 248, 1.0),
         drawer: Drawer(
-          child: appDrawer(),
+          child: Container(
+            child: appDrawer(),
+            color: Color.fromRGBO(245, 246, 248, 1.0),
+          ),
         ),
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(70.0),
@@ -314,43 +318,146 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Widget appDrawer() {
-    return Padding(
-      padding: EdgeInsets.all(5),
-      child: Column(
-        children: [
-          Expanded(
-            child: ListView(
-              children: List.generate(abonent.guids.length, (index) {
-                return ListTile(
-                  dense: true,
-                  leading: Column(
-                    children: [
-                      Text(abonent.users[index].id.toString()),
-                    ],
-                  ),
-                  title: Text(abonent.users[index].name),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                          '${abonent.users[index].street} д .${abonent.users[index].house} кв. ${abonent.users[index].flat}'),
-                      //Text('д .${abonent.users[index].house}'),
-                      //Text('кв. ${abonent.users[index].flat}'),
-                      Row(
-                        children: [
-                          IconButton(
-                              onPressed: null, icon: Icon(Icons.delete_outline))
-                        ],
-                      )
-                    ],
-                  ),
-                );
-              }),
+    return ListView(children: [
+      DrawerHeader(
+        decoration: BoxDecoration(
+          //color: Color.fromRGBO(245, 246, 248, 1.0),
+          gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              stops: [
+                0.2,
+                1.0
+              ],
+              colors: [
+                Color.fromRGBO(68, 98, 124, 1),
+                Color.fromRGBO(10, 33, 51, 1)
+              ]),
+        ),
+        child: Stack(
+          children: [
+            Align(
+              alignment: Alignment.centerLeft,
+              child: CircleAvatar(
+                backgroundColor: Colors.white,
+                radius: 50.0,
+                child: Text(
+                  abonent.users[currentUserIndex].id.toString(),
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
             ),
-          ),
-        ],
+            Align(
+              alignment: Alignment.centerRight,
+              child: SizedBox(
+                width: 150.0,
+                child: Text(
+                  abonent.users[currentUserIndex].name.toString(),
+                  style: TextStyle(color: Colors.white70, fontSize: 20.0),
+                  //textWidthBasis: TextWidthBasis.longestLine,
+                ),
+              ),
+            ),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: Text(
+                'Баланс: ${abonent.users[currentUserIndex].balance.toString()} р.',
+                style: TextStyle(color: Colors.white70, fontSize: 20.0),
+              ),
+            )
+          ],
+        ),
       ),
-    );
+      ListTile(
+        leading: Icon(Icons.payments_outlined),
+        title: Text('Пополнить счет'),
+        onTap: () {
+          Navigator.of(context).pop();
+          launch(
+              'https://my.evpanet.com/?login=${abonent.users[currentUserIndex].login}&password=${abonent.users[currentUserIndex].password}');
+        },
+      ),
+      Divider(),
+      ListTile(
+        leading: Icon(Icons.mail_outlined),
+        title: Text('Оставить заявку на ремонт'),
+        onTap: () {
+          Navigator.of(context).pop();
+          showModalWriteToSupport();
+        },
+      ),
+      Divider(),
+      ListTile(
+        leading: Icon(Icons.message_outlined),
+        title: Text('Сообщения'),
+        onTap: () {
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (BuildContext context) => Messages(
+                    messagesStrings: messages.reversed.toList(),
+                    abonent: abonent,
+                  )));
+        },
+      ),
+      Divider(),
+      ListTile(
+        leading: Icon(Icons.settings_outlined),
+        title: Text('Настройки'),
+        onTap: () {
+          Navigator.of(context).pop();
+          setState(() {
+            isShowSetup = !isShowSetup;
+          });
+        },
+      ),
+      Divider(),
+      ListTile(
+        leading: Icon(Icons.manage_accounts_outlined),
+        title: Text('Учетные записи'),
+        onTap: () {
+          Navigator.of(context).pop();
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (BuildContext context) => Accounts(
+                    abonent: abonent,
+                    callback: () {
+                      setState(() {});
+                    },
+                  )));
+        },
+      ),
+      Divider(),
+    ]);
+    //
+
+    /*
+        List.generate(abonent.guids.length, (index) {
+        return ListTile(
+          dense: true,
+          leading: Column(
+            children: [
+              Text(abonent.users[index].id.toString()),
+            ],
+          ),
+          title: Text(abonent.users[index].name),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                  '${abonent.users[index].street} д .${abonent.users[index].house} кв. ${abonent.users[index].flat}'),
+              //Text('д .${abonent.users[index].house}'),
+              //Text('кв. ${abonent.users[index].flat}'),
+              Row(
+                children: [
+                  IconButton(
+                      onPressed: null, icon: Icon(Icons.delete_outline))
+                ],
+              )
+            ],
+          ),
+        );
+      }),*/
   }
 
   Widget carouselUser(int index) {
@@ -407,7 +514,8 @@ class _MainScreenState extends State<MainScreen> {
                   Container(
                       child: TextButton.icon(
                           onPressed: () {
-                            launch('https://my.evpanet.com/?login=${abonent.users[index].login}&password=${abonent.users[index].password}');
+                            launch(
+                                'https://my.evpanet.com/?login=${abonent.users[index].login}&password=${abonent.users[index].password}');
                             /*
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (BuildContext context) => WebScreen(
