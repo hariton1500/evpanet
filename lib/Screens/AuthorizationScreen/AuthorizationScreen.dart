@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'inputs.dart';
-//import 'order_widget.dart';
 
 class AuthorizationScreen extends StatelessWidget {
   const AuthorizationScreen({Key? key}) : super(key: key);
@@ -11,6 +10,9 @@ class AuthorizationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Color(0xff3c5d7c),
+      ),
       body: SingleChildScrollView(
         child: Center(
           child: Container(
@@ -27,9 +29,7 @@ class AuthorizationScreen extends StatelessWidget {
                   left: 10.0, right: 10.0, top: 20.0, bottom: 0),
               child: Column(
                 children: [
-                  //logoTop(),
                   Inputs(),
-                  //ProgressIndicatorWidget(),
                   connectRequest(context)
                 ],
               ),

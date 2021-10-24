@@ -164,7 +164,7 @@ class _MainScreenState extends State<MainScreen> {
             child: Column(
               children: [
                 Container(
-                  child: isStarting //abonent.users.length == 0
+                  child: isStarting || abonent.users.length <= 0 //abonent.users.length == 0
                       ? Center(
                           child: RefreshProgressIndicator(),
                         )
@@ -318,7 +318,8 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Widget appDrawer() {
-    return ListView(children: [
+    if (isStarting) return RefreshProgressIndicator();
+    return abonent.users.isEmpty ? Container() : ListView(children: [
       DrawerHeader(
         decoration: BoxDecoration(
           //color: Color.fromRGBO(245, 246, 248, 1.0),
