@@ -164,7 +164,8 @@ class _MainScreenState extends State<MainScreen> {
             child: Column(
               children: [
                 Container(
-                  child: isStarting || abonent.users.length <= 0 //abonent.users.length == 0
+                  child: isStarting ||
+                          abonent.users.length <= 0 //abonent.users.length == 0
                       ? Center(
                           child: RefreshProgressIndicator(),
                         )
@@ -319,117 +320,119 @@ class _MainScreenState extends State<MainScreen> {
 
   Widget appDrawer() {
     if (isStarting) return RefreshProgressIndicator();
-    return abonent.users.isEmpty ? Container() : ListView(children: [
-      DrawerHeader(
-        decoration: BoxDecoration(
-          //color: Color.fromRGBO(245, 246, 248, 1.0),
-          gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              stops: [
-                0.2,
-                1.0
-              ],
-              colors: [
-                Color.fromRGBO(68, 98, 124, 1),
-                Color.fromRGBO(10, 33, 51, 1)
-              ]),
-        ),
-        child: Stack(
-          children: [
-            Align(
-              alignment: Alignment.centerLeft,
-              child: CircleAvatar(
-                backgroundColor: Colors.white,
-                radius: 50.0,
-                child: Text(
-                  abonent.users[currentUserIndex].id.toString(),
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold),
-                ),
+    return abonent.users.isEmpty
+        ? Container()
+        : ListView(children: [
+            DrawerHeader(
+              decoration: BoxDecoration(
+                //color: Color.fromRGBO(245, 246, 248, 1.0),
+                gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    stops: [
+                      0.2,
+                      1.0
+                    ],
+                    colors: [
+                      Color.fromRGBO(68, 98, 124, 1),
+                      Color.fromRGBO(10, 33, 51, 1)
+                    ]),
+              ),
+              child: Stack(
+                children: [
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: CircleAvatar(
+                      backgroundColor: Colors.white,
+                      radius: 50.0,
+                      child: Text(
+                        abonent.users[currentUserIndex].id.toString(),
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: SizedBox(
+                      width: 150.0,
+                      child: Text(
+                        abonent.users[currentUserIndex].name.toString(),
+                        style: TextStyle(color: Colors.white70, fontSize: 20.0),
+                        //textWidthBasis: TextWidthBasis.longestLine,
+                      ),
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: Text(
+                      'Баланс: ${abonent.users[currentUserIndex].balance.toString()} р.',
+                      style: TextStyle(color: Colors.white70, fontSize: 20.0),
+                    ),
+                  )
+                ],
               ),
             ),
-            Align(
-              alignment: Alignment.centerRight,
-              child: SizedBox(
-                width: 150.0,
-                child: Text(
-                  abonent.users[currentUserIndex].name.toString(),
-                  style: TextStyle(color: Colors.white70, fontSize: 20.0),
-                  //textWidthBasis: TextWidthBasis.longestLine,
-                ),
-              ),
+            ListTile(
+              leading: Icon(Icons.payments_outlined),
+              title: Text('Пополнить счет'),
+              onTap: () {
+                Navigator.of(context).pop();
+                launch(
+                    'https://my.evpanet.com/?login=${abonent.users[currentUserIndex].login}&password=${abonent.users[currentUserIndex].password}');
+              },
             ),
-            Align(
-              alignment: Alignment.bottomRight,
-              child: Text(
-                'Баланс: ${abonent.users[currentUserIndex].balance.toString()} р.',
-                style: TextStyle(color: Colors.white70, fontSize: 20.0),
-              ),
-            )
-          ],
-        ),
-      ),
-      ListTile(
-        leading: Icon(Icons.payments_outlined),
-        title: Text('Пополнить счет'),
-        onTap: () {
-          Navigator.of(context).pop();
-          launch(
-              'https://my.evpanet.com/?login=${abonent.users[currentUserIndex].login}&password=${abonent.users[currentUserIndex].password}');
-        },
-      ),
-      Divider(),
-      ListTile(
-        leading: Icon(Icons.mail_outlined),
-        title: Text('Оставить заявку на ремонт'),
-        onTap: () {
-          Navigator.of(context).pop();
-          showModalWriteToSupport();
-        },
-      ),
-      Divider(),
-      ListTile(
-        leading: Icon(Icons.message_outlined),
-        title: Text('Сообщения'),
-        onTap: () {
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (BuildContext context) => Messages(
-                    messagesStrings: messages.reversed.toList(),
-                    abonent: abonent,
-                  )));
-        },
-      ),
-      Divider(),
-      ListTile(
-        leading: Icon(Icons.settings_outlined),
-        title: Text('Настройки'),
-        onTap: () {
-          Navigator.of(context).pop();
-          setState(() {
-            isShowSetup = !isShowSetup;
-          });
-        },
-      ),
-      Divider(),
-      ListTile(
-        leading: Icon(Icons.manage_accounts_outlined),
-        title: Text('Учетные записи'),
-        onTap: () {
-          Navigator.of(context).pop();
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (BuildContext context) => Accounts(
-                    abonent: abonent,
-                    callback: () {
-                      setState(() {});
-                    },
-                  )));
-        },
-      ),
-      Divider(),
-    ]);
+            Divider(),
+            ListTile(
+              leading: Icon(Icons.mail_outlined),
+              title: Text('Оставить заявку на ремонт'),
+              onTap: () {
+                Navigator.of(context).pop();
+                showModalWriteToSupport();
+              },
+            ),
+            Divider(),
+            ListTile(
+              leading: Icon(Icons.message_outlined),
+              title: Text('Сообщения'),
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (BuildContext context) => Messages(
+                          messagesStrings: messages.reversed.toList(),
+                          abonent: abonent,
+                        )));
+              },
+            ),
+            Divider(),
+            ListTile(
+              leading: Icon(Icons.settings_outlined),
+              title: Text('Настройки'),
+              onTap: () {
+                Navigator.of(context).pop();
+                setState(() {
+                  isShowSetup = !isShowSetup;
+                });
+              },
+            ),
+            Divider(),
+            ListTile(
+              leading: Icon(Icons.manage_accounts_outlined),
+              title: Text('Учетные записи'),
+              onTap: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (BuildContext context) => Accounts(
+                          abonent: abonent,
+                          callback: () {
+                            setState(() {});
+                          },
+                        )));
+              },
+            ),
+            Divider(),
+          ]);
     //
 
     /*
@@ -526,8 +529,8 @@ class _MainScreenState extends State<MainScreen> {
                           },
                           style: ButtonStyle(
                               backgroundColor: MaterialStateProperty.all<Color>(
-                                  Colors.green),
-                              elevation: MaterialStateProperty.all(1.0),
+                                  Colors.white38),
+                              elevation: MaterialStateProperty.all(5.0),
                               textStyle: MaterialStateProperty.all(
                                   TextStyle(fontSize: 12))),
                           icon: const Icon(

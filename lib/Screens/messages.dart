@@ -30,10 +30,10 @@ class _MessagesState extends State<Messages> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromRGBO(245, 246, 248, 1.0),
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(50.0),
-        child: AppBar(
+        backgroundColor: Color.fromRGBO(245, 246, 248, 1.0),
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(50.0),
+          child: AppBar(
             iconTheme: const IconThemeData(
                 color: const Color.fromRGBO(72, 95, 113, 1.0)),
             titleSpacing: 0.0,
@@ -45,62 +45,91 @@ class _MessagesState extends State<Messages> {
                 fontSize: 24.0,
               ),
             ),
+          ),
         ),
-      ),
-      body: ListView.builder(
-              itemCount: widget.messagesStrings.length,
-              itemBuilder: (bc, index) {
-                String _title =
-                    jsonDecode(widget.messagesStrings[index])['title'];
-                String _body =
-                    jsonDecode(widget.messagesStrings[index])['message'];
-                String _date =
-                    jsonDecode(widget.messagesStrings[index])['timestamp'];
-                //bool isFiltered;
+        body: ListView.builder(
+            itemCount: widget.messagesStrings.length,
+            itemBuilder: (bc, index) {
+              String _title =
+                  jsonDecode(widget.messagesStrings[index])['title'];
+              String _body =
+                  jsonDecode(widget.messagesStrings[index])['message'];
+              String _date =
+                  jsonDecode(widget.messagesStrings[index])['timestamp'];
+              //bool isFiltered;
 
-                //filtersState!.forEach((state) { });
-                return ListTile(
-                    key: Key(index.toString()),
-                    contentPadding:
-                        EdgeInsets.symmetric(horizontal: 16, vertical: 5),
-                    tileColor: index.isEven ? Colors.white : Colors.white,
-                    trailing: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(_date.split(' ')[0]),
-                        Text(_date.split(' ')[1]),
-                      ],
-                    ),
-                    leading: Icon(_title.contains('Мой EvpaNet')
-                        ? Icons.question_answer_outlined
-                        : Icons.warning_outlined),
-                    title: Text(_title),
-                    subtitle: Padding(
-                      padding: const EdgeInsets.only(top: 5.0),
-                      child: Linkify(
-                        onOpen: (link) async {
-                          if (await canLaunch(link.url)) {
-                            await launch(link.url);
-                          } else {
-                            print('Could not launch $link');
-                          }
-                        },
-                        text: _body,
-                        linkStyle: TextStyle(
-                            fontSize: 16,
-                            fontStyle: FontStyle.italic,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.green),
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontStyle: FontStyle.normal,
-                            color: Colors.blueGrey),
+              //filtersState!.forEach((state) { });
+              return Padding(
+                padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
+                child: Container(
+                  padding: EdgeInsets.only(top: 5, bottom: 5),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    //color: Color.fromRGBO(245, 246, 248, 1.0),
+                    gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        stops: [
+                          0.2,
+                          1.0
+                        ],
+                        colors: [
+                          Color.fromRGBO(68, 98, 124, 1),
+                          Color.fromRGBO(10, 33, 51, 1)
+                        ]),
+                  ),
+                  child: ListTile(
+                      key: Key(index.toString()),
+                      contentPadding:
+                          EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+                      tileColor: index.isEven ? Colors.white : Colors.white,
+                      trailing: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            _date.split(' ')[0],
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          Text(_date.split(' ')[1],
+                              style: TextStyle(color: Colors.white)),
+                        ],
                       ),
-                    )
-                  );
-              })
-            );
+                      leading: Icon(
+                        _title.contains('Мой EvpaNet')
+                            ? Icons.question_answer_outlined
+                            : Icons.warning_outlined,
+                        color: Colors.white,
+                      ),
+                      title: Text(_title,
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold)),
+                      subtitle: Padding(
+                        padding: const EdgeInsets.only(top: 5.0),
+                        child: Linkify(
+                          onOpen: (link) async {
+                            if (await canLaunch(link.url)) {
+                              await launch(link.url);
+                            } else {
+                              print('Could not launch $link');
+                            }
+                          },
+                          text: _body,
+                          linkStyle: TextStyle(
+                              fontSize: 16,
+                              fontStyle: FontStyle.italic,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.green),
+                          style: TextStyle(
+                              fontSize: 16,
+                              fontStyle: FontStyle.normal,
+                              color: Colors.white70),
+                        ),
+                      )),
+                ),
+              );
+            }));
   }
 }
 

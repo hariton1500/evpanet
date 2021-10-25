@@ -53,6 +53,7 @@ class Abonent {
   bool lastApiErrorStatus = false;
   String device = '';
   List<User> users = [];
+  List<Map<String, dynamic>> messages = [];
 
   Future<void> clearAuthorize() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -67,6 +68,10 @@ class Abonent {
     guids.forEach((guid) {
       if (preferences.containsKey(guid))
         fillAbonentWith(jsonDecode(preferences.getString(guid) ?? ''), guid);
+    });
+    (preferences.getStringList('messages') ?? []).forEach((codedMessage) {
+      messages.add(jsonDecode(codedMessage));
+      print(messages.last);
     });
   }
 
@@ -111,7 +116,10 @@ class Abonent {
 
   //Network API methods
   Future<void> authorize(
-      {required String number, required int uid, required String token}) async {
+      {required String mode,
+      required String number,
+      required int uid,
+      required String token}) async {
     http.Response _response;
     Map<String, String> _headers = {'token': '$token'};
     Map _body = {'number': '$number', 'uid': '$uid'};
@@ -123,13 +131,23 @@ class Abonent {
           await http.post(Uri.parse(_url), headers: _headers, body: _body);
       if (_response.statusCode == 201) {
         var answer = jsonDecode(_response.body);
-        print('[answer] (${_response.statusCode}) $answer');
+        //print('[answer] (${_response.statusCode}) $answer');
         if (answer.runtimeType
             .toString()
             .startsWith('_InternalLinkedHashMap')) {
           if (Map.from(answer).containsKey('message')) {
             lastApiMessage = Map.from(answer)['message']['guids'].toString();
-            guids = List.from(Map.from(answer)['message']['guids']);
+            //print(mode);
+            //print('current abonent guids: $guids');
+            if (mode == 'new') {
+              //print('is new');
+              guids = List.from(answer['message']['guids']);
+            }
+            if (mode == 'add') {
+              //print('is add');
+              guids.addAll(List.from(answer['message']['guids']));
+              guids = guids.toSet().toList();
+            }
           }
           if (Map.from(answer).containsKey('error'))
             lastApiErrorStatus = Map.from(answer)['error'];
@@ -137,7 +155,7 @@ class Abonent {
       } else {
         guids = [];
         var answer = jsonDecode(_response.body);
-        print('[answer] (${_response.statusCode}) $answer');
+        //print('[answer] (${_response.statusCode}) $answer');
         if (answer.runtimeType
             .toString()
             .startsWith('_InternalLinkedHashMap')) {

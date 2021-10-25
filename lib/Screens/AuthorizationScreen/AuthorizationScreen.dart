@@ -4,7 +4,8 @@ import 'package:url_launcher/url_launcher.dart';
 import 'inputs.dart';
 
 class AuthorizationScreen extends StatelessWidget {
-  const AuthorizationScreen({Key? key}) : super(key: key);
+  const AuthorizationScreen({Key? key, required this.mode}) : super(key: key);
+  final String mode;
   final String assetName = 'assets/images/splash_logo.png';
 
   @override
@@ -30,7 +31,9 @@ class AuthorizationScreen extends StatelessWidget {
                   left: 10.0, right: 10.0, top: 20.0, bottom: 0),
               child: Column(
                 children: [
-                  Inputs(),
+                  Inputs(
+                    mode: mode,
+                  ),
                   connectRequest(context)
                 ],
               ),

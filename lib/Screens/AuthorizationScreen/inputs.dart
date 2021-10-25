@@ -6,6 +6,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class Inputs extends StatefulWidget {
+  final String mode;
+
+  const Inputs({Key? key, required this.mode}) : super(key: key);
   @override
   _InputsState createState() => _InputsState();
 }
@@ -25,6 +28,8 @@ class _InputsState extends State<Inputs> {
 
   @override
   void initState() {
+    if (widget.mode == 'add') textRepresentationOfMode = 'Вход   ';
+    if (widget.mode == 'new') textRepresentationOfMode = 'Вход   ';
     loadShareds();
     super.initState();
   }
@@ -114,33 +119,99 @@ class _InputsState extends State<Inputs> {
                   ),
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 20.0),
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                              side: BorderSide(color: Color(0xff95abbf))),
-                          elevation: 0.0,
-                          primary: Color(0x858eaac2)),
-                      onPressed:
-                          enterButtonEnable ? authorizationButtonPressed : null,
-                      child: Padding(
-                        padding: EdgeInsets.all(16.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              textRepresentationOfMode,
-                              style: TextStyle(
-                                  color: Colors.white, fontSize: 20.0),
+                    child: widget.mode == 'add'
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                      shape: RoundedRectangleBorder(
+                                          side: BorderSide(
+                                              color: Color(0xff95abbf))),
+                                      elevation: 0.0,
+                                      primary: Color(0x858eaac2)),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Padding(
+                                    padding: EdgeInsets.all(16.0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Icon(
+                                          Icons.arrow_back,
+                                          color: Colors.white,
+                                        ),
+                                        Text(
+                                          '   Отмена',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 20.0),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                      shape: RoundedRectangleBorder(
+                                          side: BorderSide(
+                                              color: Color(0xff95abbf))),
+                                      elevation: 0.0,
+                                      primary: Color(0x858eaac2)),
+                                  onPressed: enterButtonEnable
+                                      ? authorizationButtonPressed
+                                      : null,
+                                  child: Padding(
+                                    padding: EdgeInsets.all(16.0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          textRepresentationOfMode,
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 20.0),
+                                        ),
+                                        Icon(
+                                          Icons.arrow_forward,
+                                          color: Colors.white,
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ])
+                        : ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                    side: BorderSide(color: Color(0xff95abbf))),
+                                elevation: 0.0,
+                                primary: Color(0x858eaac2)),
+                            onPressed: enterButtonEnable
+                                ? authorizationButtonPressed
+                                : null,
+                            child: Padding(
+                              padding: EdgeInsets.all(16.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    textRepresentationOfMode,
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 20.0),
+                                  ),
+                                  Icon(
+                                    Icons.arrow_forward,
+                                    color: Colors.white,
+                                  )
+                                ],
+                              ),
                             ),
-                            Icon(
-                              Icons.arrow_forward,
-                              color: Colors.white,
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                  )
+                          ),
+                  ),
                 ],
               )),
             ),
@@ -170,13 +241,15 @@ class _InputsState extends State<Inputs> {
     setState(() {
       isSmall = false;
     });
-    print('[authorizationButtonPressed]');
+    //print('[authorizationButtonPressed]');
+    await abonent.loadSavedData();
     await abonent.authorize(
+        mode: widget.mode,
         number: '+${phone.getUnmaskedText()}',
         uid: int.tryParse(id.getUnmaskedText()) ?? 0,
         token: device);
     print(
-        '[abonent] (${abonent.lastApiErrorStatus}) ${abonent.lastApiMessage}');
+        '[${widget.mode} abonent] (${abonent.lastApiErrorStatus}) ${abonent.lastApiMessage}');
     if (abonent.lastApiErrorStatus) {
       Fluttertoast.showToast(
           msg: abonent.lastApiMessage,

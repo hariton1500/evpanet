@@ -96,7 +96,9 @@ class _StartScreenState extends State<StartScreen> {
     if (!isAuthorised) {
       Timer(Duration(seconds: 2), () {
         Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (BuildContext context) => AuthorizationScreen()));
+            builder: (BuildContext context) => AuthorizationScreen(
+                  mode: 'new',
+                )));
       });
     } else {
       Timer(Duration(seconds: 2), () async {
