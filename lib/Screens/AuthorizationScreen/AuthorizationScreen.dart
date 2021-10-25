@@ -10,9 +10,10 @@ class AuthorizationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      /*
       appBar: AppBar(
         backgroundColor: Color(0xff3c5d7c),
-      ),
+      ),*/
       body: SingleChildScrollView(
         child: Center(
           child: Container(
