@@ -284,3 +284,140 @@ class _SupportMessageModalState extends State<SupportMessageModal> {
     Navigator.pop(context);
   }
 }
+
+class PaymentDialog extends StatefulWidget {
+  const PaymentDialog({Key? key}) : super(key: key);
+
+  @override
+  _PaymentDialogState createState() => _PaymentDialogState();
+}
+
+class _PaymentDialogState extends State<PaymentDialog> {
+  int paySum = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: MediaQuery.of(context).size.width * .9,
+      height: MediaQuery.of(context).size.height * .5,
+      decoration: BoxDecoration(
+        //borderRadius: BorderRadius.all(20),
+        //color: Color.fromRGBO(245, 246, 248, 1.0),
+        gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            stops: [
+              0.2,
+              1.0
+            ],
+            colors: [
+              Color.fromRGBO(68, 98, 124, 1),
+              Color.fromRGBO(10, 33, 51, 1)
+            ]),
+      ),
+      padding: EdgeInsets.only(left: 10, right: 10),
+      //height: 500,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Text(
+            'Онлайн оплата:',
+            textAlign: TextAlign.center,
+            textScaleFactor: 2,
+            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+          ),
+          Divider(
+            color: Colors.white,
+            thickness: 3,
+          ),
+          //Image.network('https://my.evpanet.com/images/paymaster.png'),
+          Text(
+            'Информация: Комиссия системы онлайн платежей составляет 5%',
+            textAlign: TextAlign.center,
+            textScaleFactor: 1.2,
+            style:
+                TextStyle(fontWeight: FontWeight.normal, color: Colors.white),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Container(
+                width: MediaQuery.of(context).size.width * .5,
+                child: Text(
+                  'Желаемая сумма пополнения:',
+                  textAlign: TextAlign.left,
+                  textScaleFactor: 1.2,
+                  style: TextStyle(
+                      fontStyle: FontStyle.italic,
+                      fontWeight: FontWeight.normal,
+                      color: Colors.white),
+                ),
+              ),
+              Container(
+                width: MediaQuery.of(context).size.width * .2,
+                child: TextField(
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontStyle: FontStyle.normal,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
+                  keyboardType: TextInputType.number,
+                  onChanged: (text) {
+                    setState(() {
+                      paySum = (int.parse(text) * 1.05).ceil();
+                    });
+                  },
+                  //autofillHints: ['200'],
+                ),
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Container(
+                width: MediaQuery.of(context).size.width * .5,
+                child: Text(
+                  'Будет списано с Вашей (карты/кошелька):',
+                  textAlign: TextAlign.left,
+                  textScaleFactor: 1.2,
+                  style: TextStyle(
+                      fontStyle: FontStyle.italic,
+                      fontWeight: FontWeight.normal,
+                      color: Colors.white),
+                ),
+              ),
+              Container(
+                width: MediaQuery.of(context).size.width * .2,
+                child: Text(
+                  '$paySum р.',
+                  textAlign: TextAlign.center,
+                  textScaleFactor: 1.2,
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold, color: Colors.white),
+                ),
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              ElevatedButton.icon(
+                  onPressed: () {
+                    Navigator.of(context).pop(paySum);
+                  },
+                  icon: Icon(Icons.payment_outlined),
+                  label: Text('Перейти к оплате')),
+              ElevatedButton.icon(
+                  onPressed: () {
+                    Navigator.of(context).pop(0);
+                  },
+                  icon: Icon(Icons.cancel_outlined),
+                  label: Text('Отмена')),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+}
