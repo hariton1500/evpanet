@@ -71,7 +71,7 @@ class Abonent {
     });
     (preferences.getStringList('messages') ?? []).forEach((codedMessage) {
       messages.add(jsonDecode(codedMessage));
-      print(messages.last);
+      //print(messages.last);
     });
   }
 
