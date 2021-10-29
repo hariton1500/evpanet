@@ -1,6 +1,7 @@
 import 'package:evpanet/Helpers/maindata.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class Setup extends StatefulWidget {
   const Setup(
@@ -240,19 +241,98 @@ class _SetupState extends State<Setup> {
       return Column(
         children: List.generate(_user.tarifs.length, (index) {
           return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 50),
-            child: RadioListTile<String>(
-                activeColor: Colors.green,
-                dense: true,
-                title: Text(_user.tarifs[index]['name']),
-                subtitle: _user.tarifSum == _user.tarifs[index]['sum']
-                    ? Text('(текущий тариф)')
-                    : null,
-                value: _user.tarifs[index]['id'],
-                groupValue: _user.tarifs.firstWhere(
-                    (tarif) => tarif['sum'] == _user.tarifSum)['id'],
-                onChanged: _user.tarifs[index]['sum'] <= _user.balance
-                    ? (id) {
+              padding: const EdgeInsets.symmetric(horizontal: 50),
+              child: RadioListTile<String>(
+                  activeColor: Colors.green,
+                  dense: true,
+                  title: Text(_user.tarifs[index]['name']),
+                  subtitle: _user.tarifSum == _user.tarifs[index]['sum']
+                      ? Text('(текущий тариф)')
+                      : null,
+                  value: _user.tarifs[index]['id'],
+                  groupValue: _user.tarifs.firstWhere(
+                      (tarif) => tarif['sum'] == _user.tarifSum)['id'],
+                  onChanged: (id) {
+                    //tarif sum <= balance
+                    if (_user.tarifs[index]['sum'] <= _user.balance) {
+                      //if 200 or 300 Mb packets
+                      if (_user.tarifs[index]['name']
+                              .toString()
+                              .contains('200') ||
+                          _user.tarifs[index]['name']
+                              .toString()
+                              .contains('300')) {
+                        showDialog<bool>(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                  content: Container(
+                                    height:
+                                        MediaQuery.of(context).size.height / 3,
+                                    child: Column(
+                                        children: [
+                                          Text(
+                                            'Вы выбрали тариф ${_user.tarifs[index]['name']}, который требует выполнить следующие условия:',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          Divider(),
+                                          Text(
+                                              '1. У Вас должен быть гигабитный роутер;',
+                                              style: TextStyle(
+                                                  fontStyle: FontStyle.italic)),
+                                          Text(
+                                              '2. Нужно произвести переключение на нашем оборудовании;',
+                                              style: TextStyle(
+                                                  fontStyle: FontStyle.italic)),
+                                          Text(
+                                              '3. В некоторых случаях провести к вам другой кабель;',
+                                              style: TextStyle(
+                                                  fontStyle: FontStyle.italic)),
+                                          Divider(),
+                                          Text(
+                                              'Оставить заявку на изменение тарифа?')
+                                        ],
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.stretch),
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop(false);
+                                        },
+                                        child: Text('Отмена')),
+                                    TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop(true);
+                                        },
+                                        child: Text('Согласен')),
+                                  ]);
+                            }).then((answer) {
+                          if ((answer ?? false)) {
+                            //left zayavku na tarif 200 or 300
+                            print('Sending message about packet 200 or 300');
+                            abonent.postMessageToProvider(
+                                message:
+                                    'Сообщение от приложения: Пожелание перейти на тариф ${_user.tarifs[index]['name']}',
+                                guid: _user.guid);
+                            Fluttertoast.showToast(msg: abonent.lastApiMessage);
+                            if (!abonent.lastApiErrorStatus) {
+                              Map<String, dynamic> _message = {
+                                'title':
+                                    '(${_user.id}) Сообщение в службу поддержки',
+                                'message': 'Заявка отправлена',
+                                'timestamp':
+                                    '${DateTime.now().day}.${DateTime.now().month}.${DateTime.now().year} ${DateTime.now().hour}:${DateTime.now().minute}:${DateTime.now().second}'
+                              };
+                              abonent.saveMessage(message: _message);
+                              abonent.messages.add(_message);
+                            }
+                          }
+                        });
+                      } else {
                         showDialog(
                             context: context,
                             builder: (bc) => AlertDialog(
@@ -260,11 +340,10 @@ class _SetupState extends State<Setup> {
                                   actions: [
                                     TextButton(
                                         onPressed: () async {
-                                          print(id);
                                           await abonent.changeTarif(
                                               tarifId: id!, guid: _user.guid);
                                           widget.onSetupChanged();
-                                          Navigator.pop(context);
+                                          Navigator.of(context).pop(true);
                                           setState(() {
                                             _user.tarifName = _user.tarifs
                                                     .firstWhere((element) =>
@@ -280,15 +359,14 @@ class _SetupState extends State<Setup> {
                                         },
                                         child: Text('Да')),
                                     TextButton(
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        },
+                                        onPressed: () =>
+                                            Navigator.of(context).pop(false),
                                         child: Text('Нет'))
                                   ],
                                 ));
                       }
-                    : null),
-          );
+                    }
+                  }));
         }),
       );
   }
