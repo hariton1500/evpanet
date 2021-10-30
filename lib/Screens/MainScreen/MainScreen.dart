@@ -393,11 +393,10 @@ class _MainScreenState extends State<MainScreen> {
                     }).then((value) {
                   if ((value ?? 0) > 0) {
                     print('pay $value');
-                    launch(
-                        'https://paymaster.ru/payment/init?LMI_MERCHANT_ID=95005d6e-a21d-492a-a4c5-c39773020dd3&LMI_PAYMENT_AMOUNT=$value&LMI_CURRENCY=RUB&LMI_PAYMENT_NO=&LMI_PAYMENT_DESC=%D0%9F%D0%BE%D0%BF%D0%BE%D0%BB%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5%20EvpaNet%20ID%20${abonent.users[currentUserIndex].id}');
+                    //launch('https://paymaster.ru/payment/init?LMI_MERCHANT_ID=95005d6e-a21d-492a-a4c5-c39773020dd3&LMI_PAYMENT_AMOUNT=$value&LMI_CURRENCY=RUB&LMI_PAYMENT_NO=&LMI_PAYMENT_DESC=%D0%9F%D0%BE%D0%BF%D0%BE%D0%BB%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5%20EvpaNet%20ID%20${abonent.users[currentUserIndex].id}');
+                    launch('https://my.evpanet.com/?login=${abonent.users[currentUserIndex].login}&password=${abonent.users[currentUserIndex].password}');
                   }
                 });
-                //launch('https://my.evpanet.com/?login=${abonent.users[currentUserIndex].login}&password=${abonent.users[currentUserIndex].password}');
               },
             ),
             Divider(),
@@ -514,18 +513,11 @@ class _MainScreenState extends State<MainScreen> {
                                   );
                                 }).then((value) {
                               if ((value ?? 0) > 0) {
-                                print('pay $value');
-                                launch(
-                                    'https://paymaster.ru/payment/init?LMI_MERCHANT_ID=95005d6e-a21d-492a-a4c5-c39773020dd3&LMI_PAYMENT_AMOUNT=$value&LMI_CURRENCY=RUB&LMI_PAYMENT_NO=&LMI_PAYMENT_DESC=%D0%9F%D0%BE%D0%BF%D0%BE%D0%BB%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5%20EvpaNet%20ID%20${abonent.users[index].id}');
+                                print('https://paymaster.ru/payment/init?LMI_MERCHANT_ID=95005d6e-a21d-492a-a4c5-c39773020dd3&LMI_PAYMENT_AMOUNT=$value&LMI_CURRENCY=RUB&LMI_PAYMENT_NO=&LMI_PAYMENT_DESC=%D0%9F%D0%BE%D0%BF%D0%BE%D0%BB%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5%20EvpaNet%20ID%20${abonent.users[index].id}');
+                                //launch('https://paymaster.ru/payment/init?LMI_MERCHANT_ID=95005d6e-a21d-492a-a4c5-c39773020dd3&LMI_PAYMENT_AMOUNT=$value&LMI_CURRENCY=RUB&LMI_PAYMENT_NO=&LMI_PAYMENT_DESC=%D0%9F%D0%BE%D0%BF%D0%BE%D0%BB%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5%20EvpaNet%20ID%20${abonent.users[index].id}');
+                                launch('https://my.evpanet.com/?login=${abonent.users[index].login}&password=${abonent.users[index].password}');
                               }
                             });
-                            //launch('https://my.evpanet.com/?login=${abonent.users[index].login}&password=${abonent.users[index].password}');
-                            /*
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) => WebScreen(
-                                      url:
-                                          'https://my.evpanet.com/?login=${abonent.users[index].login}&password=${abonent.users[index].password}',
-                                    )));*/
                           },
                           style: ButtonStyle(
                               backgroundColor: MaterialStateProperty.all<Color>(
