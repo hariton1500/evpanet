@@ -132,61 +132,65 @@ class _SetupState extends State<Setup> {
                           inactiveColor: const Color(0xff939faa),
                         ),
                         ElevatedButton(
-                            onPressed: () => Platform.isAndroid ? showDialog(
-                                context: context,
-                                builder: (bc) => AlertDialog(
-                                      content: Text(
-                                          'Добавить ${daysToAdd.toInt()} дн?'),
-                                      actions: [
-                                        TextButton(
-                                            onPressed: () async {
-                                              //print(id);
-                                              await abonent.addDays(
-                                                  days: daysToAdd.round(),
-                                                  guid: _user.guid);
-                                              widget.onSetupChanged();
-                                              Navigator.pop(context);
-                                              setState(() {
-                                                if (!abonent.lastApiErrorStatus)
-                                                  _user.daysRemain +=
-                                                      daysToAdd.round();
-                                              });
-                                            },
-                                            child: Text('Да')),
-                                        TextButton(
-                                            onPressed: () {
-                                              Navigator.pop(context);
-                                            },
-                                            child: Text('Нет'))
-                                      ],
-                                    )) : showCupertinoDialog(
-                                context: context,
-                                builder: (bc) => CupertinoAlertDialog(
-                                      content: Text(
-                                          'Добавить ${daysToAdd.toInt()} дн?'),
-                                      actions: [
-                                        TextButton(
-                                            onPressed: () async {
-                                              //print(id);
-                                              await abonent.addDays(
-                                                  days: daysToAdd.round(),
-                                                  guid: _user.guid);
-                                              widget.onSetupChanged();
-                                              Navigator.pop(context);
-                                              setState(() {
-                                                if (!abonent.lastApiErrorStatus)
-                                                  _user.daysRemain +=
-                                                      daysToAdd.round();
-                                              });
-                                            },
-                                            child: Text('Да')),
-                                        TextButton(
-                                            onPressed: () {
-                                              Navigator.pop(context);
-                                            },
-                                            child: Text('Нет'))
-                                      ],
-                                    )),
+                            onPressed: () => Platform.isAndroid
+                                ? showDialog(
+                                    context: context,
+                                    builder: (bc) => AlertDialog(
+                                          content: Text(
+                                              'Добавить ${daysToAdd.toInt()} дн?'),
+                                          actions: [
+                                            TextButton(
+                                                onPressed: () async {
+                                                  //print(id);
+                                                  await abonent.addDays(
+                                                      days: daysToAdd.round(),
+                                                      guid: _user.guid);
+                                                  widget.onSetupChanged();
+                                                  Navigator.pop(context);
+                                                  setState(() {
+                                                    if (!abonent
+                                                        .lastApiErrorStatus)
+                                                      _user.daysRemain +=
+                                                          daysToAdd.round();
+                                                  });
+                                                },
+                                                child: Text('Да')),
+                                            TextButton(
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                child: Text('Нет'))
+                                          ],
+                                        ))
+                                : showCupertinoDialog(
+                                    context: context,
+                                    builder: (bc) => CupertinoAlertDialog(
+                                          content: Text(
+                                              'Добавить ${daysToAdd.toInt()} дн?'),
+                                          actions: [
+                                            TextButton(
+                                                onPressed: () async {
+                                                  //print(id);
+                                                  await abonent.addDays(
+                                                      days: daysToAdd.round(),
+                                                      guid: _user.guid);
+                                                  widget.onSetupChanged();
+                                                  Navigator.pop(context);
+                                                  setState(() {
+                                                    if (!abonent
+                                                        .lastApiErrorStatus)
+                                                      _user.daysRemain +=
+                                                          daysToAdd.round();
+                                                  });
+                                                },
+                                                child: Text('Да')),
+                                            TextButton(
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                child: Text('Нет'))
+                                          ],
+                                        )),
                             style: ElevatedButton.styleFrom(
                                 onPrimary: Colors.white,
                                 padding: const EdgeInsets.all(0.0)),
@@ -231,9 +235,6 @@ class _SetupState extends State<Setup> {
 
   Widget tarifsChange() {
     bool isCanChangeTarif = _user.tarifs.any((element) {
-      //print('allowed_tarif:');
-      //print(int.parse(element['sum'].toString()));
-      //print(_user.balance);
       return int.parse(element['sum'].toString()) < _user.balance;
     });
     //print(isCanChangeTarif);
@@ -293,54 +294,9 @@ class _SetupState extends State<Setup> {
                               .toString()
                               .contains('300')) {
                         showDialog<bool>(
-                            context: context,
-                            builder: (context) {
-                              return AlertDialog(
-                                  content: Container(
-                                    height:
-                                        MediaQuery.of(context).size.height / 3,
-                                    child: Column(
-                                        children: [
-                                          Text(
-                                            'Вы выбрали тариф ${_user.tarifs[index]['name']}, который требует выполнить следующие условия:',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          Divider(),
-                                          Text(
-                                              '1. У Вас должен быть гигабитный роутер;',
-                                              style: TextStyle(
-                                                  fontStyle: FontStyle.italic)),
-                                          Text(
-                                              '2. Нужно произвести переключение на нашем оборудовании;',
-                                              style: TextStyle(
-                                                  fontStyle: FontStyle.italic)),
-                                          Text(
-                                              '3. В некоторых случаях провести к вам другой кабель;',
-                                              style: TextStyle(
-                                                  fontStyle: FontStyle.italic)),
-                                          Divider(),
-                                          Text(
-                                              'Оставить заявку на изменение тарифа?')
-                                        ],
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.stretch),
-                                  ),
-                                  actions: [
-                                    TextButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop(false);
-                                        },
-                                        child: Text('Отмена')),
-                                    TextButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop(true);
-                                        },
-                                        child: Text('Согласен')),
-                                  ]);
-                            }).then((answer) {
+                                context: context,
+                                builder: (context) => alertDialogMore100(index))
+                            .then((answer) {
                           if ((answer ?? false)) {
                             //left zayavku na tarif 200 or 300
                             print('Sending message about packet 200 or 300');
@@ -393,42 +349,49 @@ class _SetupState extends State<Setup> {
                                             Navigator.of(context).pop(false),
                                         child: Text('Нет'))
                                   ],
-                                )) : showCupertinoDialog(context: context, builder: (bc) => CupertinoAlertDialog(
-                                  content: Text('Изменить тариф?'),
-                                  actions: [
-                                    TextButton(
-                                        onPressed: () async {
-                                          print(id);
-                                          await abonent.changeTarif(
-                                              tarifId: id!, guid: _user.guid);
-                                          widget.onSetupChanged();
-                                          Navigator.pop(context);
-                                          setState(() {
-                                            _user.tarifName = _user.tarifs
-                                                    .firstWhere((element) =>
-                                                        element['id'] ==
-                                                        abonent.lastApiMessage)[
-                                                'name'];
-                                            _user.tarifSum = _user.tarifs
-                                                .firstWhere((element) =>
-                                                    element['id'] ==
-                                                    abonent
-                                                        .lastApiMessage)['sum'];
-                                          });
-                                        },
-                                        child: Text('Да')),
-                                    TextButton(
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        },
-                                        child: Text('Нет'))
-                                  ],
                                 ));
                       }
                     }
                   }));
         }),
       );
+  }
+
+  Widget alertDialogMore100(int index) {
+    return AlertDialog(
+        content: Container(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                'Вы выбрали тариф ${_user.tarifs[index]['name']}, который требует выполнить следующие условия:',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              Divider(),
+              Text('1. У Вас должен быть гигабитный роутер;',
+                  style: TextStyle(fontStyle: FontStyle.italic)),
+              Text('2. Нужно произвести переключение на нашем оборудовании;',
+                  style: TextStyle(fontStyle: FontStyle.italic)),
+              Text('3. В некоторых случаях провести к вам другой кабель;',
+                  style: TextStyle(fontStyle: FontStyle.italic)),
+              Divider(),
+              Text('Оставить заявку на изменение тарифа?')
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+              child: Text('Отмена')),
+          TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+              child: Text('Согласен')),
+        ]);
   }
 
   //askToChangeTarifDialog() {}
