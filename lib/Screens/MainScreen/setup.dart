@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:evpanet/Helpers/maindata.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -129,9 +132,36 @@ class _SetupState extends State<Setup> {
                           inactiveColor: const Color(0xff939faa),
                         ),
                         ElevatedButton(
-                            onPressed: () => showDialog(
+                            onPressed: () => Platform.isAndroid ? showDialog(
                                 context: context,
                                 builder: (bc) => AlertDialog(
+                                      content: Text(
+                                          'Добавить ${daysToAdd.toInt()} дн?'),
+                                      actions: [
+                                        TextButton(
+                                            onPressed: () async {
+                                              //print(id);
+                                              await abonent.addDays(
+                                                  days: daysToAdd.round(),
+                                                  guid: _user.guid);
+                                              widget.onSetupChanged();
+                                              Navigator.pop(context);
+                                              setState(() {
+                                                if (!abonent.lastApiErrorStatus)
+                                                  _user.daysRemain +=
+                                                      daysToAdd.round();
+                                              });
+                                            },
+                                            child: Text('Да')),
+                                        TextButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: Text('Нет'))
+                                      ],
+                                    )) : showCupertinoDialog(
+                                context: context,
+                                builder: (bc) => CupertinoAlertDialog(
                                       content: Text(
                                           'Добавить ${daysToAdd.toInt()} дн?'),
                                       actions: [
@@ -363,6 +393,36 @@ class _SetupState extends State<Setup> {
                                             Navigator.of(context).pop(false),
                                         child: Text('Нет'))
                                   ],
+                                )) : showCupertinoDialog(context: context, builder: (bc) => CupertinoAlertDialog(
+                                  content: Text('Изменить тариф?'),
+                                  actions: [
+                                    TextButton(
+                                        onPressed: () async {
+                                          print(id);
+                                          await abonent.changeTarif(
+                                              tarifId: id!, guid: _user.guid);
+                                          widget.onSetupChanged();
+                                          Navigator.pop(context);
+                                          setState(() {
+                                            _user.tarifName = _user.tarifs
+                                                    .firstWhere((element) =>
+                                                        element['id'] ==
+                                                        abonent.lastApiMessage)[
+                                                'name'];
+                                            _user.tarifSum = _user.tarifs
+                                                .firstWhere((element) =>
+                                                    element['id'] ==
+                                                    abonent
+                                                        .lastApiMessage)['sum'];
+                                          });
+                                        },
+                                        child: Text('Да')),
+                                    TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: Text('Нет'))
+                                  ],
                                 ));
                       }
                     }
@@ -371,7 +431,7 @@ class _SetupState extends State<Setup> {
       );
   }
 
-  askToChangeTarifDialog() {}
+  //askToChangeTarifDialog() {}
 
   void onChangeAutoactivation(bool value) async {
     await abonent.changeSwitchParameters(type: 'auto', guid: widget.user.guid);
