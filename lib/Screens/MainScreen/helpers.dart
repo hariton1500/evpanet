@@ -332,7 +332,7 @@ class _PaymentDialogState extends State<PaymentDialog> {
           ),
           //Image.network('https://my.evpanet.com/images/paymaster.png'),
           Text(
-            'Информация: Комиссия системы онлайн платежей составляет 5%',
+            'Информация: Комиссия системы онлайн платежей составляет 6%',
             textAlign: TextAlign.center,
             textScaleFactor: 1.2,
             style:
@@ -354,7 +354,12 @@ class _PaymentDialogState extends State<PaymentDialog> {
                 ),
               ),
               Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    color: Colors.blue),
+                //color: Colors.blue,
                 width: MediaQuery.of(context).size.width * .2,
+                height: MediaQuery.of(context).size.height * .04,
                 child: TextField(
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -362,12 +367,12 @@ class _PaymentDialogState extends State<PaymentDialog> {
                       fontWeight: FontWeight.bold,
                       color: Colors.white),
                   keyboardType: TextInputType.number,
+                  cursorColor: Colors.white,
                   onChanged: (text) {
                     setState(() {
-                      paySum = (int.parse(text) * 1.05).ceil();
+                      paySum = (int.parse(text) * 1.06).ceil();
                     });
                   },
-                  //autofillHints: ['200'],
                 ),
               ),
             ],
