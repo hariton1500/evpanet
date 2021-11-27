@@ -53,6 +53,7 @@ class Abonent {
   bool lastApiErrorStatus = false;
   String device = '';
   List<User> users = [];
+  int updatedUsers = 0;
   List<Map<String, dynamic>> messages = [];
 
   Future<void> clearAuthorize() async {
@@ -75,12 +76,10 @@ class Abonent {
     });
   }
 
-  Future<void> saveData() async {
+  Future<void> saveGuidsList() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     preferences.setStringList('guids', guids);
-    //preferences.setString('users', jsonEncode(users));
-    print('[saveData] guids: $guids');
-    //print('[saveData] users: ${jsonEncode(users.first)}');
+    print('[saveGuidsList] guids: $guids');
   }
 
   Future<void> saveUser(Map user, String guid) async {
@@ -89,20 +88,19 @@ class Abonent {
   }
 
   void fillAbonentWith(Map user, String guid) {
-    print('[fillAbonentWith]');
+    //print('[fillAbonentWith]');
     User _user = User();
     _user.load(user, guid);
     if (users.any((user) => user.guid == guid)) {
-      print('[fillAbonentWith] users contains guid: $guid');
+      //print('[fillAbonentWith] users contains guid: $guid');
       int index = users.indexWhere((user) => user.guid == guid);
       users[index] = _user;
-      print('[fillAbonentWith] users[$index] = ${_user.guid}');
+      //print('[fillAbonentWith] users[$index] = ${_user.guid}');
     } else {
-      print('[fillAbonentWith] users.add guid: $guid');
+      //print('[fillAbonentWith] users.add guid: $guid');
       users.add(_user);
     }
-    print(
-        '[fillAbonentWith] Loaded ${users.indexOf(_user) + 1} of ${users.length} users');
+    //print('[fillAbonentWith] Loaded ${users.indexOf(_user) + 1} of ${users.length} users');
   }
 
   //Messages methods
@@ -177,16 +175,19 @@ class Abonent {
   }
 
   Future<void> getDataForGuidsFromServer() async {
+    lastApiErrorStatus = true;
+    updatedUsers = 0;
     http.Response _response;
     Map<String, String> _headers = {'token': device};
     String url = '';
     print(
-        '[getDataForGuidsFormServer] Start get data from server for guids: [$guids]');
+        '[getDataForGuidsFromServer] Start get data from server for guids: [$guids]');
     guids.forEach((guid) async {
       url = 'https://evpanet.com/api/apk/user/info/$guid';
       try {
         //print('[get] ${Uri.parse(url)}, headers: $_headers');
         _response = await http.get(Uri.parse(url), headers: _headers);
+        updatedUsers += 1;
         if (_response.statusCode == 201) {
           var answer = jsonDecode(_response.body);
           //print(answer);
@@ -196,9 +197,10 @@ class Abonent {
             if (Map.from(answer).containsKey('message')) {
               lastApiMessage =
                   Map.from(answer)['message']['userinfo'].toString();
-              //users.clear();
               fillAbonentWith(Map.from(answer)['message']['userinfo'], guid);
               saveUser(Map.from(answer)['message']['userinfo'], guid);
+              print(
+                  '[getDataForGuidsFromServer] updated from server for $guid');
             }
             if (Map.from(answer).containsKey('error'))
               lastApiErrorStatus = Map.from(answer)['error'];

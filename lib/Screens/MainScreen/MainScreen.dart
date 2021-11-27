@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:crypto/crypto.dart';
+//import 'package:crypto/crypto.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:evpanet/Helpers/maindata.dart';
 import 'package:evpanet/Screens/accounts.dart';
@@ -11,7 +11,7 @@ import 'package:flutter/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+//import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'helpers.dart';
 import 'setup.dart';
@@ -28,10 +28,11 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   Abonent abonent = Abonent();
   int currentUserIndex = 0;
-  bool isStarting = true, isShowSetup = false;
+  bool isStarting = true, isShowSetup = false, isUpdating = false;
   bool isPaymentLaunched = false;
   String text = '';
   List<String> messages = [];
+  DateTime? lastUpdateDateTime;
 
   @override
   void initState() {
@@ -51,10 +52,16 @@ class _MainScreenState extends State<MainScreen> {
 
   Future<void> start() async {
     print('[start]');
+    setState(() {
+      isStarting = true;
+    });
     await abonent.loadSavedData();
-    isStarting = true;
-    setState(() {});
-    if (abonent.device.length > 10) await abonent.getDataForGuidsFromServer();
+    setState(() {
+      isStarting = false;
+    });
+    if (abonent.device.length > 10)
+      update(); //abonent.getDataForGuidsFromServer();
+    /*
     Timer.periodic(Duration(seconds: 1), (timer) async {
       setState(() {});
       print('[start] (${timer.tick}) refreshing...');
@@ -62,12 +69,35 @@ class _MainScreenState extends State<MainScreen> {
         timer.cancel();
         abonent.saveData();
         isStarting = false;
+        if (!abonent.lastApiErrorStatus) lastUpdateDateTime = DateTime.now();
         setState(() {});
         SharedPreferences preferences = await SharedPreferences.getInstance();
         preferences.reload();
         print('[messages]');
         messages.addAll(preferences.getStringList('messages') ?? []);
         print(preferences.getStringList('messages'));
+      }
+    });*/
+  }
+
+  Future<void> update() async {
+    print('[update...]');
+    setState(() {
+      isUpdating = true;
+    });
+    print(abonent.updatedUsers);
+    await abonent.getDataForGuidsFromServer();
+    print(abonent.updatedUsers);
+    Timer.periodic(Duration(seconds: 1), (timer) {
+      print(abonent.updatedUsers);
+      if (abonent.updatedUsers == abonent.guids.length) {
+        timer.cancel();
+        print('done.');
+        print('errors: ${abonent.lastApiErrorStatus}');
+        setState(() {
+          isUpdating = false;
+          if (!abonent.lastApiErrorStatus) lastUpdateDateTime = DateTime.now();
+        });
       }
     });
   }
@@ -578,57 +608,91 @@ class _MainScreenState extends State<MainScreen> {
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 18, right: 18),
-                child: Column(
-                  //mainAxisAlignment: MainAxisAlignment.end,
-                  //crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 20),
-                      child: Text(
-                        'Баланс',
-                        style: const TextStyle(
-                            color: Color.fromRGBO(144, 198, 124, 1),
-                            fontSize: 18),
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        isPaymentLaunched
-                            ? IconButton(
-                                onPressed: () {
-                                  start();
-                                  setState(() {
-                                    isPaymentLaunched = false;
-                                  });
-                                },
-                                icon: Icon(
-                                  Icons.refresh_outlined,
-                                  color: Colors.white,
-                                ))
-                            : Container(),
-                        Text(
-                          NumberFormat('#,##0.00##', 'ru_RU')
-                                  .format(abonent.users[index].balance) +
-                              ' р.',
-                          style: TextStyle(
-                              color: abonent.users[index].balance < 0
-                                  ? Color.fromRGBO(255, 81, 105, 1)
-                                  : Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              shadows: [
-                                const Shadow(
-                                  blurRadius: 1.0,
-                                  color: Colors.black,
-                                  offset: Offset(1.0, 1.0),
-                                )
-                              ]),
+                child: GestureDetector(
+                  onTap: update,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 3),
+                        child: Text(
+                          'Баланс',
+                          style: const TextStyle(
+                              color: Color.fromRGBO(144, 198, 124, 1),
+                              fontSize: 20),
                         ),
-                      ],
-                    )
-                  ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 7),
+                        child: Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(right: 5),
+                              child: !isUpdating
+                                  ? Icon(
+                                      Icons.update_outlined,
+                                      color: Colors.grey,
+                                      size: 16,
+                                    )
+                                  : RefreshProgressIndicator(
+                                      color: Colors.grey,
+                                      backgroundColor:
+                                          Color.fromRGBO(68, 98, 124, 1),
+                                    ),
+                            ),
+                            Text(
+                              lastUpdateDateTime != null
+                                  ? DateFormat.Md()
+                                      .add_Hms()
+                                      .format(lastUpdateDateTime!)
+                                  : '[не обновлено]',
+                              style:
+                                  TextStyle(color: Colors.grey, fontSize: 12),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          isPaymentLaunched
+                              ? IconButton(
+                                  onPressed: () {
+                                    start();
+                                    setState(() {
+                                      isPaymentLaunched = false;
+                                    });
+                                  },
+                                  icon: Icon(
+                                    Icons.refresh_outlined,
+                                    color: Colors.white,
+                                  ))
+                              : Container(),
+                          Text(
+                            NumberFormat('#,##0.00##', 'ru_RU')
+                                    .format(abonent.users[index].balance) +
+                                ' р.',
+                            style: TextStyle(
+                                color: abonent.users[index].balance < 0
+                                    ? Color.fromRGBO(255, 81, 105, 1)
+                                    : Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                shadows: [
+                                  const Shadow(
+                                    blurRadius: 1.0,
+                                    color: Colors.black,
+                                    offset: Offset(1.0, 1.0),
+                                  )
+                                ]),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
                 ),
-              )
+              ),
+              //Text('Обновлено: ${lastUpdateDateTime?.toLocal().toUtc() ?? ''}'),
             ],
           ),
           Padding(

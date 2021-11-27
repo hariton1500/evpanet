@@ -261,7 +261,7 @@ class _InputsState extends State<Inputs> {
           fontSize: 16.0);
     }
     if (abonent.guids.length > 0) {
-      abonent.saveData();
+      abonent.saveGuidsList();
       //можно уходить на главный экран
       Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (BuildContext context) => MainScreen()));

@@ -44,7 +44,7 @@ class _AccountsState extends State<Accounts> {
                     setState(() {
                       widget.abonent.guids.clear();
                       widget.abonent.users.clear();
-                      widget.abonent.saveData();
+                      widget.abonent.saveGuidsList();
                       Navigator.of(context).pushReplacement(MaterialPageRoute(
                           builder: (BuildContext context) =>
                               AuthorizationScreen(
@@ -104,7 +104,7 @@ class _AccountsState extends State<Accounts> {
                       ? setState(() {
                           widget.abonent.users.removeAt(index);
                           widget.abonent.guids.removeAt(index);
-                          widget.abonent.saveData();
+                          widget.abonent.saveGuidsList();
                           if (widget.abonent.users.isEmpty) {
                             Navigator.of(context).pushReplacement(
                                 MaterialPageRoute(
@@ -130,7 +130,7 @@ class _AccountsState extends State<Accounts> {
               final String _guid = widget.abonent.guids.removeAt(oldIndex);
               widget.abonent.users.insert(newIndex, _user);
               widget.abonent.guids.insert(newIndex, _guid);
-              widget.abonent.saveData();
+              widget.abonent.saveGuidsList();
             });
           }),
     );
