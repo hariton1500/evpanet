@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:convert';
+//import 'dart:convert';
 //import 'package:crypto/crypto.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:evpanet/Helpers/maindata.dart';
@@ -187,7 +187,7 @@ class _MainScreenState extends State<MainScreen> {
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (BuildContext context) => Messages(
-                            messagesStrings: messages.reversed.toList(),
+                            //messagesStrings: messages.reversed.toList(),
                             abonent: abonent,
                           )));
                 },
@@ -465,7 +465,7 @@ class _MainScreenState extends State<MainScreen> {
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (BuildContext context) => Messages(
-                          messagesStrings: messages.reversed.toList(),
+                          //messagesStrings: messages.reversed.toList(),
                           abonent: abonent,
                         )));
               },
@@ -829,7 +829,7 @@ class _MainScreenState extends State<MainScreen> {
             '${DateTime.now().day}.${DateTime.now().month}.${DateTime.now().year} ${DateTime.now().hour}:${DateTime.now().minute}:${DateTime.now().second}'
       };
       abonent.saveMessage(message: _message);
-      messages.add(jsonEncode(_message));
+      //messages.add(jsonEncode(_message));
     }
   }
 }

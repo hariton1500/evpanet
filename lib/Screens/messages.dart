@@ -4,14 +4,15 @@ import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:evpanet/Helpers/maindata.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Messages extends StatefulWidget {
   const Messages(
-      {Key? key, required this.messagesStrings, required this.abonent})
+      {Key? key, required this.abonent})
       : super(key: key);
 
-  final List<String> messagesStrings;
+  //final List<String> messagesStrings;
   final Abonent abonent;
 
   @override
@@ -20,11 +21,20 @@ class Messages extends StatefulWidget {
 
 class _MessagesState extends State<Messages> {
   List<Map<String, dynamic>> messages = [];
+  List<String>? messagesEncoded;
 
   @override
   void initState() {
-    //loadShared();
+    load();
     super.initState();
+  }
+
+  Future<void> load() async {
+    print('[loading messages]');
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    messagesEncoded = preferences.getStringList('messages') ?? [];
+    print('loaded ${messagesEncoded!.length} messages');
+    setState(() {});
   }
 
   @override
@@ -47,15 +57,18 @@ class _MessagesState extends State<Messages> {
             ),
           ),
         ),
-        body: ListView.builder(
-            itemCount: widget.messagesStrings.length,
+        body: messagesEncoded != null && messagesEncoded!.length > 0 ? ListView.builder(
+            itemCount: messagesEncoded!.length,
             itemBuilder: (bc, index) {
               String _title =
-                  jsonDecode(widget.messagesStrings[index])['title'];
+                  //jsonDecode(widget.messagesStrings[index])['title'];
+                  jsonDecode(messagesEncoded![index])['title'];
               String _body =
-                  jsonDecode(widget.messagesStrings[index])['message'];
+                  //jsonDecode(widget.messagesStrings[index])['message'];
+                  jsonDecode(messagesEncoded![index])['message'];
               String _date =
-                  jsonDecode(widget.messagesStrings[index])['timestamp'];
+                  //jsonDecode(widget.messagesStrings[index])['timestamp'];
+                  jsonDecode(messagesEncoded![index])['timestamp'];
               //bool isFiltered;
 
               //filtersState!.forEach((state) { });
@@ -80,6 +93,7 @@ class _MessagesState extends State<Messages> {
                   ),
                   child: ListTile(
                       key: Key(index.toString()),
+                      onLongPress: () => showActions(context, index),
                       contentPadding:
                           EdgeInsets.symmetric(horizontal: 16, vertical: 5),
                       tileColor: index.isEven ? Colors.white : Colors.white,
@@ -129,9 +143,26 @@ class _MessagesState extends State<Messages> {
                       )),
                 ),
               );
-            }));
+            }):Container());
+  }
+
+  void showActions(BuildContext context, int index) {
+    showDialog(context: context, builder: (bc) => AlertDialog(
+      content: Text('Удалить?'),
+      actions: [
+        TextButton(onPressed: () async {
+          setState(() {messagesEncoded?.removeAt(index);});
+          SharedPreferences preferences = await SharedPreferences.getInstance();
+          preferences.setStringList('messages', messagesEncoded!);
+          Navigator.pop(context);
+        }, child: Text('Да')),
+        TextButton(onPressed: () => Navigator.pop(context), child: Text('Отмена')),
+      ],
+    ));
   }
 }
+
+
 
 class Filters extends StatefulWidget {
   const Filters({Key? key, required this.users, required this.onFiltersDone})

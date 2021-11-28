@@ -105,11 +105,14 @@ class Abonent {
 
   //Messages methods
   Future<void> saveMessage({required Map<String, dynamic> message}) async {
+    print('[saveMessage]');
     SharedPreferences preferences = await SharedPreferences.getInstance();
     List<String> messagesJSON = [];
     messagesJSON.addAll(preferences.getStringList('messages') ?? []);
+    print('loaded ${messagesJSON.length} messages');
     messagesJSON.add(jsonEncode(message));
     preferences.setStringList('messages', messagesJSON);
+    print('stored ${messagesJSON.length} messages');
   }
 
   //Network API methods
