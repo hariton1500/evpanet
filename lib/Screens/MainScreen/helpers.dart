@@ -138,8 +138,9 @@ class CallButtonWidget extends State {
 
 class SupportMessageModal extends StatefulWidget {
   final Function onMessageSended;
+  final int id;
 
-  const SupportMessageModal({Key? key, required this.onMessageSended})
+  const SupportMessageModal({Key? key, required this.onMessageSended, required this.id})
       : super(key: key);
 
   @override
@@ -179,9 +180,9 @@ class _SupportMessageModalState extends State<SupportMessageModal> {
                   padding: const EdgeInsets.only(
                       left: 16.0, right: 16.0, bottom: 20.0),
                   alignment: Alignment.topCenter,
-                  child: const Center(
+                  child: Center(
                     child: Text(
-                      'Отправка сообщения в службу технической поддержки',
+                      'Отправка сообщения в службу технической поддержки\nID: ${widget.id}',
                       style: TextStyle(
                           fontSize: 16,
                           color: Color.fromRGBO(72, 95, 113, 1.0),
@@ -273,7 +274,7 @@ class _SupportMessageModalState extends State<SupportMessageModal> {
 
   void _sendMessagePressed() async {
     Fluttertoast.showToast(
-        msg: 'answer. В случае ответа Вы получите уведомление.',
+        msg: 'В случае ответа Вы получите уведомление.',
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 15,

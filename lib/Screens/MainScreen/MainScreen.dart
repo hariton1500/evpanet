@@ -105,6 +105,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     print('{MainScreen}[build]');
+    print('[currentUserIndex] $currentUserIndex');
     return Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: Color.fromRGBO(245, 246, 248, 1.0),
@@ -207,8 +208,9 @@ class _MainScreenState extends State<MainScreen> {
                     : CarouselSlider.builder(
                         itemCount: abonent.users.length,
                         itemBuilder: (BuildContext context, int itemIndex,
-                                int pageViewIndex) =>
-                            carouselUser(itemIndex),
+                                int pageViewIndex) {
+                                  print('[courusel builder] itemIndex: $itemIndex');
+                                  return carouselUser(itemIndex);},
                         options: CarouselOptions(
                             initialPage: currentUserIndex,
                             autoPlay: false,
@@ -491,6 +493,7 @@ class _MainScreenState extends State<MainScreen> {
                     builder: (BuildContext context) => Accounts(
                           abonent: abonent,
                           callback: () {
+                            if (currentUserIndex > abonent.users.length - 1) currentUserIndex = abonent.users.length - 1;
                             setState(() {});
                           },
                         )));
@@ -629,17 +632,12 @@ class _MainScreenState extends State<MainScreen> {
                           children: [
                             Padding(
                               padding: const EdgeInsets.only(right: 5),
-                              child: !isUpdating
-                                  ? Icon(
+                              child:
+                                Icon(
                                       Icons.update_outlined,
                                       color: Colors.grey,
                                       size: 16,
                                     )
-                                  : RefreshProgressIndicator(
-                                      color: Colors.grey,
-                                      backgroundColor:
-                                          Color.fromRGBO(68, 98, 124, 1),
-                                    ),
                             ),
                             Text(
                               lastUpdateDateTime != null
@@ -668,6 +666,7 @@ class _MainScreenState extends State<MainScreen> {
                                     color: Colors.white,
                                   ))
                               : Container(),
+                          !isUpdating ?
                           Text(
                             NumberFormat('#,##0.00##', 'ru_RU')
                                     .format(abonent.users[index].balance) +
@@ -685,7 +684,9 @@ class _MainScreenState extends State<MainScreen> {
                                     offset: Offset(1.0, 1.0),
                                   )
                                 ]),
-                          ),
+                          ) : RefreshProgressIndicator(color: Colors.grey,
+                                      backgroundColor:
+                                          Color.fromRGBO(68, 98, 124, 1),),
                         ],
                       )
                     ],
@@ -812,7 +813,7 @@ class _MainScreenState extends State<MainScreen> {
             Animation secondaryAnimation) {
           return Dialog(
               backgroundColor: Colors.transparent,
-              child: SupportMessageModal(onMessageSended: sending));
+              child: SupportMessageModal(onMessageSended: sending, id: abonent.users[currentUserIndex].id,));
         });
   }
 
