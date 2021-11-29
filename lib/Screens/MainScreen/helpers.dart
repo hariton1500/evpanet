@@ -406,14 +406,14 @@ class _PaymentDialogState extends State<PaymentDialog> {
             ],
           ),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               ElevatedButton.icon(
                   onPressed: () {
                     Navigator.of(context).pop(paySum);
                   },
                   icon: Icon(Icons.payment_outlined),
-                  label: Text('Перейти к оплате')),
+                  label: Text('Оплатить')),
               ElevatedButton.icon(
                   onPressed: () {
                     Navigator.of(context).pop(0);
