@@ -8,6 +8,7 @@ import 'package:evpanet/Screens/messages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
@@ -519,7 +520,10 @@ class _MainScreenState extends State<MainScreen> {
                   //padding: const EdgeInsets.all(8.0),
                   child: Padding(
                     padding: const EdgeInsets.only(top: 20),
-                    child: Text('evpanet.com'),
+                    child: Linkify(
+                      onOpen: (url) async {await launch(url.url);},
+                      text: 'Сайт: www.evpanet.com\nПочта: adm.evpanet@gmail.com\nТелефон: +79780489664\nТелефон: +79780755900'
+                    ),
                   ),
                 )
               ],
