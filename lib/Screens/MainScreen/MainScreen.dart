@@ -11,6 +11,7 @@ import 'package:flutter/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 //import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'helpers.dart';
@@ -33,6 +34,7 @@ class _MainScreenState extends State<MainScreen> {
   String text = '';
   List<String> messages = [];
   DateTime? lastUpdateDateTime;
+  String? version, buildNumber;
 
   @override
   void initState() {
@@ -47,6 +49,10 @@ class _MainScreenState extends State<MainScreen> {
       systemNavigationBarIconBrightness:
           Brightness.dark, //navigation bar icons' color
     ));
+    PackageInfo.fromPlatform().then((value) {setState(() {
+      version = value.version;
+      buildNumber = value.buildNumber;
+    });});
     super.initState();
   }
 
@@ -500,6 +506,35 @@ class _MainScreenState extends State<MainScreen> {
               },
             ),
             Divider(),
+            AboutListTile(
+              icon: Icon(Icons.info_outline),
+              applicationVersion: version,
+              applicationIcon: Icon(Icons.insert_emoticon_outlined, size: 50,),
+              applicationLegalese: '(C) EvpaNet    2000 г.',
+              applicationName: 'Мой EvpaNet',
+              child: Text('Информация о приложении'),
+              dense: false,
+              aboutBoxChildren: [
+                Center(
+                  //padding: const EdgeInsets.all(8.0),
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 20),
+                    child: Text('evpanet.com'),
+                  ),
+                )
+              ],
+            ),
+            //Expanded(child: Container()),
+            /*
+            TextButton(
+              onPressed: () => showAboutDialog(
+                context: context,
+                applicationName: 'Мой EvpaNet',
+                applicationVersion: version
+              ),
+              child: Text('Информация о приложении')
+            ),
+            //Text('Версия: $version'),*/
           ]);
   }
 
