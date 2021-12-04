@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:wifi_info_flutter/wifi_info_flutter.dart';
 
 class User {
   late String guid;
@@ -121,6 +122,7 @@ class Abonent {
       required String number,
       required int uid,
       required String token}) async {
+    final WifiInfo _wifiInfo = WifiInfo();
     http.Response _response;
     Map<String, String> _headers = {'token': '$token'};
     Map _body = {'number': '$number', 'uid': '$uid'};
@@ -132,14 +134,14 @@ class Abonent {
           await http.post(Uri.parse(_url), headers: _headers, body: _body);
       if (_response.statusCode == 201) {
         var answer = jsonDecode(_response.body);
-        //print('[answer] (${_response.statusCode}) $answer');
+        print('[answer] (${_response.statusCode}) $answer');
         if (answer.runtimeType
             .toString()
             .startsWith('_InternalLinkedHashMap')) {
           if (Map.from(answer).containsKey('message')) {
             lastApiMessage = Map.from(answer)['message']['guids'].toString();
             //print(mode);
-            //print('current abonent guids: $guids');
+            print('current abonent guids: $guids');
             if (mode == 'new') {
               //print('is new');
               guids = List.from(answer['message']['guids']);
@@ -170,7 +172,10 @@ class Abonent {
       guids = [];
       lastApiErrorStatus = true;
       lastApiMessage = error.toString();
+      print(error);
     } on HandshakeException {
+      print('HandshakeException');
+      _wifiInfo.getWifiIP().then((value) => print(value));
       guids = [];
       lastApiErrorStatus = true;
       lastApiMessage = 'Ошибка на стороне сервера. Повторите попытку позже.';
@@ -178,6 +183,7 @@ class Abonent {
   }
 
   Future<void> getDataForGuidsFromServer() async {
+    
     lastApiErrorStatus = true;
     updatedUsers = 0;
     http.Response _response;
