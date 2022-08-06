@@ -25,7 +25,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   //print(messagesJSON);
 }
 
-/// Create a [AndroidNotificationChannel] for heads up notifications
+/// Create a AndroidNotificationChannel for heads up notifications
 AndroidNotificationChannel? channel;
 
 /// Initialize the [FlutterLocalNotificationsPlugin] package.
