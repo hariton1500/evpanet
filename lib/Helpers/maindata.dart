@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:wifi_info_flutter/wifi_info_flutter.dart';
+//import 'package:wifi_info_flutter/wifi_info_flutter.dart';
 
 class User {
   late String guid;
@@ -122,7 +122,7 @@ class Abonent {
       required String number,
       required int uid,
       required String token}) async {
-    final WifiInfo _wifiInfo = WifiInfo();
+    //final WifiInfo _wifiInfo = WifiInfo();
     http.Response _response;
     Map<String, String> _headers = {'token': '$token'};
     Map _body = {'number': '$number', 'uid': '$uid'};
@@ -175,7 +175,7 @@ class Abonent {
       print(error);
     } on HandshakeException {
       print('HandshakeException');
-      _wifiInfo.getWifiIP().then((value) => print(value));
+      //_wifiInfo.getWifiIP().then((value) => print(value));
       guids = [];
       lastApiErrorStatus = true;
       lastApiMessage = 'Ошибка на стороне сервера. Повторите попытку позже.';
@@ -183,7 +183,6 @@ class Abonent {
   }
 
   Future<void> getDataForGuidsFromServer() async {
-    
     lastApiErrorStatus = true;
     updatedUsers = 0;
     http.Response _response;
