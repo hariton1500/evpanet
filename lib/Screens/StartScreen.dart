@@ -6,7 +6,8 @@ import 'MainScreen/MainScreen.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class StartScreen extends StatefulWidget {
-  const StartScreen({Key? key}) : super(key: key);
+  const StartScreen({Key? key, required this.token}) : super(key: key);
+  final String token;
 
   @override
   _StartScreenState createState() => _StartScreenState();
@@ -29,8 +30,11 @@ class _StartScreenState extends State<StartScreen> {
     print('[{StartScreen}[build]');
     return Scaffold(
       bottomSheet: Container(
-        color: Color(0xff3c5d7c),
-        child: Text('Версия: $version', style: TextStyle(color: Colors.white30),)),
+          color: Color(0xff3c5d7c),
+          child: Text(
+            'Версия: $version',
+            style: TextStyle(color: Colors.white30),
+          )),
       body: Stack(
         fit: StackFit.expand,
         children: [
@@ -94,10 +98,12 @@ class _StartScreenState extends State<StartScreen> {
   }
 
   Future<void> loadShared() async {
-    PackageInfo.fromPlatform().then((value) {setState(() {
-      version = value.version;
-      buildNumber = value.buildNumber;
-    });});
+    PackageInfo.fromPlatform().then((value) {
+      setState(() {
+        version = value.version;
+        buildNumber = value.buildNumber;
+      });
+    });
     Abonent abonent = Abonent();
     await abonent.loadSavedData();
     isAuthorised = abonent.guids.isNotEmpty;
@@ -107,14 +113,16 @@ class _StartScreenState extends State<StartScreen> {
         Navigator.of(context).pushReplacement(MaterialPageRoute(
             builder: (BuildContext context) => AuthorizationScreen(
                   mode: 'new',
+                  token: widget.token,
                 )));
       });
     } else {
       Timer(Duration(seconds: 2), () async {
         //Abonent abonent = Abonent();
         //await abonent.loadSavedData();
-        Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (BuildContext context) => MainScreen()));
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+            builder: (BuildContext context) =>
+                MainScreen(token: widget.token)));
       });
     }
   }

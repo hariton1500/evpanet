@@ -1,11 +1,16 @@
 import 'package:evpanet/Helpers/maindata.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 import 'AuthorizationScreen/AuthorizationScreen.dart';
 
 class Accounts extends StatefulWidget {
-  const Accounts({Key? key, required this.abonent, required this.callback})
+  final String token;
+
+  const Accounts(
+      {Key? key,
+      required this.abonent,
+      required this.callback,
+      required this.token})
       : super(key: key);
   final Abonent abonent;
   final Function callback;
@@ -49,6 +54,7 @@ class _AccountsState extends State<Accounts> {
                           builder: (BuildContext context) =>
                               AuthorizationScreen(
                                 mode: 'new',
+                                token: widget.token,
                               )));
                     });
                   },
@@ -59,6 +65,7 @@ class _AccountsState extends State<Accounts> {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (BuildContext context) => AuthorizationScreen(
                               mode: 'add',
+                              token: widget.token,
                             )));
                   },
                   icon: Icon(Icons.add_circle_outline),
@@ -111,6 +118,7 @@ class _AccountsState extends State<Accounts> {
                                     builder: (BuildContext context) =>
                                         AuthorizationScreen(
                                           mode: 'new',
+                                          token: widget.token,
                                         )));
                           }
                           //print('removing at $index');

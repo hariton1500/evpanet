@@ -107,7 +107,7 @@ class CallButtonWidget extends State {
                   ),
                   onTap: () {
                     //if (await canLaunch('tel://$phoneToCall'))
-                    launch('tel://$phoneToCall');
+                    launchUrl(Uri(host: 'tel://$phoneToCall'));
                     Navigator.pop(context);
                   },
                 )
@@ -140,7 +140,8 @@ class SupportMessageModal extends StatefulWidget {
   final Function onMessageSended;
   final int id;
 
-  const SupportMessageModal({Key? key, required this.onMessageSended, required this.id})
+  const SupportMessageModal(
+      {Key? key, required this.onMessageSended, required this.id})
       : super(key: key);
 
   @override
