@@ -2,7 +2,7 @@ import 'package:evpanet/Helpers/maindata.dart';
 import 'package:evpanet/Screens/MainScreen/MainScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+//import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class Inputs extends StatefulWidget {
@@ -236,8 +236,8 @@ class _InputsState extends State<Inputs> {
   }
 
   Future<void> loadShareds() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    device = preferences.getString('deviceId') ?? widget.token;
+    //SharedPreferences preferences = await SharedPreferences.getInstance();
+    device = widget.token;
   }
 
   void authorizationButtonPressed() async {
