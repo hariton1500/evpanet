@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-//import 'package:flutter/widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'inputs.dart';
 
 class AuthorizationScreen extends StatelessWidget {
-  const AuthorizationScreen({Key? key, required this.mode}) : super(key: key);
+  final String token;
+
+  const AuthorizationScreen({Key? key, required this.mode, required this.token})
+      : super(key: key);
   final String mode;
   final String assetName = 'assets/images/splash_logo.png';
 
@@ -33,6 +35,7 @@ class AuthorizationScreen extends StatelessWidget {
                 children: [
                   Inputs(
                     mode: mode,
+                    token: token,
                   ),
                   connectRequest(context)
                 ],
@@ -67,7 +70,8 @@ class AuthorizationScreen extends StatelessWidget {
       child: TextButton(
         //elevation: 0.0,
         onPressed: () {
-          launch('https://evpanet.com/internet/leave-a-statement.html');
+          launchUrl(
+              Uri(host: 'https://evpanet.com/internet/leave-a-statement.html'));
           //Navigator.of(buildContext).push(MaterialPageRoute(builder: (BuildContext context) => OrderView()));
         },
         style: TextButton.styleFrom(primary: Color(0x408eaac2)),

@@ -7,7 +7,6 @@ import 'package:evpanet/Screens/accounts.dart';
 import 'package:evpanet/Screens/messages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -19,9 +18,11 @@ import 'helpers.dart';
 import 'setup.dart';
 
 class MainScreen extends StatefulWidget {
+  final String token;
+
   //final List<String> guids;
 
-  const MainScreen({Key? key}) : super(key: key);
+  const MainScreen({Key? key, required this.token}) : super(key: key);
 
   @override
   _MainScreenState createState() => _MainScreenState();
@@ -50,10 +51,12 @@ class _MainScreenState extends State<MainScreen> {
       systemNavigationBarIconBrightness:
           Brightness.dark, //navigation bar icons' color
     ));
-    PackageInfo.fromPlatform().then((value) {setState(() {
-      version = value.version;
-      buildNumber = value.buildNumber;
-    });});
+    PackageInfo.fromPlatform().then((value) {
+      setState(() {
+        version = value.version;
+        buildNumber = value.buildNumber;
+      });
+    });
     super.initState();
   }
 
@@ -215,9 +218,10 @@ class _MainScreenState extends State<MainScreen> {
                     : CarouselSlider.builder(
                         itemCount: abonent.users.length,
                         itemBuilder: (BuildContext context, int itemIndex,
-                                int pageViewIndex) {
-                                  print('[courusel builder] itemIndex: $itemIndex');
-                                  return carouselUser(itemIndex);},
+                            int pageViewIndex) {
+                          print('[courusel builder] itemIndex: $itemIndex');
+                          return carouselUser(itemIndex);
+                        },
                         options: CarouselOptions(
                             initialPage: currentUserIndex,
                             autoPlay: false,
@@ -438,7 +442,8 @@ class _MainScreenState extends State<MainScreen> {
                             guid: abonent.users[currentUserIndex].guid)
                         .then((_) async {
                       //String launchUrl = 'https://paymaster.ru/payment/init?LMI_MERCHANT_ID=95005d6e-a21d-492a-a4c5-c39773020dd3&LMI_PAYMENT_AMOUNT=$value&LMI_CURRENCY=RUB&LMI_PAYMENT_NO=${abonent.lastApiMessage}&LMI_PAYMENT_DESC=%D0%9F%D0%BE%D0%BF%D0%BE%D0%BB%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5%20EvpaNet%20ID%20${abonent.users[currentUserIndex].id}';
-                      String launchUrl = 'https://payberry.ru/pay/26?acc=${abonent.users[currentUserIndex].id}';
+                      String _launchUrl =
+                          'https://payberry.ru/pay/26?acc=${abonent.users[currentUserIndex].id}';
                       /*
                       String phrase =
                           '95005d6e-a21d-492a-a4c5-c39773020dd3;$value.00;RUB;ytnhfvgkby';
@@ -447,11 +452,12 @@ class _MainScreenState extends State<MainScreen> {
                           base64Encode(sha1.convert(utf8.encode(phrase)).bytes);
                       print('[Payment]$encoded');*/
                       //String launchUrl = 'https://paymaster.ru/builtinpayment/init?json=1&culture=1049&authhash=$encoded&LMI_MERCHANT_ID=95005d6e-a21d-492a-a4c5-c39773020dd3&LMI_PAYMENT_AMOUNT=$value&LMI_CURRENCY=RUB&LMI_PAYMENT_NO=${abonent.lastApiMessage}&LMI_PAYMENT_METHOD=BankCard&LMI_PAYMENT_DESC=%D0%9F%D0%BE%D0%BF%D0%BE%D0%BB%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5%20EvpaNet%20ID%20${abonent.users[currentUserIndex].id}';
-                      print('[launch payment by URL] $launchUrl');
+                      print('[launch payment by URL] $_launchUrl');
                       //print('[Payment result] ${await abonent.builtInPayment(launchUrl)}');
-                      launch(launchUrl).then((value) => setState(() {
-                            isPaymentLaunched = true;
-                          }));
+                      launchUrl(Uri(host: _launchUrl))
+                          .then((value) => setState(() {
+                                isPaymentLaunched = true;
+                              }));
                     });
                     //launch('https://my.evpanet.com/?login=${abonent.users[currentUserIndex].login}&password=${abonent.users[currentUserIndex].password}');
                   }
@@ -499,8 +505,10 @@ class _MainScreenState extends State<MainScreen> {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (BuildContext context) => Accounts(
                           abonent: abonent,
+                          token: widget.token,
                           callback: () {
-                            if (currentUserIndex > abonent.users.length - 1) currentUserIndex = abonent.users.length - 1;
+                            if (currentUserIndex > abonent.users.length - 1)
+                              currentUserIndex = abonent.users.length - 1;
                             setState(() {});
                           },
                         )));
@@ -510,7 +518,10 @@ class _MainScreenState extends State<MainScreen> {
             AboutListTile(
               icon: Icon(Icons.info_outline),
               applicationVersion: version,
-              applicationIcon: Icon(Icons.insert_emoticon_outlined, size: 50,),
+              applicationIcon: Icon(
+                Icons.insert_emoticon_outlined,
+                size: 50,
+              ),
               applicationLegalese: '(C) EvpaNet    2000 г.',
               applicationName: 'Мой EvpaNet',
               child: Text('Информация о приложении'),
@@ -521,9 +532,11 @@ class _MainScreenState extends State<MainScreen> {
                   child: Padding(
                     padding: const EdgeInsets.only(top: 20),
                     child: Linkify(
-                      onOpen: (url) async {await launch(url.url);},
-                      text: 'Сайт: www.evpanet.com\nПочта: adm.evpanet@gmail.com\nТелефон: +79780489664\nТелефон: +79780755900'
-                    ),
+                        onOpen: (url) async {
+                          await launchUrl(Uri(host: url.url));
+                        },
+                        text:
+                            'Сайт: www.evpanet.com\nПочта: adm.evpanet@gmail.com\nТелефон: +79780489664\nТелефон: +79780755900'),
                   ),
                 )
               ],
@@ -611,10 +624,12 @@ class _MainScreenState extends State<MainScreen> {
                                             .users[currentUserIndex].guid)
                                     .then((_) {
                                   //String launchUrl = 'https://paymaster.ru/payment/init?LMI_MERCHANT_ID=95005d6e-a21d-492a-a4c5-c39773020dd3&LMI_PAYMENT_AMOUNT=$value&LMI_CURRENCY=RUB&LMI_PAYMENT_NO=${abonent.lastApiMessage}&LMI_PAYMENT_DESC=%D0%9F%D0%BE%D0%BF%D0%BE%D0%BB%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5%20EvpaNet%20ID%20${abonent.users[currentUserIndex].id}';
-                                  String launchUrl = 'https://payberry.ru/pay/26?acc=${abonent.users[currentUserIndex].id}';
+                                  String _launchUrl =
+                                      'https://payberry.ru/pay/26?acc=${abonent.users[currentUserIndex].id}';
                                   print('[launch payment by URL] $launchUrl');
-                                  launch(launchUrl).then((value) =>
-                                      print('[Launch result] $value'));
+                                  launchUrl(Uri(host: _launchUrl)).then(
+                                      (value) =>
+                                          print('[Launch result] $value'));
                                 });
                                 //launch('https://my.evpanet.com/?login=${abonent.users[index].login}&password=${abonent.users[index].password}');
                               }
@@ -670,14 +685,12 @@ class _MainScreenState extends State<MainScreen> {
                         child: Row(
                           children: [
                             Padding(
-                              padding: const EdgeInsets.only(right: 5),
-                              child:
-                                Icon(
-                                      Icons.update_outlined,
-                                      color: Colors.grey,
-                                      size: 16,
-                                    )
-                            ),
+                                padding: const EdgeInsets.only(right: 5),
+                                child: Icon(
+                                  Icons.update_outlined,
+                                  color: Colors.grey,
+                                  size: 16,
+                                )),
                             Text(
                               lastUpdateDateTime != null
                                   ? DateFormat.Md()
@@ -705,27 +718,30 @@ class _MainScreenState extends State<MainScreen> {
                                     color: Colors.white,
                                   ))
                               : Container(),
-                          !isUpdating ?
-                          Text(
-                            NumberFormat('#,##0.00##', 'ru_RU')
-                                    .format(abonent.users[index].balance) +
-                                ' р.',
-                            style: TextStyle(
-                                color: abonent.users[index].balance < 0
-                                    ? Color.fromRGBO(255, 81, 105, 1)
-                                    : Colors.white,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                shadows: [
-                                  const Shadow(
-                                    blurRadius: 1.0,
-                                    color: Colors.black,
-                                    offset: Offset(1.0, 1.0),
-                                  )
-                                ]),
-                          ) : RefreshProgressIndicator(color: Colors.grey,
-                                      backgroundColor:
-                                          Color.fromRGBO(68, 98, 124, 1),),
+                          !isUpdating
+                              ? Text(
+                                  NumberFormat('#,##0.00##', 'ru_RU').format(
+                                          abonent.users[index].balance) +
+                                      ' р.',
+                                  style: TextStyle(
+                                      color: abonent.users[index].balance < 0
+                                          ? Color.fromRGBO(255, 81, 105, 1)
+                                          : Colors.white,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      shadows: [
+                                        const Shadow(
+                                          blurRadius: 1.0,
+                                          color: Colors.black,
+                                          offset: Offset(1.0, 1.0),
+                                        )
+                                      ]),
+                                )
+                              : RefreshProgressIndicator(
+                                  color: Colors.grey,
+                                  backgroundColor:
+                                      Color.fromRGBO(68, 98, 124, 1),
+                                ),
                         ],
                       )
                     ],
@@ -852,7 +868,10 @@ class _MainScreenState extends State<MainScreen> {
             Animation secondaryAnimation) {
           return Dialog(
               backgroundColor: Colors.transparent,
-              child: SupportMessageModal(onMessageSended: sending, id: abonent.users[currentUserIndex].id,));
+              child: SupportMessageModal(
+                onMessageSended: sending,
+                id: abonent.users[currentUserIndex].id,
+              ));
         });
   }
 

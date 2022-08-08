@@ -8,7 +8,10 @@ import 'package:fluttertoast/fluttertoast.dart';
 class Inputs extends StatefulWidget {
   final String mode;
 
-  const Inputs({Key? key, required this.mode}) : super(key: key);
+  final String token;
+
+  const Inputs({Key? key, required this.mode, required this.token})
+      : super(key: key);
   @override
   _InputsState createState() => _InputsState();
 }
@@ -234,7 +237,7 @@ class _InputsState extends State<Inputs> {
 
   Future<void> loadShareds() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    device = preferences.getString('deviceId') ?? '';
+    device = preferences.getString('deviceId') ?? widget.token;
   }
 
   void authorizationButtonPressed() async {
@@ -243,6 +246,7 @@ class _InputsState extends State<Inputs> {
     });
     //print('[authorizationButtonPressed]');
     await abonent.loadSavedData();
+    print('trying to authorize with token: $device');
     await abonent.authorize(
         mode: widget.mode,
         number: '+${phone.getUnmaskedText()}',
@@ -263,8 +267,8 @@ class _InputsState extends State<Inputs> {
     if (abonent.guids.length > 0) {
       abonent.saveGuidsList();
       //можно уходить на главный экран
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (BuildContext context) => MainScreen()));
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (BuildContext context) => MainScreen(token: device)));
     }
   }
 }
