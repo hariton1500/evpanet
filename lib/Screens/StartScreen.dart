@@ -32,7 +32,7 @@ class _StartScreenState extends State<StartScreen> {
       bottomSheet: Container(
           color: Color(0xff3c5d7c),
           child: Text(
-            'Версия: $version',
+            'Версия: $version, google token: ${widget.token.substring(0, 10)}',
             style: TextStyle(color: Colors.white30),
           )),
       body: Stack(

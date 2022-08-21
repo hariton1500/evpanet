@@ -25,7 +25,7 @@ class _InputsState extends State<Inputs> {
       MaskTextInputFormatter(mask: '#####', filter: {"#": RegExp(r'[0-9]')});
   String textRepresentationOfMode = 'Вход   ';
   Abonent abonent = Abonent();
-  late String device;
+  String device = '';
   String inputPhone = '', inputId = '';
   bool enterButtonEnable = false, isSmall = false;
 
@@ -235,9 +235,15 @@ class _InputsState extends State<Inputs> {
       });
   }
 
-  Future<void> loadShareds() async {
+  void loadShareds() {
     //SharedPreferences preferences = await SharedPreferences.getInstance();
     device = widget.token;
+    if (device == '') {
+      setState(() {
+        enterButtonEnable = false;
+      });
+    }
+    print('[input] $device');
   }
 
   void authorizationButtonPressed() async {

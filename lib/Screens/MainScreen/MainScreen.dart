@@ -441,19 +441,9 @@ class _MainScreenState extends State<MainScreen> {
                         .postGetPaymentNo(
                             guid: abonent.users[currentUserIndex].guid)
                         .then((_) async {
-                      //String launchUrl = 'https://paymaster.ru/payment/init?LMI_MERCHANT_ID=95005d6e-a21d-492a-a4c5-c39773020dd3&LMI_PAYMENT_AMOUNT=$value&LMI_CURRENCY=RUB&LMI_PAYMENT_NO=${abonent.lastApiMessage}&LMI_PAYMENT_DESC=%D0%9F%D0%BE%D0%BF%D0%BE%D0%BB%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5%20EvpaNet%20ID%20${abonent.users[currentUserIndex].id}';
                       String _launchUrl =
                           'https://payberry.ru/pay/26?acc=${abonent.users[currentUserIndex].id}';
-                      /*
-                      String phrase =
-                          '95005d6e-a21d-492a-a4c5-c39773020dd3;$value.00;RUB;ytnhfvgkby';
-                      print('[Payment]$phrase');
-                      String encoded =
-                          base64Encode(sha1.convert(utf8.encode(phrase)).bytes);
-                      print('[Payment]$encoded');*/
-                      //String launchUrl = 'https://paymaster.ru/builtinpayment/init?json=1&culture=1049&authhash=$encoded&LMI_MERCHANT_ID=95005d6e-a21d-492a-a4c5-c39773020dd3&LMI_PAYMENT_AMOUNT=$value&LMI_CURRENCY=RUB&LMI_PAYMENT_NO=${abonent.lastApiMessage}&LMI_PAYMENT_METHOD=BankCard&LMI_PAYMENT_DESC=%D0%9F%D0%BE%D0%BF%D0%BE%D0%BB%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5%20EvpaNet%20ID%20${abonent.users[currentUserIndex].id}';
                       print('[launch payment by URL] $_launchUrl');
-                      //print('[Payment result] ${await abonent.builtInPayment(launchUrl)}');
                       launchUrl(Uri(host: _launchUrl))
                           .then((value) => setState(() {
                                 isPaymentLaunched = true;
@@ -626,7 +616,7 @@ class _MainScreenState extends State<MainScreen> {
                                   //String launchUrl = 'https://paymaster.ru/payment/init?LMI_MERCHANT_ID=95005d6e-a21d-492a-a4c5-c39773020dd3&LMI_PAYMENT_AMOUNT=$value&LMI_CURRENCY=RUB&LMI_PAYMENT_NO=${abonent.lastApiMessage}&LMI_PAYMENT_DESC=%D0%9F%D0%BE%D0%BF%D0%BE%D0%BB%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5%20EvpaNet%20ID%20${abonent.users[currentUserIndex].id}';
                                   String _launchUrl =
                                       'https://payberry.ru/pay/26?acc=${abonent.users[currentUserIndex].id}';
-                                  print('[launch payment by URL] $launchUrl');
+                                  print('[launch payment by URL] $_launchUrl');
                                   launchUrl(Uri(host: _launchUrl)).then(
                                       (value) =>
                                           print('[Launch result] $value'));
