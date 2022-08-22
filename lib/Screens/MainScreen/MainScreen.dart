@@ -65,6 +65,7 @@ class _MainScreenState extends State<MainScreen> {
     setState(() {
       isStarting = true;
     });
+    abonent.getDataForGuidsFromServer();
     abonent.loadSavedData(widget.token).then((value) {
       setState(() {
         isStarting = false;
@@ -132,6 +133,7 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     print('{MainScreen}[build]');
     print('[currentUserIndex] $currentUserIndex');
+    print('[isStarting] $isStarting');
     return Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: Color.fromRGBO(245, 246, 248, 1.0),
