@@ -65,15 +65,21 @@ class _MainScreenState extends State<MainScreen> {
     setState(() {
       isStarting = true;
     });
-    abonent.getDataForGuidsFromServer();
-    abonent.loadSavedData(widget.token).then((value) {
+    abonent.getDataForGuidsFromServer(widget.token).then((value) {
       setState(() {
         isStarting = false;
       });
     }).timeout(Duration(seconds: 3), onTimeout: () {
-      setState(() {
-        isStarting = false;
+      abonent.loadSavedData(widget.token).then((value) {
+        setState(() {
+          isStarting = false;
+        });
+      }).timeout(Duration(seconds: 3), onTimeout: () {
+        setState(() {
+          isStarting = false;
+        });
       });
+
       /*
       Fluttertoast.showToast(
         msg: 'Не удалось подключиться к серверу',
@@ -113,7 +119,7 @@ class _MainScreenState extends State<MainScreen> {
       isUpdating = true;
     });
     print(abonent.updatedUsers);
-    await abonent.getDataForGuidsFromServer();
+    await abonent.getDataForGuidsFromServer(widget.token);
     print(abonent.updatedUsers);
     Timer.periodic(Duration(seconds: 1), (timer) {
       print(abonent.updatedUsers);

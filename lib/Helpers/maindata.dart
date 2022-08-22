@@ -183,15 +183,17 @@ class Abonent {
     }
   }
 
-  Future<void> getDataForGuidsFromServer() async {
+  Future<void> getDataForGuidsFromServer(String token) async {
     lastApiErrorStatus = true;
     updatedUsers = 0;
     http.Response _response;
-    Map<String, String> _headers = {'token': device};
+    Map<String, String> _headers = {'token': token};
     String url = '';
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    guids = preferences.getStringList('guids') ?? [];
     print(
         '[getDataForGuidsFromServer] Start get data from server for guids: [$guids]');
-    guids.forEach((guid) async {
+    for (var guid in guids) {
       url = 'https://evpanet.com/api/apk/user/info/$guid';
       try {
         //print('[get] ${Uri.parse(url)}, headers: $_headers');
@@ -233,7 +235,7 @@ class Abonent {
         lastApiErrorStatus = true;
         lastApiMessage = 'Ошибка на стороне сервера. Повторите попытку позже.';
       }
-    });
+    }
   }
 
   Future<void> changeSwitchParameters(
