@@ -47,12 +47,11 @@ Future<void> main() async {
   await Firebase.initializeApp();
   print('[main] Firebase initialized');
   HttpOverrides.global = new MyHttpOverrides();
-  FirebaseMessaging.instance.getToken().then((token) async {
-    print('[getToken] token = $token');
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    preferences.setString('deviceId', token!);
-    _token = token;
-  });
+  _token = await FirebaseMessaging.instance.getToken() ?? '';
+  print('[getToken] token = $_token');
+  SharedPreferences preferences = await SharedPreferences.getInstance();
+  preferences.setString('deviceId', _token);
+
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   FirebaseMessaging.onMessage.listen((event) async {
     print('onMessage: $event');
