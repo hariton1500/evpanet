@@ -439,9 +439,9 @@ class Abonent {
     }
   }
 
-  Future<void> postGetPaymentNo({required String guid}) async {
+  Future<void> postGetPaymentNo(String token, {required String guid}) async {
     http.Response _response;
-    Map<String, String> _headers = {'token': device};
+    Map<String, String> _headers = {'token': token};
     Map _body = {'guid': guid};
     String url = 'https://evpanet.com/api/apk/payment';
     print('[postPayment] Start to send payment from ($guid) to server');

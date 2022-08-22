@@ -463,13 +463,13 @@ class _MainScreenState extends State<MainScreen> {
                   if ((value ?? 0) > 0) {
                     print('pay $value');
                     abonent
-                        .postGetPaymentNo(
+                        .postGetPaymentNo(widget.token,
                             guid: abonent.users[currentUserIndex].guid)
                         .then((_) async {
                       String _launchUrl =
                           'https://payberry.ru/pay/26?acc=${abonent.users[currentUserIndex].id}';
                       print('[launch payment by URL] $_launchUrl');
-                      launchUrl(Uri(host: _launchUrl))
+                      launchUrl(Uri.parse(_launchUrl))
                           .then((value) => setState(() {
                                 isPaymentLaunched = true;
                               }));
@@ -548,7 +548,7 @@ class _MainScreenState extends State<MainScreen> {
                     padding: const EdgeInsets.only(top: 20),
                     child: Linkify(
                         onOpen: (url) async {
-                          await launchUrl(Uri(host: url.url));
+                          await launchUrl(Uri.parse(url.url));
                         },
                         text:
                             'Сайт: www.evpanet.com\nПочта: adm.evpanet@gmail.com\nТелефон: +79780489664\nТелефон: +79780755900'),
@@ -634,7 +634,7 @@ class _MainScreenState extends State<MainScreen> {
                                 }).then((value) {
                               if ((value ?? 0) > 0) {
                                 abonent
-                                    .postGetPaymentNo(
+                                    .postGetPaymentNo(widget.token,
                                         guid: abonent
                                             .users[currentUserIndex].guid)
                                     .then((_) {
@@ -642,7 +642,7 @@ class _MainScreenState extends State<MainScreen> {
                                   String _launchUrl =
                                       'https://payberry.ru/pay/26?acc=${abonent.users[currentUserIndex].id}';
                                   print('[launch payment by URL] $_launchUrl');
-                                  launchUrl(Uri(host: _launchUrl)).then(
+                                  launchUrl(Uri.parse(_launchUrl)).then(
                                       (value) =>
                                           print('[Launch result] $value'));
                                 });
