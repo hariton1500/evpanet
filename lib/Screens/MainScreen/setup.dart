@@ -10,7 +10,8 @@ class Setup extends StatefulWidget {
       {Key? key,
       required this.user,
       required this.index,
-      required this.onSetupChanged, required this.token})
+      required this.onSetupChanged,
+      required this.token})
       : super(key: key);
   final User user;
   final int index;
@@ -143,6 +144,7 @@ class _SetupState extends State<Setup> {
                                                 onPressed: () async {
                                                   //print(id);
                                                   await abonent.addDays(
+                                                      widget.token,
                                                       days: daysToAdd.round(),
                                                       guid: _user.guid);
                                                   widget.onSetupChanged();
@@ -172,6 +174,7 @@ class _SetupState extends State<Setup> {
                                                 onPressed: () async {
                                                   //print(id);
                                                   await abonent.addDays(
+                                                      widget.token,
                                                       days: daysToAdd.round(),
                                                       guid: _user.guid);
                                                   widget.onSetupChanged();
@@ -300,7 +303,7 @@ class _SetupState extends State<Setup> {
                           if ((answer ?? false)) {
                             //left zayavku na tarif 200 or 300
                             print('Sending message about packet 200 or 300');
-                            abonent.postMessageToProvider(
+                            abonent.postMessageToProvider(widget.token,
                                 message:
                                     'Сообщение от приложения: Пожелание перейти на тариф ${_user.tarifs[index]['name']}',
                                 guid: _user.guid);
@@ -327,7 +330,9 @@ class _SetupState extends State<Setup> {
                                     TextButton(
                                         onPressed: () async {
                                           await abonent.changeTarif(
-                                              tarifId: id!, guid: _user.guid);
+                                              widget.token,
+                                              tarifId: id!,
+                                              guid: _user.guid);
                                           widget.onSetupChanged();
                                           Navigator.of(context).pop(true);
                                           setState(() {
@@ -397,7 +402,8 @@ class _SetupState extends State<Setup> {
   //askToChangeTarifDialog() {}
 
   void onChangeAutoactivation(bool value) async {
-    await abonent.changeSwitchParameters(type: 'auto', guid: widget.user.guid);
+    await abonent.changeSwitchParameters(widget.token,
+        type: 'auto', guid: widget.user.guid);
     setState(() {
       if (!abonent.lastApiErrorStatus)
         _user.auto = abonent.lastApiMessage == '1';
@@ -405,7 +411,7 @@ class _SetupState extends State<Setup> {
   }
 
   void onChangeParentControl(bool value) async {
-    await abonent.changeSwitchParameters(
+    await abonent.changeSwitchParameters(widget.token,
         type: 'parent', guid: widget.user.guid);
     setState(() {});
   }

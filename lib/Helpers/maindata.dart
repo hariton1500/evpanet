@@ -238,10 +238,10 @@ class Abonent {
     }
   }
 
-  Future<void> changeSwitchParameters(
+  Future<void> changeSwitchParameters(String token,
       {required String type, required String guid}) async {
     http.Response _response;
-    Map<String, String> _headers = {'token': device};
+    Map<String, String> _headers = {'token': token};
     Map _body = {'guid': guid};
     String url = type == 'auto'
         ? 'https://evpanet.com/api/apk/user/auto_activation/'
@@ -298,10 +298,10 @@ class Abonent {
     }
   }
 
-  Future<void> changeTarif(
+  Future<void> changeTarif(String token,
       {required String tarifId, required String guid}) async {
     http.Response _response;
-    Map<String, String> _headers = {'token': device};
+    Map<String, String> _headers = {'token': token};
     Map _body = {'tarif': tarifId, 'guid': guid};
     String url = 'https://evpanet.com/api/apk/user/tarif';
     print('[changeTarif] Start change tarif ($tarifId) of ($guid) on server');
@@ -345,9 +345,10 @@ class Abonent {
     }
   }
 
-  Future<void> addDays({required int days, required String guid}) async {
+  Future<void> addDays(String token,
+      {required int days, required String guid}) async {
     http.Response _response;
-    Map<String, String> _headers = {'token': device};
+    Map<String, String> _headers = {'token': token};
     Map _body = {'days': days.toString(), 'guid': guid};
     String url = 'https://evpanet.com/api/apk/user/days/';
     print('[addDays] Start to add days ($days) to ($guid) on server');
@@ -391,10 +392,10 @@ class Abonent {
     }
   }
 
-  Future<void> postMessageToProvider(
+  Future<void> postMessageToProvider(String token,
       {required String message, required String guid}) async {
     http.Response _response;
-    Map<String, String> _headers = {'token': device};
+    Map<String, String> _headers = {'token': token};
     Map _body = {'message': message, 'guid': guid};
     String url = 'https://evpanet.com/api/apk/support/request';
     print(

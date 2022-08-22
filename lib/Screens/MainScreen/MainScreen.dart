@@ -891,7 +891,7 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   sending(text) async {
-    await abonent.postMessageToProvider(
+    await abonent.postMessageToProvider(widget.token,
         message: text, guid: abonent.users[currentUserIndex].guid);
     Fluttertoast.showToast(msg: abonent.lastApiMessage);
     if (!abonent.lastApiErrorStatus) {
