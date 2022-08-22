@@ -62,10 +62,11 @@ class Abonent {
     preferences.setStringList('guids', []);
   }
 
-  Future<void> loadSavedData() async {
+  Future<void> loadSavedData(String token) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     guids = preferences.getStringList('guids') ?? [];
-    device = preferences.getString('deviceId') ?? '';
+    //device = preferences.getString('deviceId') ?? '';
+    device = token;
     print('[loadSavedData] guids: $guids');
     guids.forEach((guid) {
       if (preferences.containsKey(guid))

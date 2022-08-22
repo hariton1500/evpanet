@@ -105,7 +105,7 @@ class _StartScreenState extends State<StartScreen> {
       });
     });
     Abonent abonent = Abonent();
-    await abonent.loadSavedData();
+    await abonent.loadSavedData(widget.token);
     isAuthorised = abonent.guids.isNotEmpty;
     //isAuthorised = false;
     if (!isAuthorised) {

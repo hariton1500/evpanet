@@ -245,7 +245,7 @@ class _InputsState extends State<Inputs> {
       isSmall = false;
     });
     //print('[authorizationButtonPressed]');
-    await abonent.loadSavedData();
+    await abonent.loadSavedData(widget.token);
     print('trying to authorize with token: $device');
     await abonent.authorize(
         mode: widget.mode,

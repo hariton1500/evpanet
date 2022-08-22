@@ -65,9 +65,25 @@ class _MainScreenState extends State<MainScreen> {
     setState(() {
       isStarting = true;
     });
-    await abonent.loadSavedData();
-    setState(() {
-      isStarting = false;
+    abonent.loadSavedData(widget.token).then((value) {
+      setState(() {
+        isStarting = false;
+      });
+    }).timeout(Duration(seconds: 3), onTimeout: () {
+      setState(() {
+        isStarting = false;
+      });
+      /*
+      Fluttertoast.showToast(
+        msg: 'Не удалось подключиться к серверу',
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+      */
     });
     if (abonent.device.length > 10)
       update(); //abonent.getDataForGuidsFromServer();
@@ -241,6 +257,7 @@ class _MainScreenState extends State<MainScreen> {
                   ? Setup(
                       user: abonent.users[currentUserIndex],
                       index: currentUserIndex,
+                      token: widget.token,
                       onSetupChanged: () => start(),
                     )
                   : Container(),

@@ -10,11 +10,12 @@ class Setup extends StatefulWidget {
       {Key? key,
       required this.user,
       required this.index,
-      required this.onSetupChanged})
+      required this.onSetupChanged, required this.token})
       : super(key: key);
   final User user;
   final int index;
   final VoidCallback onSetupChanged;
+  final String token;
 
   @override
   _SetupState createState() => _SetupState();
@@ -36,7 +37,7 @@ class _SetupState extends State<Setup> {
   void start() async {
     _user = widget.user;
     print(_user.auto);
-    await abonent.loadSavedData();
+    await abonent.loadSavedData(widget.token);
     setState(() {});
   }
 
