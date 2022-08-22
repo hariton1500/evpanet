@@ -90,7 +90,7 @@ class Abonent {
   }
 
   void fillAbonentWith(Map user, String guid) {
-    //print('[fillAbonentWith]');
+    print('[fillAbonentWith]');
     User _user = User();
     _user.load(user, guid);
     if (users.any((user) => user.guid == guid)) {
@@ -99,7 +99,7 @@ class Abonent {
       users[index] = _user;
       //print('[fillAbonentWith] users[$index] = ${_user.guid}');
     } else {
-      //print('[fillAbonentWith] users.add guid: $guid');
+      print('[fillAbonentWith] users.add guid: $guid');
       users.add(_user);
     }
     //print('[fillAbonentWith] Loaded ${users.indexOf(_user) + 1} of ${users.length} users');
