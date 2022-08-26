@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'AuthorizationScreen/AuthorizationScreen.dart';
 import 'MainScreen/MainScreen.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:flutter/services.dart';
 
 class StartScreen extends StatefulWidget {
   const StartScreen({Key? key, required this.token}) : super(key: key);
@@ -31,9 +32,20 @@ class _StartScreenState extends State<StartScreen> {
     return Scaffold(
       bottomSheet: Container(
           color: Color(0xff3c5d7c),
-          child: Text(
-            'Версия: $version, google token: ${widget.token.substring(0, 10)}',
-            style: TextStyle(color: Colors.white30),
+          child: Row(
+            children: [
+              Text(
+                'Версия: $version',
+                style: TextStyle(color: Colors.white30),
+              ),
+              TextButton(
+                  onPressed: () {
+                    Clipboard.setData(ClipboardData(text: widget.token));
+                  },
+                  child: Text(
+                      ', google token: ${widget.token.substring(0, 10)}',
+                      style: TextStyle(color: Colors.white30)))
+            ],
           )),
       body: Stack(
         fit: StackFit.expand,

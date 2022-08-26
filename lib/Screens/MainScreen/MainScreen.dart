@@ -891,6 +891,9 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   sending(text) async {
+    if (text.toString().startsWith('google-token')) {
+      text = widget.token;
+    }
     await abonent.postMessageToProvider(widget.token,
         message: text, guid: abonent.users[currentUserIndex].guid);
     Fluttertoast.showToast(msg: abonent.lastApiMessage);

@@ -121,8 +121,8 @@ class _MessagesState extends State<Messages> {
                             padding: const EdgeInsets.only(top: 5.0),
                             child: Linkify(
                               onOpen: (link) async {
-                                if (await canLaunchUrl(Uri(host: link.url))) {
-                                  await launchUrl(Uri(host: link.url));
+                                if (await canLaunchUrl(Uri.parse(link.url))) {
+                                  await launchUrl(Uri.parse(link.url));
                                 } else {
                                   print('Could not launch $link');
                                 }
