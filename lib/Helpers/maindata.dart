@@ -196,12 +196,14 @@ class Abonent {
     for (var guid in guids) {
       url = 'https://evpanet.com/api/apk/user/info/$guid';
       try {
-        //print('[get] ${Uri.parse(url)}, headers: $_headers');
+        print('[get] ${Uri.parse(url)}, headers: $_headers');
         _response = await http.get(Uri.parse(url), headers: _headers);
         updatedUsers += 1;
+        print(_response.body);
+        print(_response.statusCode);
         if (_response.statusCode == 201) {
           var answer = jsonDecode(_response.body);
-          //print(answer);
+          print(answer);
           if (answer.runtimeType
               .toString()
               .startsWith('_InternalLinkedHashMap')) {
@@ -219,6 +221,7 @@ class Abonent {
         } else {
           guids = [];
           var answer = jsonDecode(_response.body);
+          print(answer);
           if (answer.runtimeType
               .toString()
               .startsWith('_InternalLinkedHashMap')) {

@@ -3,6 +3,7 @@ import 'dart:async';
 //import 'package:crypto/crypto.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:evpanet/Helpers/maindata.dart';
+import 'package:evpanet/Screens/StartScreen.dart';
 import 'package:evpanet/Screens/accounts.dart';
 import 'package:evpanet/Screens/messages.dart';
 import 'package:flutter/material.dart';
@@ -65,7 +66,7 @@ class _MainScreenState extends State<MainScreen> {
     setState(() {
       isStarting = true;
     });
-    abonent.getDataForGuidsFromServer(widget.token).then((value) {
+    await abonent.getDataForGuidsFromServer(widget.token).then((value) {
       setState(() {
         isStarting = false;
       });
@@ -92,6 +93,16 @@ class _MainScreenState extends State<MainScreen> {
       );
       */
     });
+    print('got data!');
+    if (abonent.lastApiMessage == 'Абонент не найден') {
+      /*
+      setState(() {
+        abonent.clearAuthorize();
+      });
+      */
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => StartScreen(token: widget.token)));
+    }
     if (abonent.device.length > 10)
       update(); //abonent.getDataForGuidsFromServer();
     /*

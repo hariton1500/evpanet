@@ -274,6 +274,9 @@ class _SetupState extends State<Setup> {
     else
       return Column(
         children: List.generate(_user.tarifs.length, (index) {
+          print('[setup:');
+          print('_user.tarifSum=${_user.tarifSum}');
+          print('_user.tarifs=${_user.tarifs}');
           return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 50),
               child: RadioListTile<String>(
@@ -285,10 +288,14 @@ class _SetupState extends State<Setup> {
                       : null,
                   value: _user.tarifs[index]['id'],
                   groupValue: _user.tarifs.firstWhere(
-                      (tarif) => tarif['sum'] == _user.tarifSum)['id'],
+                    (tarif) => tarif['sum'] == _user.tarifSum,
+                    orElse: () => _user.tarifs[0],
+                  )['id'],
                   onChanged: (id) {
                     //tarif sum <= balance
-                    if (_user.tarifs[index]['sum'] <= _user.balance) {
+
+                    if (int.parse(_user.tarifs[index]['sum'].toString()) <=
+                        _user.balance) {
                       //if 200 or 300 Mb packets
                       if (_user.tarifs[index]['name']
                               .toString()
@@ -341,11 +348,13 @@ class _SetupState extends State<Setup> {
                                                         element['id'] ==
                                                         abonent.lastApiMessage)[
                                                 'name'];
-                                            _user.tarifSum = _user.tarifs
+                                            _user.tarifSum = int.parse(_user
+                                                .tarifs
                                                 .firstWhere((element) =>
                                                     element['id'] ==
                                                     abonent
-                                                        .lastApiMessage)['sum'];
+                                                        .lastApiMessage)['sum']
+                                                .toString());
                                           });
                                         },
                                         child: Text('Да')),
