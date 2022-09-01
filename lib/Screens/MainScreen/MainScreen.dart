@@ -3,7 +3,6 @@ import 'dart:async';
 //import 'package:crypto/crypto.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:evpanet/Helpers/maindata.dart';
-import 'package:evpanet/Screens/StartScreen.dart';
 import 'package:evpanet/Screens/accounts.dart';
 import 'package:evpanet/Screens/messages.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +14,7 @@ import 'package:intl/intl.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 //import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../AuthorizationScreen/AuthorizationScreen.dart';
 import 'helpers.dart';
 import 'setup.dart';
 
@@ -100,8 +100,11 @@ class _MainScreenState extends State<MainScreen> {
         abonent.clearAuthorize();
       });
       */
-      Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => StartScreen(token: widget.token)));
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (context) => AuthorizationScreen(
+                token: widget.token,
+                mode: 'new',
+              )));
     }
     if (abonent.device.length > 10)
       update(); //abonent.getDataForGuidsFromServer();
