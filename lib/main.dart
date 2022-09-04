@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:evpanet/Models/app.dart';
+import 'package:evpanet/Pages/startpage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -40,18 +42,20 @@ class MyHttpOverrides extends HttpOverrides {
   }
 }
 
-String _token = '';
+//String _token = '';
+AppData appData = AppData();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   print('[main] Firebase initialized');
   HttpOverrides.global = new MyHttpOverrides();
-  _token = await FirebaseMessaging.instance.getToken() ?? '';
-  print('[getToken] token = $_token');
+  appData.token = await FirebaseMessaging.instance.getToken() ?? '';
+  print('[getToken] token = ${appData.token}');
+  /*
   SharedPreferences preferences = await SharedPreferences.getInstance();
   preferences.setString('deviceId', _token);
-
+  */
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   FirebaseMessaging.onMessage.listen((event) async {
     print('onMessage: $event');
@@ -87,7 +91,8 @@ Future<void> main() async {
       sound: true,
     );
   }
-  runApp(MyApp());
+  //runApp(MyApp());
+  runApp(NewApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -100,7 +105,22 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: StartScreen(token: _token),
+      home: StartScreen(token: appData.token),
+    );
+  }
+}
+
+class NewApp extends StatelessWidget {
+  // This widget is the root of your application.
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Мой EvpaNet',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: StartPage(appData: appData),
     );
   }
 }
