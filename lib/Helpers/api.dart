@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:evpanet/Models/person.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -12,12 +13,13 @@ class Api {
 
   Api({required this.token});
 
-  Future<void> authorize({required String phone, required int uid}) async {
+  Future<List<String>?> authorize({required String phone, required int uid}) async {
     //final WifiInfo _wifiInfo = WifiInfo();
     http.Response _response;
     Map<String, String> _headers = {'token': '$token'};
     Map _body = {'number': '$phone', 'uid': '$uid'};
     String _url = 'https://evpanet.com/api/apk/login/user';
+    List<String> guids = [];
     try {
       print('[authorize]');
       print('[post] ${Uri.parse(_url)}, headers: $_headers, body: $_body');
@@ -38,6 +40,8 @@ class Api {
             lastApiErrorStatus = Map.from(answer)['error'];
         }
       } else {
+        print(_response.body);
+        /*
         guids = [];
         var answer = jsonDecode(_response.body);
         //print('[answer] (${_response.statusCode}) $answer');
@@ -49,19 +53,39 @@ class Api {
           if (Map.from(answer).containsKey('error'))
             lastApiErrorStatus = Map.from(answer)['error'];
         }
+        */
       }
-    } on SocketException catch (error) {
-      guids = [];
-      lastApiErrorStatus = true;
-      lastApiMessage = error.toString();
+    } catch (error) {
+      //guids = [];
+      //lastApiErrorStatus = true;
+      //lastApiMessage = error.toString();
       print(error);
-    } on HandshakeException {
-      print('HandshakeException');
-      //_wifiInfo.getWifiIP().then((value) => print(value));
-      guids = [];
-      lastApiErrorStatus = true;
-      lastApiMessage = 'Ошибка на стороне сервера. Повторите попытку позже.';
     }
+    return guids;
+  }
+
+  Future<Person> getDataForUser({required String guid}) async {
+    Person person = Person(guid: guid);
+    http.Response _response;
+    Map<String, String> _headers = {'token': token};
+    String url = 'https://evpanet.com/api/apk/user/info/$guid';
+    try {
+      _response = await http.get(Uri.parse(url), headers: _headers);
+      if (_response.statusCode == 201) {
+        var answer = jsonDecode(_response.body);
+        if (answer is Map && answer.containsKey('message')) {
+          person.load(Map.from(answer)['message']['userinfo']);
+          saveUser(Map.from(answer)['message']['userinfo'], guid);
+        }
+      } else {
+        //var answer = jsonDecode(_response.body);
+        print(_response.body);
+      }
+    } catch (e) {
+      print(e);
+      throw e;
+    }
+    return person;
   }
 
   Future<void> getDataForGuidsFromServer(String token) async {

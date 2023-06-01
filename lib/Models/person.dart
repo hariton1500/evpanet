@@ -2,7 +2,7 @@ import 'dart:convert';
 
 class Person {
   String? guid;
-  int? id;
+  int id = -1;
   String name = '';
   double balance = 0.0;
   String endDate = '';
@@ -16,6 +16,31 @@ class Person {
   bool auto = false, parentControl = false;
   List<dynamic> tarifs = [];
   int dayPrice = 0;
+
+  Person({required String guid}) {
+    guid = guid;
+  }
+  
+  load(Map<String, dynamic> user) {
+    id = int.parse(user['id']);
+    name = user['name'];
+    balance = double.parse(user['extra_account']);
+    password = user['clear_pass'];
+    daysRemain = (int.parse(user['packet_secs']) / 60 / 60 / 24).round();
+    endDate = user['packet_end'] ?? '00.00.0000 00:00';
+    debt = double.parse(user['debt'] ?? 0.0);
+    tarifName = user['tarif_name'];
+    tarifSum = int.parse(user['tarif_sum'].toString());
+    ip = user['real_ip'];
+    street = user['street'];
+    house = user['house'];
+    flat = user['flat'];
+    auto = user['auto_activation'] == '1';
+    parentControl = user['flag_parent_control'] == '1';
+    tarifs = List.from(user['allowed_tarifs']);
+    dayPrice = user['days_price'];
+  }
+
 
   Person.fromJson(Map<String, dynamic> json) {
     guid = json['guid'] ?? '';
