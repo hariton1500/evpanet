@@ -75,8 +75,8 @@ class Api {
       if (_response.statusCode == 201) {
         var answer = jsonDecode(_response.body);
         if (answer is Map && answer.containsKey('message')) {
-          person.load(Map.from(answer)['message']['userinfo']);
-          saveUser(Map.from(answer)['message']['userinfo'], guid);
+          person.load(answer['message']['userinfo']);
+          saveUser(answer['message']['userinfo'], guid);
         }
       } else {
         //var answer = jsonDecode(_response.body);
