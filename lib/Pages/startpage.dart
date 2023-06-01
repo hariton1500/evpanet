@@ -41,10 +41,10 @@ class _StartPageState extends State<StartPage> {
               ),
               TextButton(
                   onPressed: () {
-                    Clipboard.setData(ClipboardData(text: widget.token));
+                    Clipboard.setData(ClipboardData(text: widget.appData.token));
                   },
                   child: Text(
-                      ', google token: ${widget.token.substring(0, 10)}',
+                      ', google token: ${widget.appData.token.substring(0, 10)}',
                       style: TextStyle(color: Colors.white30)))
             ],
           )),
@@ -118,7 +118,7 @@ class _StartPageState extends State<StartPage> {
       });
     });
     Abonent abonent = Abonent();
-    await abonent.loadSavedData(widget.token);
+    await abonent.loadSavedData(widget.appData.token);
     isAuthorised = abonent.guids.isNotEmpty;
     //isAuthorised = false;
     if (!isAuthorised) {
@@ -126,7 +126,7 @@ class _StartPageState extends State<StartPage> {
         Navigator.of(context).pushReplacement(MaterialPageRoute(
             builder: (BuildContext context) => AuthorizationScreen(
                   mode: 'new',
-                  token: widget.token,
+                  token: widget.appData.token,
                 )));
       });
     } else {
@@ -135,7 +135,7 @@ class _StartPageState extends State<StartPage> {
         //await abonent.loadSavedData();
         Navigator.of(context).pushReplacement(MaterialPageRoute(
             builder: (BuildContext context) =>
-                MainScreen(token: widget.token)));
+                MainScreen(token: widget.appData.token)));
       });
     }
   }

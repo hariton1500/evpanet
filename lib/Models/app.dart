@@ -8,5 +8,5 @@ class AppData {
   List<Note> messages = [];
   Api api = Api(token: '');
 
-  String token;
+  String token = '';
 }

@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:evpanet/Models/person.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -14,7 +16,6 @@ class Api {
   Api({required this.token});
 
   Future<List<String>?> authorize({required String phone, required int uid}) async {
-    //final WifiInfo _wifiInfo = WifiInfo();
     http.Response _response;
     Map<String, String> _headers = {'token': '$token'};
     Map _body = {'number': '$phone', 'uid': '$uid'};
