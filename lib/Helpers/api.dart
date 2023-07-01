@@ -5,6 +5,7 @@ import 'package:evpanet/Models/person.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:evpanet/Helpers/maindata.dart' as dataFuncs;
 
 class Api {
   String lastApiMessage = '';
@@ -76,7 +77,7 @@ class Api {
         var answer = jsonDecode(_response.body);
         if (answer is Map && answer.containsKey('message')) {
           person.load(answer['message']['userinfo']);
-          saveUser(answer['message']['userinfo'], guid);
+          dataFuncs.Abonent.saveUser(answer['message']['userinfo'], guid);
         }
       } else {
         //var answer = jsonDecode(_response.body);
