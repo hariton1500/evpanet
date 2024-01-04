@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:evpanet/Models/person.dart';
+import 'package:evpanet/main.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -77,7 +78,7 @@ class Api {
         var answer = jsonDecode(_response.body);
         if (answer is Map && answer.containsKey('message')) {
           person.load(answer['message']['userinfo']);
-          dataFuncs.Abonent.saveUser(answer['message']['userinfo'], guid);
+          dataFuncs.Abonent().saveUser(answer['message']['userinfo'], guid);
         }
       } else {
         //var answer = jsonDecode(_response.body);
@@ -117,8 +118,8 @@ class Api {
             if (Map.from(answer).containsKey('message')) {
               lastApiMessage =
                   Map.from(answer)['message']['userinfo'].toString();
-              fillAbonentWith(Map.from(answer)['message']['userinfo'], guid);
-              saveUser(Map.from(answer)['message']['userinfo'], guid);
+              dataFuncs.Abonent().fillAbonentWith(Map.from(answer)['message']['userinfo'], guid);
+              dataFuncs.Abonent().saveUser(Map.from(answer)['message']['userinfo'], guid);
               print(
                   '[getDataForGuidsFromServer] updated from server for $guid');
             }
@@ -172,12 +173,12 @@ class Api {
           if (Map.from(answer).containsKey('message')) {
             lastApiMessage = Map.from(answer)['message']['value'].toString();
             if (type == 'auto')
-              this.users.firstWhere((user) => user.guid == guid).auto =
-                  !this.users.firstWhere((user) => user.guid == guid).auto;
+              appData.subscribers.firstWhere((user) => user.guid == guid).auto =
+                  !appData.subscribers.firstWhere((user) => user.guid == guid).auto;
             if (type == 'parent')
-              this.users.firstWhere((user) => user.guid == guid).parentControl =
-                  !this
-                      .users
+              appData.subscribers.firstWhere((user) => user.guid == guid).parentControl =
+                  !appData.subscribers
+                      
                       .firstWhere((user) => user.guid == guid)
                       .parentControl;
             //saveUser(Map.from(answer)['message']['userinfo'], guid);

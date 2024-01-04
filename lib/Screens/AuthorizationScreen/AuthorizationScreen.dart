@@ -74,7 +74,7 @@ class AuthorizationScreen extends StatelessWidget {
               Uri(host: 'https://evpanet.com/internet/leave-a-statement.html'));
           //Navigator.of(buildContext).push(MaterialPageRoute(builder: (BuildContext context) => OrderView()));
         },
-        style: TextButton.styleFrom(primary: Color(0x408eaac2)),
+        style: TextButton.styleFrom(foregroundColor: Color(0x408eaac2)),
         //color: Color(0x408eaac2),
         child: Center(
           //padding: EdgeInsets.only(top: 10.0),

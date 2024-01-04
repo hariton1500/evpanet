@@ -81,7 +81,7 @@ class _MainScreenState extends State<MainScreen> {
         });
       });
 
-      /*
+      
       Fluttertoast.showToast(
         msg: 'Не удалось подключиться к серверу',
         toastLength: Toast.LENGTH_LONG,
@@ -91,7 +91,7 @@ class _MainScreenState extends State<MainScreen> {
         textColor: Colors.white,
         fontSize: 16.0,
       );
-      */
+      
     });
     print('got data!');
     if (abonent.lastApiMessage == 'Абонент не найден') {

@@ -130,9 +130,8 @@ class _InputsState extends State<Inputs> {
                                   style: ElevatedButton.styleFrom(
                                       shape: RoundedRectangleBorder(
                                           side: BorderSide(
-                                              color: Color(0xff95abbf))),
-                                      elevation: 0.0,
-                                      primary: Color(0x858eaac2)),
+                                              color: Color(0xff95abbf))), backgroundColor: Color(0x858eaac2),
+                                      elevation: 0.0),
                                   onPressed: () {
                                     Navigator.of(context).pop();
                                   },
@@ -160,9 +159,8 @@ class _InputsState extends State<Inputs> {
                                   style: ElevatedButton.styleFrom(
                                       shape: RoundedRectangleBorder(
                                           side: BorderSide(
-                                              color: Color(0xff95abbf))),
-                                      elevation: 0.0,
-                                      primary: Color(0x858eaac2)),
+                                              color: Color(0xff95abbf))), backgroundColor: Color(0x858eaac2),
+                                      elevation: 0.0),
                                   onPressed: enterButtonEnable
                                       ? authorizationButtonPressed
                                       : null,
@@ -190,9 +188,8 @@ class _InputsState extends State<Inputs> {
                         : ElevatedButton(
                             style: ElevatedButton.styleFrom(
                                 shape: RoundedRectangleBorder(
-                                    side: BorderSide(color: Color(0xff95abbf))),
-                                elevation: 0.0,
-                                primary: Color(0x858eaac2)),
+                                    side: BorderSide(color: Color(0xff95abbf))), backgroundColor: Color(0x858eaac2),
+                                elevation: 0.0),
                             onPressed: enterButtonEnable
                                 ? authorizationButtonPressed
                                 : null,
@@ -261,6 +258,7 @@ class _InputsState extends State<Inputs> {
     print(
         '[${widget.mode} abonent] (${abonent.lastApiErrorStatus}) ${abonent.lastApiMessage}');
     if (abonent.lastApiErrorStatus) {
+      
       Fluttertoast.showToast(
           msg: abonent.lastApiMessage,
           toastLength: Toast.LENGTH_LONG,

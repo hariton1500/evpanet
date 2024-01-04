@@ -325,7 +325,7 @@ class _PaymentDialogState extends State<PaymentDialog> {
           Text(
             'Онлайн оплата:',
             textAlign: TextAlign.center,
-            textScaleFactor: 2,
+            //textScaleFactor: 2,
             style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
           ),
           Divider(
@@ -336,7 +336,7 @@ class _PaymentDialogState extends State<PaymentDialog> {
           Text(
             'Информация: Комиссия системы онлайн платежей составляет 6%',
             textAlign: TextAlign.center,
-            textScaleFactor: 1.2,
+            //textScaleFactor: 1.2,
             style:
                 TextStyle(fontWeight: FontWeight.normal, color: Colors.white),
           ),
@@ -348,7 +348,7 @@ class _PaymentDialogState extends State<PaymentDialog> {
                 child: Text(
                   'Желаемая сумма пополнения:',
                   textAlign: TextAlign.left,
-                  textScaleFactor: 1.2,
+                  //textScaleFactor: 1.2,
                   style: TextStyle(
                       fontStyle: FontStyle.italic,
                       fontWeight: FontWeight.normal,
@@ -387,7 +387,7 @@ class _PaymentDialogState extends State<PaymentDialog> {
                 child: Text(
                   'Будет списано с Вашей (карты/кошелька):',
                   textAlign: TextAlign.left,
-                  textScaleFactor: 1.2,
+                  //textScaleFactor: 1.2,
                   style: TextStyle(
                       fontStyle: FontStyle.italic,
                       fontWeight: FontWeight.normal,
@@ -399,7 +399,7 @@ class _PaymentDialogState extends State<PaymentDialog> {
                 child: Text(
                   '$paySum р.',
                   textAlign: TextAlign.center,
-                  textScaleFactor: 1.2,
+                  //textScaleFactor: 1.2,
                   style: TextStyle(
                       fontWeight: FontWeight.bold, color: Colors.white),
                 ),

@@ -195,8 +195,7 @@ class _SetupState extends State<Setup> {
                                           ],
                                         )),
                             style: ElevatedButton.styleFrom(
-                                onPrimary: Colors.white,
-                                padding: const EdgeInsets.all(0.0)),
+                                foregroundColor: Colors.white, padding: const EdgeInsets.all(0.0)),
                             child: Container(
                               decoration: const BoxDecoration(
                                   gradient: LinearGradient(colors: [
