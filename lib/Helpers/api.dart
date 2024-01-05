@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:evpanet/Models/person.dart';
+import 'package:evpanet/globals.dart';
 import 'package:evpanet/main.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
@@ -74,6 +75,7 @@ class Api {
     String url = 'https://evpanet.com/api/apk/user/info/$guid';
     try {
       _response = await http.get(Uri.parse(url), headers: _headers);
+      printLog('[Future<Person> getDataForUser({required String guid})]\nurl=$url\nheaders=$_headers');
       if (_response.statusCode == 201) {
         var answer = jsonDecode(_response.body);
         if (answer is Map && answer.containsKey('message')) {
@@ -82,7 +84,7 @@ class Api {
         }
       } else {
         //var answer = jsonDecode(_response.body);
-        print(_response.body);
+        printLog(_response.body);
       }
     } catch (e) {
       print(e);
@@ -99,12 +101,12 @@ class Api {
     String url = '';
     SharedPreferences preferences = await SharedPreferences.getInstance();
     guids = preferences.getStringList('guids') ?? [];
-    print(
+    printLog(
         '[getDataForGuidsFromServer] Start get data from server for guids: [$guids]');
     for (var guid in guids) {
       url = 'https://evpanet.com/api/apk/user/info/$guid';
       try {
-        print('[get] ${Uri.parse(url)}, headers: $_headers');
+        printLog('[get] ${Uri.parse(url)}, headers: $_headers');
         _response = await http.get(Uri.parse(url), headers: _headers);
         updatedUsers += 1;
         print(_response.body);

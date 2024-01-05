@@ -3,8 +3,10 @@ import 'dart:async';
 //import 'package:crypto/crypto.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:evpanet/Helpers/maindata.dart';
+import 'package:evpanet/Pages/logspage.dart';
 import 'package:evpanet/Screens/accounts.dart';
 import 'package:evpanet/Screens/messages.dart';
+import 'package:evpanet/globals.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
@@ -176,11 +178,20 @@ class _MainScreenState extends State<MainScreen> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Информация',
-                    style: const TextStyle(
-                      color: const Color.fromRGBO(72, 95, 113, 1.0),
-                      fontSize: 24.0,
+                  GestureDetector(
+                    onTap: () {
+                      magic += '+';
+                      if (magic.length >= 5) {
+                        magic = '';
+                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => const LogsPage()));
+                      }
+                    },
+                    child: Text(
+                      'Информация',
+                      style: const TextStyle(
+                        color: const Color.fromRGBO(72, 95, 113, 1.0),
+                        fontSize: 24.0,
+                      ),
                     ),
                   ),
                   Text(
