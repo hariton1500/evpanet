@@ -41,22 +41,20 @@ class _InputsState extends State<Inputs> {
   Widget logoTop() {
     return GestureDetector(
       onTap: () {
-                      magic += '+';
-                      if (magic.length >= 5) {
-                        magic = '';
-                        //Navigator.of(context).push(MaterialPageRoute(builder: (context) => const LogsPage()));
-                        showAdaptiveDialog(
-                    context: context,
-                    builder: (context) => Scaffold(
-                      appBar: AppBar(
-                        title: Text(logs.length.toString()),
-                      ),
-                          body: SingleChildScrollView(
-                              child:
-                                  Text(logs)),
-                        ));
-                      }
-                    },
+        magic += '+';
+        if (magic.length >= 5) {
+          magic = '';
+          //Navigator.of(context).push(MaterialPageRoute(builder: (context) => const LogsPage()));
+          showAdaptiveDialog(
+              context: context,
+              builder: (context) => Scaffold(
+                    appBar: AppBar(
+                      title: Text(logs.length.toString()),
+                    ),
+                    body: SingleChildScrollView(child: Text(logs)),
+                  ));
+        }
+      },
       child: Center(
         child: Padding(
           padding: EdgeInsets.all(20.0),
@@ -78,6 +76,9 @@ class _InputsState extends State<Inputs> {
 
   @override
   Widget build(BuildContext context) {
+    printLog('[{Inputs}[build]');
+    printLog('widget.mode is: ${widget.mode}');
+    printLog('widget.token is: ${widget.token}');
     return Column(
       children: [
         logoTop(),
@@ -150,7 +151,8 @@ class _InputsState extends State<Inputs> {
                                   style: ElevatedButton.styleFrom(
                                       shape: RoundedRectangleBorder(
                                           side: BorderSide(
-                                              color: Color(0xff95abbf))), backgroundColor: Color(0x858eaac2),
+                                              color: Color(0xff95abbf))),
+                                      backgroundColor: Color(0x858eaac2),
                                       elevation: 0.0),
                                   onPressed: () {
                                     Navigator.of(context).pop();
@@ -179,7 +181,8 @@ class _InputsState extends State<Inputs> {
                                   style: ElevatedButton.styleFrom(
                                       shape: RoundedRectangleBorder(
                                           side: BorderSide(
-                                              color: Color(0xff95abbf))), backgroundColor: Color(0x858eaac2),
+                                              color: Color(0xff95abbf))),
+                                      backgroundColor: Color(0x858eaac2),
                                       elevation: 0.0),
                                   onPressed: enterButtonEnable
                                       ? authorizationButtonPressed
@@ -208,7 +211,8 @@ class _InputsState extends State<Inputs> {
                         : ElevatedButton(
                             style: ElevatedButton.styleFrom(
                                 shape: RoundedRectangleBorder(
-                                    side: BorderSide(color: Color(0xff95abbf))), backgroundColor: Color(0x858eaac2),
+                                    side: BorderSide(color: Color(0xff95abbf))),
+                                backgroundColor: Color(0x858eaac2),
                                 elevation: 0.0),
                             onPressed: enterButtonEnable
                                 ? authorizationButtonPressed
@@ -269,16 +273,15 @@ class _InputsState extends State<Inputs> {
     });
     //print('[authorizationButtonPressed]');
     await abonent.loadSavedData(widget.token);
-    print('trying to authorize with token: $device');
+    printLog('trying to authorize with token: $device');
     await abonent.authorize(
         mode: widget.mode,
         number: '+${phone.getUnmaskedText()}',
         uid: int.tryParse(id.getUnmaskedText()) ?? 0,
         token: device);
-    print(
+    printLog(
         '[${widget.mode} abonent] (${abonent.lastApiErrorStatus}) ${abonent.lastApiMessage}');
     if (abonent.lastApiErrorStatus) {
-      
       Fluttertoast.showToast(
           msg: abonent.lastApiMessage,
           toastLength: Toast.LENGTH_LONG,

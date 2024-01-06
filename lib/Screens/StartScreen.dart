@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:evpanet/Helpers/maindata.dart';
+import 'package:evpanet/globals.dart';
 import 'package:flutter/material.dart';
 import 'AuthorizationScreen/AuthorizationScreen.dart';
 import 'MainScreen/MainScreen.dart';
@@ -20,7 +21,7 @@ class _StartScreenState extends State<StartScreen> {
 
   @override
   void initState() {
-    print('{StartScreen}[initState]');
+    printLog('{StartScreen}[initState]');
     // проверка на флаг авторизованности
     loadShared();
     super.initState();
@@ -28,7 +29,8 @@ class _StartScreenState extends State<StartScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print('[{StartScreen}[build]');
+    printLog('[{StartScreen}[build]');
+    printLog('widget.token is: ${widget.token}');
     return Scaffold(
       bottomSheet: Container(
           color: Color(0xff3c5d7c),

@@ -136,9 +136,7 @@ class Abonent {
       if (_response.statusCode == 201) {
         var answer = jsonDecode(_response.body);
         print('[answer] (${_response.statusCode}) $answer');
-        if (answer.runtimeType
-            .toString()
-            .startsWith('_InternalLinkedHashMap')) {
+        if (answer is Map) {
           if (Map.from(answer).containsKey('message')) {
             lastApiMessage = Map.from(answer)['message']['guids'].toString();
             //print(mode);
@@ -155,6 +153,8 @@ class Abonent {
           }
           if (Map.from(answer).containsKey('error'))
             lastApiErrorStatus = Map.from(answer)['error'];
+        } else {
+          print('answer is not a Map');
         }
       } else {
         guids = [];

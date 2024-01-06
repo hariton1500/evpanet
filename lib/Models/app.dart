@@ -1,12 +1,11 @@
-import 'package:evpanet/Helpers/api.dart';
+//import 'package:evpanet/Helpers/api.dart';
 import 'package:evpanet/Models/message.dart';
 import 'package:evpanet/Models/person.dart';
 
 class AppData {
-  List<String> guid = [];
+  String token = '';
+  List<String> guids = [];
   List<Person> subscribers = [];
   List<Note> messages = [];
-  Api api = Api(token: '');
-
-  String token = '';
+  //Api api = Api(token: token);
 }

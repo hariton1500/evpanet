@@ -1,3 +1,4 @@
+import 'package:evpanet/globals.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'inputs.dart';
@@ -12,11 +13,9 @@ class AuthorizationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    printLog('[{AuthorizationScreen}[build]');
+    printLog('token is: $token');
     return Scaffold(
-      /*
-      appBar: AppBar(
-        backgroundColor: Color(0xff3c5d7c),
-      ),*/
       body: SingleChildScrollView(
         child: Center(
           child: Container(
@@ -47,6 +46,7 @@ class AuthorizationScreen extends StatelessWidget {
     );
   }
 
+  /*
   Widget logoTop() {
     return Center(
       child: Padding(
@@ -57,7 +57,7 @@ class AuthorizationScreen extends StatelessWidget {
         ),
       ),
     );
-  }
+  }*/
 
   Widget connectRequest(BuildContext buildContext) {
     return Padding(
@@ -71,8 +71,7 @@ class AuthorizationScreen extends StatelessWidget {
         //elevation: 0.0,
         onPressed: () {
           launchUrl(
-              Uri(host: 'https://evpanet.com/internet/leave-a-statement.html'));
-          //Navigator.of(buildContext).push(MaterialPageRoute(builder: (BuildContext context) => OrderView()));
+              Uri.parse('https://evpanet.com/internet/leave-a-statement.html'));
         },
         style: TextButton.styleFrom(foregroundColor: Color(0x408eaac2)),
         //color: Color(0x408eaac2),
