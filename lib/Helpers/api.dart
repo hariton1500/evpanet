@@ -16,7 +16,9 @@ class Api {
   int updatedUsers = 0;
   String token = '';
 
-  Api({required this.token});
+  Api({required this.token}) {
+    printLog('Created Api var with token: $token');
+  }
 
   Future<List<String>?> authorize({required String phone, required int uid}) async {
     http.Response _response;
@@ -25,18 +27,18 @@ class Api {
     String _url = 'https://evpanet.com/api/apk/login/user';
     List<String> guids = [];
     try {
-      print('[authorize]');
-      print('[post] ${Uri.parse(_url)}, headers: $_headers, body: $_body');
+      printLog('[authorize]');
+      printLog('[post] ${Uri.parse(_url)}, headers: $_headers, body: $_body');
       _response =
           await http.post(Uri.parse(_url), headers: _headers, body: _body);
       if (_response.statusCode == 201) {
         var answer = jsonDecode(_response.body);
-        print('[answer] (${_response.statusCode}) $answer');
+        printLog('[answer] (${_response.statusCode}) $answer');
         if (answer is Map) {
           if (Map.from(answer).containsKey('message')) {
             lastApiMessage = Map.from(answer)['message']['guids'].toString();
             //print(mode);
-            print('current abonent guids: $guids');
+            printLog('current abonent guids: $guids');
             guids.addAll(List.from(answer['message']['guids']));
             guids = guids.toSet().toList();
           }
@@ -44,7 +46,7 @@ class Api {
             lastApiErrorStatus = Map.from(answer)['error'];
         }
       } else {
-        print(_response.body);
+        printLog(_response.body);
         /*
         guids = [];
         var answer = jsonDecode(_response.body);
@@ -63,7 +65,7 @@ class Api {
       //guids = [];
       //lastApiErrorStatus = true;
       //lastApiMessage = error.toString();
-      print(error);
+      printLog(error);
     }
     return guids;
   }

@@ -1,5 +1,6 @@
 import 'package:evpanet/Helpers/maindata.dart';
 import 'package:evpanet/Screens/MainScreen/MainScreen.dart';
+import 'package:evpanet/globals.dart';
 import 'package:flutter/material.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 //import 'package:shared_preferences/shared_preferences.dart';
@@ -38,18 +39,37 @@ class _InputsState extends State<Inputs> {
   }
 
   Widget logoTop() {
-    return Center(
-      child: Padding(
-        padding: EdgeInsets.all(20.0),
-        child: AnimatedContainer(
-          duration: Duration(seconds: 1),
-          width: isSmall
-              ? MediaQuery.of(context).size.width / 4
-              : MediaQuery.of(context).size.width,
-          child: Image.asset(
-            'assets/images/splash_logo.png',
-            color: Color(0xffd3edff),
-            //height: logoHeight,
+    return GestureDetector(
+      onTap: () {
+                      magic += '+';
+                      if (magic.length >= 5) {
+                        magic = '';
+                        //Navigator.of(context).push(MaterialPageRoute(builder: (context) => const LogsPage()));
+                        showAdaptiveDialog(
+                    context: context,
+                    builder: (context) => Scaffold(
+                      appBar: AppBar(
+                        title: Text(logs.length.toString()),
+                      ),
+                          body: SingleChildScrollView(
+                              child:
+                                  Text(logs)),
+                        ));
+                      }
+                    },
+      child: Center(
+        child: Padding(
+          padding: EdgeInsets.all(20.0),
+          child: AnimatedContainer(
+            duration: Duration(seconds: 1),
+            width: isSmall
+                ? MediaQuery.of(context).size.width / 4
+                : MediaQuery.of(context).size.width,
+            child: Image.asset(
+              'assets/images/splash_logo.png',
+              color: Color(0xffd3edff),
+              //height: logoHeight,
+            ),
           ),
         ),
       ),

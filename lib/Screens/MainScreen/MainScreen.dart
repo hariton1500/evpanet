@@ -3,7 +3,6 @@ import 'dart:async';
 //import 'package:crypto/crypto.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:evpanet/Helpers/maindata.dart';
-import 'package:evpanet/Pages/logspage.dart';
 import 'package:evpanet/Screens/accounts.dart';
 import 'package:evpanet/Screens/messages.dart';
 import 'package:evpanet/globals.dart';
@@ -64,7 +63,7 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Future<void> start() async {
-    print('[start]');
+    printLog('[start]');
     setState(() {
       isStarting = true;
     });
@@ -95,7 +94,7 @@ class _MainScreenState extends State<MainScreen> {
       );
       
     });
-    print('got data!');
+    printLog('got data!');
     if (abonent.lastApiMessage == 'Абонент не найден') {
       /*
       setState(() {
@@ -130,13 +129,13 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Future<void> update() async {
-    print('[update...]');
+    printLog('[update...]');
     setState(() {
       isUpdating = true;
     });
     print(abonent.updatedUsers);
     await abonent.getDataForGuidsFromServer(widget.token);
-    print(abonent.updatedUsers);
+    printLog(abonent.updatedUsers);
     Timer.periodic(Duration(seconds: 1), (timer) {
       print(abonent.updatedUsers);
       if (abonent.updatedUsers == abonent.guids.length) {
@@ -153,9 +152,9 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print('{MainScreen}[build]');
-    print('[currentUserIndex] $currentUserIndex');
-    print('[isStarting] $isStarting');
+    printLog('{MainScreen}[build]');
+    printLog('[currentUserIndex] $currentUserIndex');
+    printLog('[isStarting] $isStarting');
     return Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: Color.fromRGBO(245, 246, 248, 1.0),
@@ -183,7 +182,17 @@ class _MainScreenState extends State<MainScreen> {
                       magic += '+';
                       if (magic.length >= 5) {
                         magic = '';
-                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => const LogsPage()));
+                        //Navigator.of(context).push(MaterialPageRoute(builder: (context) => const LogsPage()));
+                        showAdaptiveDialog(
+                    context: context,
+                    builder: (context) => Scaffold(
+                      appBar: AppBar(
+                        title: Text(logs.length.toString()),
+                      ),
+                          body: SingleChildScrollView(
+                              child:
+                                  Text(logs)),
+                        ));
                       }
                     },
                     child: Text(
